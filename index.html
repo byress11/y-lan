@@ -268,20 +268,22 @@
         .mobile-controls {
             display: none;
             position: fixed;
-            bottom: 10px;
+            bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 10px;
-            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.85);
+            padding: 15px;
+            backdrop-filter: blur(10px);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
+            height: 35vh;
         }
 
         .mobile-controls-layout {
             display: flex;
-            align-items: flex-end;
+            align-items: center;
             justify-content: space-between;
-            gap: 15px;
+            gap: 20px;
+            height: 100%;
         }
 
         .mobile-left-section {
@@ -297,7 +299,50 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .direction-only-dpad {
+            display: grid;
+            grid-template-columns: repeat(3, var(--direction-btn-size, 130px));
             gap: 12px;
+            justify-content: center;
+            position: relative;
+        }
+
+        .direction-btn {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            width: var(--direction-btn-size, 130px);
+            height: var(--direction-btn-size, 130px);
+            border-radius: 12px;
+            font-size: calc(var(--direction-btn-size, 130px) * 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+            font-weight: bold;
+        }
+        
+        .direction-btn:active {
+            transform: scale(0.95);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2));
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .direction-btn:hover {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15));
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .other-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
         }
                 
         /* Mobil Menü Butonu */
@@ -400,10 +445,12 @@
             .game-container {
                 grid-template-columns: 1fr;
                 padding: 10px;
-                height: 100vh;
+                height: 65vh;
                 width: 100vw;
                 max-width: 100vw;
                 border-radius: 0;
+                margin-top: 0;
+                margin-bottom: auto;
             }
         
             .game-sidebar {
@@ -682,26 +729,32 @@
     <!-- Mobil Kontroller -->
     <div class="mobile-controls">
         <div class="mobile-controls-layout">
-            <!-- Sol köşe - Market ikonu -->
+            <!-- Sol köşe - Market ikonu ve boyut kontrolleri -->
             <div class="mobile-left-section">
                 <button class="mobile-market-icon" id="mobileMarketBtn" title="Ücretsiz Market">🛒</button>
-            </div>
-            
-            <!-- Merkez - Yön tuşları ve kontroller -->
-            <div class="mobile-center-section">
-                <div class="resize-controls">
+                <div class="resize-controls" style="display: flex; flex-direction: column; gap: 8px;">
                     <button class="resize-btn" id="increaseSize">+</button>
                     <button class="resize-btn" id="decreaseSize">-</button>
                 </div>
-                <div class="mobile-dpad">
+            </div>
+            
+            <!-- Merkez - Sadece yön tuşları -->
+            <div class="mobile-center-section">
+                <div class="direction-only-dpad">
                     <div></div>
-                    <button class="mobile-btn" data-dir="up">↑</button>
+                    <button class="direction-btn" data-dir="up">↑</button>
                     <div></div>
-                    <button class="mobile-btn" data-dir="left">←</button>
+                    <button class="direction-btn" data-dir="left">←</button>
+                    <div></div>
+                    <button class="direction-btn" data-dir="right">→</button>
+                    <div></div>
+                    <button class="direction-btn" data-dir="down">↓</button>
+                    <div></div>
+                </div>
+                
+                <!-- Diğer kontroller -->
+                <div class="other-controls">
                     <button class="mobile-btn" id="mobilePause">⏸️</button>
-                    <button class="mobile-btn" data-dir="right">→</button>
-                    <div></div>
-                    <button class="mobile-btn" data-dir="down">↓</button>
                     <button class="mobile-btn" id="mobileAutoBtn">🤖</button>
                 </div>
             </div>
