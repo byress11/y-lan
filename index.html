@@ -644,7 +644,83 @@
                 double: 10000,
                 ghost: 7000,
                 slow: 5000
-            }
+            },
+            THEMES: [
+                {
+                    name: "Çimen",
+                    canvasBg: "#7FB069",
+                    snakeHeadColor: "#4B5842",
+                    snakeBodyColor: "#76946A",
+                    foodColor: "#FF6B6B",
+                    gridColor: "#94C973",
+                    obstacleColor: "#553739",
+                    movingObstacleColor: "#754F44",
+                    backgroundImage: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"%237FB069\"/><path d=\"M0 20C10 20 10 0 20 0S30 20 40 20 50 0 60 0 70 20 80 20 90 0 100 0V100H0V20Z\" fill=\"%2394C973\" opacity=\"0.3\"/></svg>')"
+                },
+                {
+                    name: "Toprak",
+                    canvasBg: "#B88B4A",
+                    snakeHeadColor: "#7E4E2C",
+                    snakeBodyColor: "#A67B5B",
+                    foodColor: "#DB5A42",
+                    gridColor: "#C89F69",
+                    obstacleColor: "#6E4223",
+                    movingObstacleColor: "#8C5D3E",
+                    backgroundImage: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"%23B88B4A\"/><circle cx=\"25\" cy=\"25\" r=\"10\" fill=\"%23A67B5B\" opacity=\"0.3\"/><circle cx=\"75\" cy=\"75\" r=\"15\" fill=\"%23A67B5B\" opacity=\"0.3\"/><circle cx=\"75\" cy=\"25\" r=\"5\" fill=\"%23A67B5B\" opacity=\"0.3\"/><circle cx=\"25\" cy=\"75\" r=\"8\" fill=\"%23A67B5B\" opacity=\"0.3\"/></svg>')"
+                },
+                {
+                    name: "Su",
+                    canvasBg: "#5B9BD5",
+                    snakeHeadColor: "#2A6099",
+                    snakeBodyColor: "#3A7CB8",
+                    foodColor: "#FF9A3C",
+                    gridColor: "#8BB8E6",
+                    obstacleColor: "#1E466D",
+                    movingObstacleColor: "#2D6CA1",
+                    backgroundImage: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"%235B9BD5\"/><path d=\"M0 20C20 40 40 0 60 20S80 40 100 20v80H0V20z\" fill=\"%238BB8E6\" opacity=\"0.3\"/></svg>')"
+                },
+                {
+                    name: "Gökyüzü",
+                    canvasBg: "#7EC4CF",
+                    snakeHeadColor: "#2E86AB",
+                    snakeBodyColor: "#4E9CB3",
+                    foodColor: "#FF686B",
+                    gridColor: "#A6D9E1",
+                    obstacleColor: "#1D566E",
+                    movingObstacleColor: "#2A7287",
+                    backgroundImage: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"%237EC4CF\"/><circle cx=\"20\" cy=\"30\" r=\"15\" fill=\"white\" opacity=\"0.6\"/><circle cx=\"70\" cy=\"65\" r=\"20\" fill=\"white\" opacity=\"0.6\"/><circle cx=\"90\" cy=\"40\" r=\"10\" fill=\"white\" opacity=\"0.6\"/></svg>')"
+                },
+                {
+                    name: "Uzay",
+                    canvasBg: "#0A0E29",
+                    snakeHeadColor: "#58A4B0",
+                    snakeBodyColor: "#2F6D84",
+                    foodColor: "#FF5A5F",
+                    gridColor: "#1E2749",
+                    obstacleColor: "#090619",
+                    movingObstacleColor: "#151D42",
+                    backgroundImage: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"%230A0E29\"/><circle cx=\"10\" cy=\"10\" r=\"1\" fill=\"white\"/><circle cx=\"25\" cy=\"30\" r=\"0.7\" fill=\"white\"/><circle cx=\"40\" cy=\"10\" r=\"0.5\" fill=\"white\"/><circle cx=\"60\" cy=\"40\" r=\"0.8\" fill=\"white\"/><circle cx=\"80\" cy=\"20\" r=\"1\" fill=\"white\"/><circle cx=\"90\" cy=\"50\" r=\"0.6\" fill=\"white\"/><circle cx=\"70\" cy=\"70\" r=\"0.7\" fill=\"white\"/><circle cx=\"30\" cy=\"50\" r=\"0.5\" fill=\"white\"/><circle cx=\"50\" cy=\"80\" r=\"0.8\" fill=\"white\"/><circle cx=\"20\" cy=\"90\" r=\"0.6\" fill=\"white\"/></svg>')"
+                }
+            ],
+            // Engel şekilleri
+            OBSTACLE_SHAPES: [
+                // Tek blok
+                [{ x: 0, y: 0 }],
+                // Yatay çizgi - 2 blok
+                [{ x: 0, y: 0 }, { x: 1, y: 0 }],
+                // Dikey çizgi - 2 blok
+                [{ x: 0, y: 0 }, { x: 0, y: 1 }],
+                // L şekli
+                [{ x: 0, y: 0 }, { x: 0, y: 1 }, { x: 1, y: 1 }],
+                // Ters L şekli
+                [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 0, y: 1 }],
+                // T şekli
+                [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 1, y: 1 }],
+                // + şekli
+                [{ x: 1, y: 0 }, { x: 0, y: 1 }, { x: 1, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 2 }],
+                // Z şekli
+                [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 1 }]
+            ]
         };
 
         // Oyun Durumu
@@ -662,6 +738,7 @@
                 this.specialItems = [];
                 this.score = 0;
                 this.level = 1;
+                this.currentTheme = 0; // Başlangıç teması
                 this.lives = GameConfig.INITIAL_LIVES;
                 this.coins = 0;
                 this.isPaused = false;
@@ -1015,6 +1092,14 @@
                 this.state.level++;
                 this.sound.play('levelUp');
                 this.showPowerUpMessage(`Seviye ${this.state.level}!`);
+                
+                // Tema değiştirme
+                this.state.currentTheme = (this.state.level - 1) % GameConfig.THEMES.length;
+                
+                // Arka plan rengini güncelle
+                document.body.style.backgroundImage = GameConfig.THEMES[this.state.currentTheme].backgroundImage;
+                
+                // Engelleri yeniden oluştur
                 this.generateObstacles();
                 
                 // Bonus can
@@ -1022,6 +1107,9 @@
                     this.state.lives++;
                     this.showPowerUpMessage('+1 Can!');
                 }
+                
+                // Tema değişikliği bildirimi
+                this.showPowerUpMessage(`${GameConfig.THEMES[this.state.currentTheme].name} Teması!`);
             }
 
             generateFood() {
@@ -1047,25 +1135,86 @@
 
             generateObstacles() {
                 this.state.obstacles = [];
-                const count = Math.min(this.state.level * 2, Math.floor(this.cols * this.rows * 0.1));
                 
-                for (let i = 0; i < count; i++) {
-                    let position;
-                    let attempts = 0;
-                    const maxAttempts = 50;
+                // Basit engeller için sayı (seviye başına)
+                const simpleCount = Math.max(1, Math.floor(this.state.level / 3));
+                
+                // Karmaşık engeller için sayı (seviye arttıkça artar)
+                const complexShapeCount = Math.min(Math.floor(this.state.level / 2), 5);
+                
+                // Basit engelleri oluştur
+                for (let i = 0; i < simpleCount; i++) {
+                    this.placeObstacle([{ x: 0, y: 0 }], Math.random() > 0.7 ? 'moving' : 'static');
+                }
+                
+                // Karmaşık şekilli engelleri oluştur
+                for (let i = 0; i < complexShapeCount; i++) {
+                    // Level arttıkça karmaşık şekil kullanma olasılığı artar
+                    const minShapeIndex = Math.min(Math.floor(this.state.level / 5), 4);
+                    const shapeIndex = minShapeIndex + Math.floor(Math.random() * (GameConfig.OBSTACLE_SHAPES.length - minShapeIndex));
+                    const shape = GameConfig.OBSTACLE_SHAPES[shapeIndex];
                     
-                    do {
-                        position = {
-                            x: Math.floor(Math.random() * this.cols),
-                            y: Math.floor(Math.random() * this.rows),
-                            type: Math.random() > 0.7 ? 'moving' : 'static',
-                            direction: ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)]
+                    // Hareket eden engellerin oranı seviye arttıkça artar
+                    const movingProbability = Math.min(0.3 + (this.state.level / 20), 0.8);
+                    const isMoving = Math.random() < movingProbability ? 'moving' : 'static';
+                    
+                    this.placeObstacle(shape, isMoving);
+                }
+            }
+            
+            placeObstacle(shape, type) {
+                let baseX, baseY;
+                let isValid = false;
+                let attempts = 0;
+                const maxAttempts = 50;
+                
+                do {
+                    // Ana pozisyon
+                    baseX = Math.floor(Math.random() * (this.cols - 3)) + 1;
+                    baseY = Math.floor(Math.random() * (this.rows - 3)) + 1;
+                    
+                    // Tüm blokların geçerli olup olmadığını kontrol et
+                    isValid = true;
+                    for (const block of shape) {
+                        const pos = {
+                            x: baseX + block.x,
+                            y: baseY + block.y
                         };
-                        attempts++;
-                    } while ((this.isPositionOccupied(position) || this.isNearSnake(position, 3)) && attempts < maxAttempts);
+                        
+                        // Sınırları kontrol et
+                        if (pos.x < 0 || pos.x >= this.cols || pos.y < 0 || pos.y >= this.rows) {
+                            isValid = false;
+                            break;
+                        }
+                        
+                        // Çakışmaları kontrol et
+                        if (this.isPositionOccupied(pos) || this.isNearSnake(pos, 2)) {
+                            isValid = false;
+                            break;
+                        }
+                    }
                     
-                    if (attempts < maxAttempts) {
-                        this.state.obstacles.push(position);
+                    attempts++;
+                } while (!isValid && attempts < maxAttempts);
+                
+                // Eğer geçerli bir pozisyon bulunduysa, engeli yerleştir
+                if (isValid) {
+                    // Rastgele bir yön seç (hareket eden engeller için)
+                    const direction = ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)];
+                    
+                    // Şeklin tüm bloklarını ekle
+                    for (const block of shape) {
+                        this.state.obstacles.push({
+                            x: baseX + block.x,
+                            y: baseY + block.y,
+                            type: type,
+                            direction: direction,
+                            baseShape: shape,      // Şekil referansı
+                            baseX: baseX,          // Ana koordinat
+                            baseY: baseY,
+                            relX: block.x,         // Şekle göre bağıl konum
+                            relY: block.y
+                        });
                     }
                 }
             }
@@ -1103,24 +1252,92 @@
             }
 
             moveObstacles() {
+                // Hareket eden engelleri grupla (aynı şeklin parçalarını birlikte hareket ettirmek için)
+                const movingGroups = new Map();
+                
                 this.state.obstacles.forEach(obstacle => {
-                    if (obstacle.type === 'moving' && Math.random() < 0.1) {
-                        const oldPos = { x: obstacle.x, y: obstacle.y };
+                    if (obstacle.type === 'moving') {
+                        // Engelin orijinal şekline göre gruplayalım
+                        const groupKey = `${obstacle.baseX},${obstacle.baseY}`;
                         
-                        switch (obstacle.direction) {
-                            case 'up': obstacle.y--; break;
-                            case 'down': obstacle.y++; break;
-                            case 'left': obstacle.x--; break;
-                            case 'right': obstacle.x++; break;
+                        if (!movingGroups.has(groupKey)) {
+                            movingGroups.set(groupKey, {
+                                obstacles: [],
+                                direction: obstacle.direction,
+                                moved: false
+                            });
                         }
                         
-                        // Sınır kontrolü
-                        if (obstacle.x < 0 || obstacle.x >= this.cols ||
-                            obstacle.y < 0 || obstacle.y >= this.rows ||
-                            this.isPositionOccupied(obstacle)) {
-                            obstacle.x = oldPos.x;
-                            obstacle.y = oldPos.y;
-                            obstacle.direction = ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)];
+                        movingGroups.get(groupKey).obstacles.push(obstacle);
+                    }
+                });
+                
+                // Her grubu ayrı ayrı hareket ettir
+                movingGroups.forEach(group => {
+                    // Hareket etme olasılığı
+                    if (Math.random() < 0.1) {
+                        // Tüm grup için geçerli bir hareket olup olmadığını kontrol et
+                        const newPositions = [];
+                        let canMove = true;
+                        
+                        group.obstacles.forEach(obstacle => {
+                            const newPos = { x: obstacle.x, y: obstacle.y };
+                            
+                            switch (group.direction) {
+                                case 'up': newPos.y--; break;
+                                case 'down': newPos.y++; break;
+                                case 'left': newPos.x--; break;
+                                case 'right': newPos.x++; break;
+                            }
+                            
+                            // Sınır kontrolü
+                            if (newPos.x < 0 || newPos.x >= this.cols ||
+                                newPos.y < 0 || newPos.y >= this.rows) {
+                                canMove = false;
+                            }
+                            
+                            newPositions.push(newPos);
+                        });
+                        
+                        // Çakışma kontrolü
+                        if (canMove) {
+                            for (const newPos of newPositions) {
+                                // Engelin kendisini hariç tut
+                                if (this.state.snake.some(seg => seg.x === newPos.x && seg.y === newPos.y) ||
+                                    this.state.obstacles.some(obs =>
+                                        !group.obstacles.includes(obs) &&
+                                        obs.x === newPos.x &&
+                                        obs.y === newPos.y
+                                    )) {
+                                    canMove = false;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        // Eğer hareket geçerliyse, uygula
+                        if (canMove) {
+                            group.obstacles.forEach((obstacle, index) => {
+                                obstacle.x = newPositions[index].x;
+                                obstacle.y = newPositions[index].y;
+                                
+                                // Baz koordinatları da güncelle
+                                if (index === 0) {
+                                    const deltaX = group.direction === 'left' ? -1 : (group.direction === 'right' ? 1 : 0);
+                                    const deltaY = group.direction === 'up' ? -1 : (group.direction === 'down' ? 1 : 0);
+                                    
+                                    group.obstacles.forEach(obs => {
+                                        obs.baseX += deltaX;
+                                        obs.baseY += deltaY;
+                                    });
+                                }
+                            });
+                        } else {
+                            // Engel hareketi geçersizse, yeni bir yön seç
+                            const newDirection = ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)];
+                            group.obstacles.forEach(obstacle => {
+                                obstacle.direction = newDirection;
+                            });
                         }
                     }
                 });
@@ -1251,9 +1468,17 @@
                 
                 if (!target) return;
                 
-                // Basit pathfinding
+                // Geliştirilmiş pathfinding
                 const possibleMoves = [];
                 const directions = ['up', 'down', 'left', 'right'];
+                
+                // Mevcut yönü öncelikle değerlendir
+                const currentDir = this.state.direction;
+                directions.sort((a, b) => {
+                    if (a === currentDir) return -1;
+                    if (b === currentDir) return 1;
+                    return 0;
+                });
                 
                 for (const dir of directions) {
                     const newHead = { ...head };
@@ -1284,15 +1509,36 @@
                         safe = false;
                     }
                     
+                    // Özel eşyaları tercih et
+                    let bonus = 0;
+                    this.state.specialItems.forEach(item => {
+                        if (item.x === newHead.x && item.y === newHead.y) {
+                            bonus = 10;
+                        }
+                    });
+                    
                     if (safe) {
+                        // Eğer hayalet modu aktifse, engelleri görmezden gelebiliriz
+                        if (this.state.powerUps.ghost) {
+                            safe = true;
+                        }
+                        
+                        // Manhattan mesafesi - hedefi takip etmek için
                         const distance = Math.abs(target.x - newHead.x) + Math.abs(target.y - newHead.y);
-                        possibleMoves.push({ dir, distance });
+                        
+                        // Devam eden yönü tercih et (daha düzgün hareket için)
+                        const directionPreference = dir === this.state.direction ? 0.5 : 0;
+                        
+                        // Toplam puan (düşük daha iyi)
+                        const score = distance - bonus - directionPreference;
+                        
+                        possibleMoves.push({ dir, score });
                     }
                 }
                 
                 // En iyi hareketi seç
                 if (possibleMoves.length > 0) {
-                    possibleMoves.sort((a, b) => a.distance - b.distance);
+                    possibleMoves.sort((a, b) => a.score - b.score);
                     this.state.nextDirection = possibleMoves[0].dir;
                 }
             }
@@ -1300,13 +1546,17 @@
             render() {
                 const ctx = this.ctx;
                 const cellSize = GameConfig.CELL_SIZE;
+                const currentTheme = GameConfig.THEMES[this.state.currentTheme];
                 
-                // Temizle
-                ctx.fillStyle = this.darkTheme ? '#1a1a2e' : '#f5f5f5';
+                // Canvas temizle
+                ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Arka plan rengini ayarla
+                ctx.fillStyle = currentTheme.canvasBg;
                 ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
                 
                 // Grid çiz
-                ctx.strokeStyle = this.darkTheme ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+                ctx.strokeStyle = currentTheme.gridColor;
                 ctx.lineWidth = 1;
                 
                 for (let i = 0; i <= this.cols; i++) {
@@ -1325,7 +1575,7 @@
                 
                 // Yemek çiz
                 if (this.state.food) {
-                    ctx.fillStyle = '#ff4757';
+                    ctx.fillStyle = currentTheme.foodColor;
                     ctx.beginPath();
                     ctx.arc(
                         this.state.food.x * cellSize + cellSize / 2,
@@ -1367,11 +1617,11 @@
                 });
                 
                 // Engelleri çiz
-                ctx.fillStyle = '#e74c3c';
                 this.state.obstacles.forEach(obstacle => {
-                    if (obstacle.type === 'moving') {
-                        ctx.fillStyle = '#e67e22';
-                    }
+                    ctx.fillStyle = obstacle.type === 'moving'
+                        ? currentTheme.movingObstacleColor
+                        : currentTheme.obstacleColor;
+                        
                     ctx.fillRect(
                         obstacle.x * cellSize + 2,
                         obstacle.y * cellSize + 2,
@@ -1383,18 +1633,26 @@
                 // Yılanı çiz
                 this.state.snake.forEach((segment, index) => {
                     const hue = (index * 10 + Date.now() / 20) % 360;
-                    ctx.fillStyle = this.state.powerUps.ghost 
-                        ? `hsla(${hue}, 70%, 60%, 0.7)`
-                        : index === 0 
-                            ? '#2ecc71' 
-                            : '#27ae60';
                     
-                    ctx.fillRect(
+                    if (this.state.powerUps.ghost) {
+                        ctx.fillStyle = `hsla(${hue}, 70%, 60%, 0.7)`;
+                    } else if (index === 0) {
+                        ctx.fillStyle = currentTheme.snakeHeadColor;
+                    } else {
+                        ctx.fillStyle = currentTheme.snakeBodyColor;
+                    }
+                    
+                    // Yuvarlak köşeli yılan
+                    const radius = 3;
+                    ctx.beginPath();
+                    ctx.roundRect(
                         segment.x * cellSize,
                         segment.y * cellSize,
                         cellSize - 1,
-                        cellSize - 1
+                        cellSize - 1,
+                        radius
                     );
+                    ctx.fill();
                     
                     // Baş için gözler
                     if (index === 0) {
