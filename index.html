@@ -431,6 +431,13 @@
                 border-radius: 50%;
                 background: rgba(0, 0, 0, 0.1);
             }
+
+            /* Mobil Market İkonunu göster */
+            .mobile-market-icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
         }
 
         /* Utility Classes */
@@ -503,6 +510,47 @@
             100% {
                 transform: translate(-50%, -20px);
                 opacity: 0;
+            }
+        }
+
+        /* Mobil Market İkonu */
+        .mobile-market-icon {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            border: 3px solid #FFD700;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: marketPulse 2s infinite;
+        }
+
+        .mobile-market-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .mobile-market-icon:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes marketPulse {
+            0% {
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), 0 0 0 0 rgba(255, 107, 107, 0.7);
+            }
+            50% {
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), 0 0 0 10px rgba(255, 107, 107, 0);
+            }
+            100% {
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), 0 0 0 0 rgba(255, 107, 107, 0);
             }
         }
     </style>
@@ -586,6 +634,9 @@
     <!-- Mobil Menü Butonu -->
     <button class="mobile-menu-button" id="mobileMenuBtn">☰</button>
 
+    <!-- Mobil Market İkonu -->
+    <button class="mobile-market-icon" id="mobileMarketBtn" title="Ücretsiz Market">🛒</button>
+
     <!-- Mobil Kontroller -->
     <div class="mobile-controls">
         <div class="resize-controls">
@@ -649,56 +700,61 @@
                 {
                     name: "Çimen",
                     canvasBg: "#7FB069",
-                    snakeHeadColor: "#4B5842",
-                    snakeBodyColor: "#76946A",
+                    snakeHeadColor: "#2D1B69", // Koyu mor - yeşil arka planla zıt
+                    snakeBodyColor: "#4A2C85", // Mor - yeşil arka planla zıt
+                    snakePatternColor: "#6A4C93", // Açık mor - desen için
                     foodColor: "#FF6B6B",
                     gridColor: "#94C973",
-                    obstacleColor: "#553739",
-                    movingObstacleColor: "#754F44",
+                    obstacleColor: "#FF1744",
+                    movingObstacleColor: "#E91E63",
                     backgroundImage: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"%237FB069\"/><path d=\"M0 20C10 20 10 0 20 0S30 20 40 20 50 0 60 0 70 20 80 20 90 0 100 0V100H0V20Z\" fill=\"%2394C973\" opacity=\"0.3\"/></svg>')"
                 },
                 {
                     name: "Toprak",
                     canvasBg: "#B88B4A",
-                    snakeHeadColor: "#7E4E2C",
-                    snakeBodyColor: "#A67B5B",
+                    snakeHeadColor: "#1565C0", // Koyu mavi - kahverengi arka planla zıt
+                    snakeBodyColor: "#1976D2", // Mavi - kahverengi arka planla zıt
+                    snakePatternColor: "#42A5F5", // Açık mavi - desen için
                     foodColor: "#DB5A42",
                     gridColor: "#C89F69",
-                    obstacleColor: "#6E4223",
-                    movingObstacleColor: "#8C5D3E",
+                    obstacleColor: "#2196F3",
+                    movingObstacleColor: "#03A9F4",
                     backgroundImage: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"%23B88B4A\"/><circle cx=\"25\" cy=\"25\" r=\"10\" fill=\"%23A67B5B\" opacity=\"0.3\"/><circle cx=\"75\" cy=\"75\" r=\"15\" fill=\"%23A67B5B\" opacity=\"0.3\"/><circle cx=\"75\" cy=\"25\" r=\"5\" fill=\"%23A67B5B\" opacity=\"0.3\"/><circle cx=\"25\" cy=\"75\" r=\"8\" fill=\"%23A67B5B\" opacity=\"0.3\"/></svg>')"
                 },
                 {
                     name: "Su",
                     canvasBg: "#5B9BD5",
-                    snakeHeadColor: "#2A6099",
-                    snakeBodyColor: "#3A7CB8",
+                    snakeHeadColor: "#D84315", // Koyu turuncu - mavi arka planla zıt
+                    snakeBodyColor: "#FF5722", // Turuncu - mavi arka planla zıt
+                    snakePatternColor: "#FF8A65", // Açık turuncu - desen için
                     foodColor: "#FF9A3C",
                     gridColor: "#8BB8E6",
-                    obstacleColor: "#1E466D",
-                    movingObstacleColor: "#2D6CA1",
+                    obstacleColor: "#FF5722",
+                    movingObstacleColor: "#FF9800",
                     backgroundImage: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"%235B9BD5\"/><path d=\"M0 20C20 40 40 0 60 20S80 40 100 20v80H0V20z\" fill=\"%238BB8E6\" opacity=\"0.3\"/></svg>')"
                 },
                 {
                     name: "Gökyüzü",
                     canvasBg: "#7EC4CF",
-                    snakeHeadColor: "#2E86AB",
-                    snakeBodyColor: "#4E9CB3",
+                    snakeHeadColor: "#6A1B9A", // Koyu mor - açık mavi arka planla zıt
+                    snakeBodyColor: "#8E24AA", // Mor - açık mavi arka planla zıt
+                    snakePatternColor: "#BA68C8", // Açık mor - desen için
                     foodColor: "#FF686B",
                     gridColor: "#A6D9E1",
-                    obstacleColor: "#1D566E",
-                    movingObstacleColor: "#2A7287",
+                    obstacleColor: "#9C27B0",
+                    movingObstacleColor: "#673AB7",
                     backgroundImage: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"%237EC4CF\"/><circle cx=\"20\" cy=\"30\" r=\"15\" fill=\"white\" opacity=\"0.6\"/><circle cx=\"70\" cy=\"65\" r=\"20\" fill=\"white\" opacity=\"0.6\"/><circle cx=\"90\" cy=\"40\" r=\"10\" fill=\"white\" opacity=\"0.6\"/></svg>')"
                 },
                 {
                     name: "Uzay",
                     canvasBg: "#0A0E29",
-                    snakeHeadColor: "#58A4B0",
-                    snakeBodyColor: "#2F6D84",
+                    snakeHeadColor: "#FFC107", // Altın sarısı - koyu mavi arka planla zıt
+                    snakeBodyColor: "#FFEB3B", // Sarı - koyu mavi arka planla zıt
+                    snakePatternColor: "#FFF176", // Açık sarı - desen için
                     foodColor: "#FF5A5F",
                     gridColor: "#1E2749",
-                    obstacleColor: "#090619",
-                    movingObstacleColor: "#151D42",
+                    obstacleColor: "#FFEB3B",
+                    movingObstacleColor: "#FFC107",
                     backgroundImage: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"%230A0E29\"/><circle cx=\"10\" cy=\"10\" r=\"1\" fill=\"white\"/><circle cx=\"25\" cy=\"30\" r=\"0.7\" fill=\"white\"/><circle cx=\"40\" cy=\"10\" r=\"0.5\" fill=\"white\"/><circle cx=\"60\" cy=\"40\" r=\"0.8\" fill=\"white\"/><circle cx=\"80\" cy=\"20\" r=\"1\" fill=\"white\"/><circle cx=\"90\" cy=\"50\" r=\"0.6\" fill=\"white\"/><circle cx=\"70\" cy=\"70\" r=\"0.7\" fill=\"white\"/><circle cx=\"30\" cy=\"50\" r=\"0.5\" fill=\"white\"/><circle cx=\"50\" cy=\"80\" r=\"0.8\" fill=\"white\"/><circle cx=\"20\" cy=\"90\" r=\"0.6\" fill=\"white\"/></svg>')"
                 }
             ],
@@ -838,6 +894,7 @@
                 this.setupCanvas();
                 this.setupEventListeners();
                 this.loadSavedData();
+                this.ensureSnakeColorContrast(); // Renk kontrastını garanti et
                 this.generateFood();
                 this.generateObstacles();
                 this.updateUI();
@@ -1095,6 +1152,9 @@
                 
                 // Tema değiştirme
                 this.state.currentTheme = (this.state.level - 1) % GameConfig.THEMES.length;
+                
+                // Yılan renklerinin arka plandan farklı olduğunu garanti et
+                this.ensureSnakeColorContrast();
                 
                 // Arka plan rengini güncelle
                 document.body.style.backgroundImage = GameConfig.THEMES[this.state.currentTheme].backgroundImage;
@@ -1543,6 +1603,96 @@
                 }
             }
 
+            // Renk yardımcı fonksiyonları
+            darkenColor(color, percent) {
+                const num = parseInt(color.replace("#", ""), 16);
+                const amt = Math.round(2.55 * percent);
+                const R = (num >> 16) - amt;
+                const G = (num >> 8 & 0x00FF) - amt;
+                const B = (num & 0x0000FF) - amt;
+                return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+                    (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+                    (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+            }
+
+            lightenColor(color, percent) {
+                const num = parseInt(color.replace("#", ""), 16);
+                const amt = Math.round(2.55 * percent);
+                const R = (num >> 16) + amt;
+                const G = (num >> 8 & 0x00FF) + amt;
+                const B = (num & 0x0000FF) + amt;
+                return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+                    (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+                    (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+            }
+
+            // Renk kontrastını hesapla
+            getColorContrast(color1, color2) {
+                const getLuminance = (color) => {
+                    const rgb = parseInt(color.replace("#", ""), 16);
+                    const r = (rgb >> 16) & 0xff;
+                    const g = (rgb >> 8) & 0xff;
+                    const b = (rgb >> 0) & 0xff;
+                    
+                    const [rs, gs, bs] = [r, g, b].map(c => {
+                        c = c / 255;
+                        return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+                    });
+                    
+                    return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+                };
+                
+                const lum1 = getLuminance(color1);
+                const lum2 = getLuminance(color2);
+                const brightest = Math.max(lum1, lum2);
+                const darkest = Math.min(lum1, lum2);
+                
+                return (brightest + 0.05) / (darkest + 0.05);
+            }
+
+            // Yılan renklerinin arka plandan yeterince farklı olduğunu garanti et
+            ensureSnakeColorContrast() {
+                const currentTheme = GameConfig.THEMES[this.state.currentTheme];
+                const bgColor = currentTheme.canvasBg;
+                
+                // Minimum kontrast oranı (3:1 okunabilirlik için yeterli)
+                const minContrast = 3;
+                
+                // Kafa rengi kontrastını kontrol et
+                if (this.getColorContrast(currentTheme.snakeHeadColor, bgColor) < minContrast) {
+                    // Kontrast yetersizse, arka plan rengine göre zıt renk oluştur
+                    const bgLum = this.getColorLuminance(bgColor);
+                    currentTheme.snakeHeadColor = bgLum > 0.5 ? "#1A1A1A" : "#F0F0F0";
+                }
+                
+                // Vücut rengi kontrastını kontrol et
+                if (this.getColorContrast(currentTheme.snakeBodyColor, bgColor) < minContrast) {
+                    const bgLum = this.getColorLuminance(bgColor);
+                    currentTheme.snakeBodyColor = bgLum > 0.5 ? "#333333" : "#CCCCCC";
+                }
+                
+                // Desen rengi kontrastını kontrol et
+                if (currentTheme.snakePatternColor && this.getColorContrast(currentTheme.snakePatternColor, bgColor) < minContrast) {
+                    const bgLum = this.getColorLuminance(bgColor);
+                    currentTheme.snakePatternColor = bgLum > 0.5 ? "#555555" : "#AAAAAA";
+                }
+            }
+
+            // Rengin parlaklığını hesapla
+            getColorLuminance(color) {
+                const rgb = parseInt(color.replace("#", ""), 16);
+                const r = (rgb >> 16) & 0xff;
+                const g = (rgb >> 8) & 0xff;
+                const b = (rgb >> 0) & 0xff;
+                
+                const [rs, gs, bs] = [r, g, b].map(c => {
+                    c = c / 255;
+                    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+                });
+                
+                return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+            }
+
             render() {
                 const ctx = this.ctx;
                 const cellSize = GameConfig.CELL_SIZE;
@@ -1630,72 +1780,153 @@
                     );
                 });
                 
-                // Yılanı çiz
+                // Yılanı çiz - Gerçekçi görünüm
                 this.state.snake.forEach((segment, index) => {
-                    const hue = (index * 10 + Date.now() / 20) % 360;
+                    const x = segment.x * cellSize;
+                    const y = segment.y * cellSize;
+                    const radius = cellSize / 2 - 1;
                     
                     if (this.state.powerUps.ghost) {
+                        // Hayalet modu - şeffaf renkli efekt
+                        const hue = (index * 15 + Date.now() / 30) % 360;
                         ctx.fillStyle = `hsla(${hue}, 70%, 60%, 0.7)`;
-                    } else if (index === 0) {
-                        ctx.fillStyle = currentTheme.snakeHeadColor;
+                        ctx.strokeStyle = `hsla(${hue}, 70%, 40%, 0.9)`;
                     } else {
-                        ctx.fillStyle = currentTheme.snakeBodyColor;
+                        // Normal mod - tema renklerini kullan
+                        if (index === 0) {
+                            // Kafa - daha koyu renk
+                            ctx.fillStyle = currentTheme.snakeHeadColor;
+                            ctx.strokeStyle = this.darkenColor(currentTheme.snakeHeadColor, 20);
+                        } else {
+                            // Vücut - ana renk
+                            ctx.fillStyle = currentTheme.snakeBodyColor;
+                            ctx.strokeStyle = this.darkenColor(currentTheme.snakeBodyColor, 15);
+                        }
                     }
                     
-                    // Yuvarlak köşeli yılan
-                    const radius = 3;
+                    // Ana yılan vücudu - daire şeklinde (daha yılan benzeri)
                     ctx.beginPath();
-                    ctx.roundRect(
-                        segment.x * cellSize,
-                        segment.y * cellSize,
-                        cellSize - 1,
-                        cellSize - 1,
-                        radius
-                    );
+                    ctx.arc(x + cellSize/2, y + cellSize/2, radius, 0, Math.PI * 2);
                     ctx.fill();
                     
-                    // Baş için gözler
+                    // Kontur çizgisi
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+                    
+                    // Yılan deseni - sadece normal modda
+                    if (!this.state.powerUps.ghost && index > 0) {
+                        // Desen için daha açık renk
+                        ctx.fillStyle = currentTheme.snakePatternColor || this.lightenColor(currentTheme.snakeBodyColor, 30);
+                        
+                        // Yılan üzerinde desenler
+                        const patternSize = cellSize / 6;
+                        const centerX = x + cellSize/2;
+                        const centerY = y + cellSize/2;
+                        
+                        // Merkezi desen
+                        ctx.beginPath();
+                        ctx.arc(centerX, centerY, patternSize, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Yan desenler
+                        if (index % 2 === 0) {
+                            ctx.beginPath();
+                            ctx.arc(centerX - patternSize*1.5, centerY, patternSize*0.7, 0, Math.PI * 2);
+                            ctx.fill();
+                            ctx.beginPath();
+                            ctx.arc(centerX + patternSize*1.5, centerY, patternSize*0.7, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    }
+                    
+                    // Kafa için özel detaylar
                     if (index === 0) {
+                        // Gözler
                         ctx.fillStyle = 'white';
-                        const eyeSize = cellSize / 5;
-                        const eyeOffset = cellSize / 3;
+                        const eyeSize = cellSize / 6;
+                        const eyeOffset = cellSize / 4;
                         
                         // Yöne göre göz pozisyonu
                         let eye1X, eye1Y, eye2X, eye2Y;
                         
                         switch (this.state.direction) {
                             case 'up':
-                                eye1X = segment.x * cellSize + eyeOffset;
-                                eye1Y = segment.y * cellSize + eyeOffset;
-                                eye2X = segment.x * cellSize + cellSize - eyeOffset;
-                                eye2Y = segment.y * cellSize + eyeOffset;
+                                eye1X = x + cellSize/2 - eyeOffset;
+                                eye1Y = y + cellSize/2 - eyeOffset/2;
+                                eye2X = x + cellSize/2 + eyeOffset;
+                                eye2Y = y + cellSize/2 - eyeOffset/2;
                                 break;
                             case 'down':
-                                eye1X = segment.x * cellSize + eyeOffset;
-                                eye1Y = segment.y * cellSize + cellSize - eyeOffset;
-                                eye2X = segment.x * cellSize + cellSize - eyeOffset;
-                                eye2Y = segment.y * cellSize + cellSize - eyeOffset;
+                                eye1X = x + cellSize/2 - eyeOffset;
+                                eye1Y = y + cellSize/2 + eyeOffset/2;
+                                eye2X = x + cellSize/2 + eyeOffset;
+                                eye2Y = y + cellSize/2 + eyeOffset/2;
                                 break;
                             case 'left':
-                                eye1X = segment.x * cellSize + eyeOffset;
-                                eye1Y = segment.y * cellSize + eyeOffset;
-                                eye2X = segment.x * cellSize + eyeOffset;
-                                eye2Y = segment.y * cellSize + cellSize - eyeOffset;
+                                eye1X = x + cellSize/2 - eyeOffset/2;
+                                eye1Y = y + cellSize/2 - eyeOffset;
+                                eye2X = x + cellSize/2 - eyeOffset/2;
+                                eye2Y = y + cellSize/2 + eyeOffset;
                                 break;
                             case 'right':
-                                eye1X = segment.x * cellSize + cellSize - eyeOffset;
-                                eye1Y = segment.y * cellSize + eyeOffset;
-                                eye2X = segment.x * cellSize + cellSize - eyeOffset;
-                                eye2Y = segment.y * cellSize + cellSize - eyeOffset;
+                                eye1X = x + cellSize/2 + eyeOffset/2;
+                                eye1Y = y + cellSize/2 - eyeOffset;
+                                eye2X = x + cellSize/2 + eyeOffset/2;
+                                eye2Y = y + cellSize/2 + eyeOffset;
                                 break;
                         }
                         
+                        // Beyaz göz tabanları
                         ctx.beginPath();
                         ctx.arc(eye1X, eye1Y, eyeSize, 0, Math.PI * 2);
                         ctx.fill();
                         ctx.beginPath();
                         ctx.arc(eye2X, eye2Y, eyeSize, 0, Math.PI * 2);
                         ctx.fill();
+                        
+                        // Siyah göz bebekleri
+                        ctx.fillStyle = 'black';
+                        const pupilSize = eyeSize * 0.6;
+                        ctx.beginPath();
+                        ctx.arc(eye1X, eye1Y, pupilSize, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.arc(eye2X, eye2Y, pupilSize, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Burun delikleri (yöne göre)
+                        ctx.fillStyle = this.darkenColor(currentTheme.snakeHeadColor, 40);
+                        const nostrilSize = cellSize / 12;
+                        
+                        if (this.state.direction === 'up') {
+                            ctx.beginPath();
+                            ctx.arc(x + cellSize/2 - nostrilSize, y + cellSize/4, nostrilSize/2, 0, Math.PI * 2);
+                            ctx.fill();
+                            ctx.beginPath();
+                            ctx.arc(x + cellSize/2 + nostrilSize, y + cellSize/4, nostrilSize/2, 0, Math.PI * 2);
+                            ctx.fill();
+                        } else if (this.state.direction === 'down') {
+                            ctx.beginPath();
+                            ctx.arc(x + cellSize/2 - nostrilSize, y + cellSize*3/4, nostrilSize/2, 0, Math.PI * 2);
+                            ctx.fill();
+                            ctx.beginPath();
+                            ctx.arc(x + cellSize/2 + nostrilSize, y + cellSize*3/4, nostrilSize/2, 0, Math.PI * 2);
+                            ctx.fill();
+                        } else if (this.state.direction === 'left') {
+                            ctx.beginPath();
+                            ctx.arc(x + cellSize/4, y + cellSize/2 - nostrilSize, nostrilSize/2, 0, Math.PI * 2);
+                            ctx.fill();
+                            ctx.beginPath();
+                            ctx.arc(x + cellSize/4, y + cellSize/2 + nostrilSize, nostrilSize/2, 0, Math.PI * 2);
+                            ctx.fill();
+                        } else if (this.state.direction === 'right') {
+                            ctx.beginPath();
+                            ctx.arc(x + cellSize*3/4, y + cellSize/2 - nostrilSize, nostrilSize/2, 0, Math.PI * 2);
+                            ctx.fill();
+                            ctx.beginPath();
+                            ctx.arc(x + cellSize*3/4, y + cellSize/2 + nostrilSize, nostrilSize/2, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
                     }
                 });
                 
@@ -1765,28 +1996,38 @@
                 const modal = document.getElementById('shopModal');
                 modal.classList.add('active');
                 
-                // Market öğelerini oluştur
+                // Market öğelerini oluştur - ÜCRETSİZ MARKET
                 const shopItems = document.getElementById('shopItems');
                 shopItems.innerHTML = `
-                    <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px;">
-                        <h3>🛡️ Kalkan Paketi</h3>
-                        <p>5 adet kalkan - 50 Coin</p>
-                        <button class="btn" onclick="game.buyItem('shield', 5, 50)">Satın Al</button>
+                    <div style="background: linear-gradient(45deg, #4CAF50, #8BC34A); padding: 15px; border-radius: 8px; border: 2px solid #FFD700;">
+                        <h3>🛡️ Ücretsiz Kalkan Paketi</h3>
+                        <p>10 adet kalkan - ÜCRETSİZ! 🎁</p>
+                        <button class="btn" style="background: linear-gradient(45deg, #4CAF50, #66BB6A); border: 2px solid #FFD700;" onclick="game.buyItem('shield', 10, 0)">Ücretsiz Al!</button>
                     </div>
-                    <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px;">
-                        <h3>⚡ Hız Paketi</h3>
-                        <p>5 adet hız artışı - 40 Coin</p>
-                        <button class="btn" onclick="game.buyItem('speed', 5, 40)">Satın Al</button>
+                    <div style="background: linear-gradient(45deg, #2196F3, #03A9F4); padding: 15px; border-radius: 8px; border: 2px solid #FFD700;">
+                        <h3>⚡ Ücretsiz Hız Paketi</h3>
+                        <p>10 adet hız artışı - ÜCRETSİZ! 🎁</p>
+                        <button class="btn" style="background: linear-gradient(45deg, #2196F3, #42A5F5); border: 2px solid #FFD700;" onclick="game.buyItem('speed', 10, 0)">Ücretsiz Al!</button>
                     </div>
-                    <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px;">
-                        <h3>💫 Çift Puan Paketi</h3>
-                        <p>5 adet çift puan - 60 Coin</p>
-                        <button class="btn" onclick="game.buyItem('double', 5, 60)">Satın Al</button>
+                    <div style="background: linear-gradient(45deg, #9C27B0, #BA68C8); padding: 15px; border-radius: 8px; border: 2px solid #FFD700;">
+                        <h3>💫 Ücretsiz Çift Puan Paketi</h3>
+                        <p>10 adet çift puan - ÜCRETSİZ! 🎁</p>
+                        <button class="btn" style="background: linear-gradient(45deg, #9C27B0, #AB47BC); border: 2px solid #FFD700;" onclick="game.buyItem('double', 10, 0)">Ücretsiz Al!</button>
                     </div>
-                    <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px;">
-                        <h3>👻 Hayalet Paketi</h3>
-                        <p>5 adet hayalet modu - 80 Coin</p>
-                        <button class="btn" onclick="game.buyItem('ghost', 5, 80)">Satın Al</button>
+                    <div style="background: linear-gradient(45deg, #FF5722, #FF7043); padding: 15px; border-radius: 8px; border: 2px solid #FFD700;">
+                        <h3>👻 Ücretsiz Hayalet Paketi</h3>
+                        <p>10 adet hayalet modu - ÜCRETSİZ! 🎁</p>
+                        <button class="btn" style="background: linear-gradient(45deg, #FF5722, #FF6F00); border: 2px solid #FFD700;" onclick="game.buyItem('ghost', 10, 0)">Ücretsiz Al!</button>
+                    </div>
+                    <div style="background: linear-gradient(45deg, #FF9800, #FFC107); padding: 15px; border-radius: 8px; border: 2px solid #FFD700;">
+                        <h3>💰 Ücretsiz Coin Paketi</h3>
+                        <p>100 adet coin - ÜCRETSİZ! 🎁</p>
+                        <button class="btn" style="background: linear-gradient(45deg, #FF9800, #FFB74D); border: 2px solid #FFD700;" onclick="game.buyItem('coins', 100, 0)">Ücretsiz Al!</button>
+                    </div>
+                    <div style="background: linear-gradient(45deg, #E91E63, #F06292); padding: 15px; border-radius: 8px; border: 2px solid #FFD700;">
+                        <h3>❤️ Ücretsiz Can Paketi</h3>
+                        <p>1 adet ekstra can - ÜCRETSİZ! 🎁</p>
+                        <button class="btn" style="background: linear-gradient(45deg, #E91E63, #EC407A); border: 2px solid #FFD700;" onclick="game.buyItem('life', 1, 0)">Ücretsiz Al!</button>
                     </div>
                 `;
             }
@@ -1794,14 +2035,41 @@
             buyItem(type, amount, cost) {
                 if (this.state.coins >= cost) {
                     this.state.coins -= cost;
-                    this.state.inventory[type] += amount;
-                    this.showNotification('Başarılı!', `${amount} adet eşya satın alındı!`);
+                    
+                    // Özel eşya türleri için farklı işlemler
+                    if (type === 'coins') {
+                        this.state.coins += amount;
+                        this.showNotification('Ücretsiz Coin Alındı! 🎁', `${amount} coin hesabınıza eklendi!`);
+                    } else if (type === 'life') {
+                        if (this.state.lives < GameConfig.INITIAL_LIVES) {
+                            this.state.lives += amount;
+                            this.showNotification('Ücretsiz Can Alındı! 🎁', `${amount} can eklendi!`);
+                        } else {
+                            this.state.coins += 50; // Maksimum canda ise coin ver
+                            this.showNotification('Maksimum Can! 🎁', 'Zaten maksimum cansınız! 50 coin aldınız!');
+                        }
+                    } else {
+                        // Normal envanter eşyaları
+                        this.state.inventory[type] += amount;
+                        this.showNotification('Ücretsiz Eşya Alındı! 🎁', `${amount} adet ${this.getItemName(type)} alındı!`);
+                    }
+                    
                     this.updateUI();
                     this.saveData();
                     this.sound.play('coin');
                 } else {
                     this.showNotification('Yetersiz Coin!', `Bu eşyayı almak için ${cost - this.state.coins} coin daha gerekli.`);
                 }
+            }
+
+            getItemName(type) {
+                const names = {
+                    'shield': 'kalkan',
+                    'speed': 'hız artışı',
+                    'double': 'çift puan',
+                    'ghost': 'hayalet modu'
+                };
+                return names[type] || type;
             }
 
             confirmReset() {
@@ -1953,6 +2221,11 @@
         
         // Mobil sidebar kapatma butonu işleyicisi
         document.getElementById('sidebarCloseBtn').addEventListener('click', toggleMobileMenu);
+
+        // Mobil market ikonu işleyicisi
+        document.getElementById('mobileMarketBtn').addEventListener('click', function() {
+            game.openShop();
+        });
 
         // Mobil otomatik oynatma butonu işleyicisi
         document.getElementById('mobileAutoBtn').addEventListener('click', function() {
