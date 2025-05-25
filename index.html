@@ -276,6 +276,28 @@
             backdrop-filter: blur(8px);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
+
+        .mobile-controls-layout {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .mobile-left-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mobile-center-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
                 
         /* Mobil Menü Butonu */
         .mobile-menu-button {
@@ -434,7 +456,7 @@
 
             /* Mobil Market İkonunu göster */
             .mobile-market-icon {
-                display: flex;
+                display: flex !important;
                 align-items: center;
                 justify-content: center;
             }
@@ -515,18 +537,16 @@
 
         /* Mobil Market İkonu */
         .mobile-market-icon {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
             background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
             border: 3px solid #FFD700;
             border-radius: 50%;
             color: white;
-            font-size: 24px;
-            z-index: 1000;
+            font-size: 20px;
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             cursor: pointer;
             transition: all 0.3s ease;
@@ -634,25 +654,33 @@
     <!-- Mobil Menü Butonu -->
     <button class="mobile-menu-button" id="mobileMenuBtn">☰</button>
 
-    <!-- Mobil Market İkonu -->
-    <button class="mobile-market-icon" id="mobileMarketBtn" title="Ücretsiz Market">🛒</button>
 
     <!-- Mobil Kontroller -->
     <div class="mobile-controls">
-        <div class="resize-controls">
-            <button class="resize-btn" id="increaseSize">+</button>
-            <button class="resize-btn" id="decreaseSize">-</button>
-        </div>
-        <div class="mobile-dpad">
-            <div></div>
-            <button class="mobile-btn" data-dir="up">↑</button>
-            <div></div>
-            <button class="mobile-btn" data-dir="left">←</button>
-            <button class="mobile-btn" id="mobilePause">⏸️</button>
-            <button class="mobile-btn" data-dir="right">→</button>
-            <div></div>
-            <button class="mobile-btn" data-dir="down">↓</button>
-            <button class="mobile-btn" id="mobileAutoBtn">🤖</button>
+        <div class="mobile-controls-layout">
+            <!-- Sol köşe - Market ikonu -->
+            <div class="mobile-left-section">
+                <button class="mobile-market-icon" id="mobileMarketBtn" title="Ücretsiz Market">🛒</button>
+            </div>
+            
+            <!-- Merkez - Yön tuşları ve kontroller -->
+            <div class="mobile-center-section">
+                <div class="resize-controls">
+                    <button class="resize-btn" id="increaseSize">+</button>
+                    <button class="resize-btn" id="decreaseSize">-</button>
+                </div>
+                <div class="mobile-dpad">
+                    <div></div>
+                    <button class="mobile-btn" data-dir="up">↑</button>
+                    <div></div>
+                    <button class="mobile-btn" data-dir="left">←</button>
+                    <button class="mobile-btn" id="mobilePause">⏸️</button>
+                    <button class="mobile-btn" data-dir="right">→</button>
+                    <div></div>
+                    <button class="mobile-btn" data-dir="down">↓</button>
+                    <button class="mobile-btn" id="mobileAutoBtn">🤖</button>
+                </div>
+            </div>
         </div>
     </div>
 
