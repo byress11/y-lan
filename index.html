@@ -300,23 +300,53 @@
 
         .mobile-dpad {
             display: grid;
-            grid-template-columns: repeat(3, 45px);
-            gap: 4px;
+            grid-template-columns: repeat(3, var(--btn-size, 55px));
+            gap: 5px;
             justify-content: center;
+            position: relative;
         }
         
         .mobile-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            width: var(--btn-size, 55px);
+            height: var(--btn-size, 55px);
+            border-radius: 50%;
+            font-size: calc(var(--btn-size, 55px) * 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+        }
+        
+        .mobile-btn:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .resize-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .resize-btn {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.3);
             color: white;
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             font-size: 1.2em;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .resize-btn:active {
+            background: rgba(255, 255, 255, 0.25);
         }
 
         /* Responsive */
@@ -558,6 +588,10 @@
 
     <!-- Mobil Kontroller -->
     <div class="mobile-controls">
+        <div class="resize-controls">
+            <button class="resize-btn" id="increaseSize">+</button>
+            <button class="resize-btn" id="decreaseSize">-</button>
+        </div>
         <div class="mobile-dpad">
             <div></div>
             <button class="mobile-btn" data-dir="up">↑</button>
@@ -1666,6 +1700,39 @@
         document.getElementById('mobileAutoBtn').addEventListener('click', function() {
             game.toggleAutoPlay();
         });
+        
+        // Denetim boyutu ayarlama
+        let currentSize = 55;
+        const minSize = 40;
+        const maxSize = 70;
+        const sizeStep = 5;
+        
+        // Boyut değişim işlemleri
+        document.getElementById('increaseSize').addEventListener('click', function() {
+            if (currentSize < maxSize) {
+                currentSize += sizeStep;
+                updateControlSize();
+            }
+        });
+        
+        document.getElementById('decreaseSize').addEventListener('click', function() {
+            if (currentSize > minSize) {
+                currentSize -= sizeStep;
+                updateControlSize();
+            }
+        });
+        
+        function updateControlSize() {
+            document.documentElement.style.setProperty('--btn-size', currentSize + 'px');
+            localStorage.setItem('snakeControlSize', currentSize);
+        }
+        
+        // Kayıtlı boyutu yükle
+        const savedSize = localStorage.getItem('snakeControlSize');
+        if (savedSize) {
+            currentSize = parseInt(savedSize);
+            updateControlSize();
+        }
     </script>
 </body>
 </html>
