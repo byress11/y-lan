@@ -5,2085 +5,2274 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Yılan Oyunu - Geliştirilmiş Versiyon</title>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Yılan Oyunu</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐍</text></svg>">
     <style>
-        /* CSS Reset ve Temel Ayarlar */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             -webkit-font-smoothing: antialiased;
-            -webkit-tap-highlight-color: transparent;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* CSS Değişkenleri */
         :root {
-            --primary-color: #7f5af0;
-            --secondary-color: #2cb67d;
-            --bg-gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            --text-color: #333;
-            --bg-color: #f8f9fa;
+            --bg-color: linear-gradient(135deg, #7f5af0 0%, #2cb67d 100%);
             --container-bg: rgba(255, 255, 255, 0.95);
+            --text-color: #333;
             --canvas-bg: #e9ecef;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            --border-radius: 12px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --canvas-border: #7f5af0;
+            --progress-bg: #e0e0e0;
+            --heart-color: #ff4757;
+            --btn-gradient: linear-gradient(135deg, #7f5af0, #2cb67d);
+            --btn-text: white;
+            --shadow-color: rgba(0, 0, 0, 0.15);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --card-border: rgba(255, 255, 255, 0.2);
+            --disabled-btn-bg: #ccc;
+            --modal-overlay-bg: rgba(0, 0, 0, 0.8);
         }
 
-        /* Dark Theme */
-        body.dark-theme {
-            --text-color: #e0e0e0;
-            --bg-color: #1a1a2a;
+        .dark-theme {
+            --bg-color: linear-gradient(135deg, #2c2c3a 0%, #1c1c2a 100%);
             --container-bg: rgba(30, 30, 40, 0.95);
+            --text-color: #e0e0e0;
             --canvas-bg: #242434;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --canvas-border: #7f5af0;
+            --progress-bg: #3a3a4a;
+            --btn-gradient: linear-gradient(135deg, #464684, #1a1a2a);
+            --btn-text: #e0e0e0;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --card-bg: rgba(40, 40, 60, 0.2);
+            --card-border: rgba(70, 70, 90, 0.3);
+            --disabled-btn-bg: #555;
+            --modal-overlay-bg: rgba(0, 0, 0, 0.9);
         }
 
-        /* Temel Layout */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-gradient);
-            color: var(--text-color);
-            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-color);
             display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
             overflow: hidden;
-            transition: var(--transition);
+            color: var(--text-color);
+            transition: background 0.3s ease, color 0.3s ease;
+            margin: 0;
+            padding: 0;
         }
 
-        /* Ana Container */
         .game-container {
             background: var(--container-bg);
-            border-radius: var(--border-radius);
-            padding: 20px;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(10px);
-            max-width: 1200px;
-            width: 95%;
-            max-height: 95vh;
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 20px;
-            transition: var(--transition);
-        }
-
-        /* Sol Panel */
-        .game-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        /* Skor Kartları */
-        .info-card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: var(--border-radius);
+            border-radius: 16px;
             padding: 15px;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 35px var(--shadow-color);
+            max-width: 95vw;
+            max-height: 95vh;
+            overflow: auto; /* İçerik taşarsa kaydırma çubuğu */
+            transition: all 0.3s ease;
+            position: relative;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            display: flex;
+            flex-direction: row; /* Varsayılan olarak yan yana */
+            flex-wrap: nowrap; /* Büyük ekranlarda sarmasın */
         }
 
-        .score-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .score-item {
-            text-align: center;
-            padding: 10px;
-            background: var(--bg-gradient);
-            color: white;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-
-        .score-value {
-            display: block;
-            font-size: 1.5em;
-            margin-top: 5px;
-        }
-
-        /* Canvas Container */
-        .game-main {
+        .game-left {
+            flex: 0 0 250px; /* Sabit genişlik */
+            margin-right: 20px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 10px; /* Elemanlar arası boşluk */
         }
 
-        .canvas-wrapper {
-            position: relative;
-            background: var(--canvas-bg);
-            border-radius: var(--border-radius);
-            padding: 10px;
-            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        canvas {
-            display: block;
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-            background: white;
-        }
-
-        /* Kontrol Butonları */
-        .controls {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .btn {
-            background: var(--bg-gradient);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
+        .game-right {
+            flex: 1 1 auto; /* Kalan alanı kapla */
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            min-width: 320px; /* Canvas için minimum genişlik */
+        }
+
+        .score-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 10px;
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .score-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .game-header { /* Bu sınıf HTML'de yoktu, ancak genel başlık için kullanılabilir */
+            display: flex;
             justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
             gap: 8px;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        .score-board {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
-        .btn:active {
+        .score-item {
+            background: var(--btn-gradient);
+            color: var(--btn-text);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            transition: transform 0.2s ease-out;
+            font-size: 0.9em;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .score-item span {
+            font-size: 1.2em;
+            font-weight: 700;
+            margin-top: 3px;
+        }
+
+        .score-item:hover {
+            transform: translateY(-3px);
+        }
+
+        canvas {
+            border: 2px solid var(--canvas-border);
+            border-radius: 8px;
+            background: var(--canvas-bg);
+            box-shadow: 0 10px 30px var(--shadow-color);
+            display: block;
+            margin: 0 auto;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            max-width: 100%;
+            height: auto; /* Aspect ratio koruması için */
+        }
+
+        .level-progress {
+            width: 100%;
+            height: 8px;
+            background: var(--progress-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 12px 0;
+            transition: background-color 0.3s ease;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            transition: width 0.3s ease;
+            border-radius: 10px;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+        }
+
+        .game-menu {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .menu-btn {
+            background: var(--btn-gradient);
+            color: var(--btn-text);
+            border: none;
+            padding: 10px 18px;
+            margin: 4px;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .menu-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px var(--shadow-color);
+        }
+
+        .menu-btn:active {
             transform: translateY(0);
         }
 
-        .btn.icon-only {
-            width: 45px;
-            height: 45px;
-            padding: 0;
-            font-size: 1.2em;
+        .zoom-controls {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            margin-left: auto; /* Menüde sağa yaslamak için */
         }
 
-        /* Progress Bar */
-        .progress-bar {
-            height: 8px;
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 10px 0;
+        .zoom-btn {
+            background: var(--btn-gradient);
+            color: var(--btn-text);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            box-shadow: 0 3px 10px var(--shadow-color);
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: var(--bg-gradient);
-            transition: width 0.3s ease;
+        .zoom-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--shadow-color);
         }
 
-        /* Modal Stilleri */
+        /* Modal Temel Stilleri */
         .modal {
+            display: none; /* Başlangıçta gizli */
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: none;
+            background: var(--modal-overlay-bg);
             justify-content: center;
             align-items: center;
             z-index: 1000;
             backdrop-filter: blur(5px);
-        }
-
-        .modal.active {
-            display: flex;
+            padding: 15px; /* Küçük ekranlarda kenar boşluğu */
         }
 
         .modal-content {
             background: var(--container-bg);
-            padding: 30px;
-            border-radius: var(--border-radius);
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
+            padding: 25px;
+            border-radius: 15px;
+            max-width: 500px; /* Modal genişliği */
+            width: 90%; /* Mobil için */
+            max-height: 90vh;
             overflow-y: auto;
             animation: slideIn 0.3s ease-out;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            border: 1px solid var(--card-border);
+            color: var(--text-color);
+            text-align: center; /* İçeriği ortala */
         }
+        
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: var(--canvas-border);
+        }
+        .modal-content p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
 
         @keyframes slideIn {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+            from { transform: translateY(-50px) scale(0.95); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
         }
 
-        /* Envanter */
-        .inventory {
+        .shop-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Daha küçük kartlar */
+            gap: 15px;
+            margin-top: 20px;
         }
 
-        .inventory-item {
-            position: relative;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            padding: 10px;
+        .shop-item {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 15px;
             text-align: center;
+            transition: all 0.2s ease-out;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            color: var(--text-color);
+        }
+
+        .shop-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--canvas-border);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+
+        .shop-item h3 {
+            color: var(--canvas-border);
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .shop-item p {
+            margin: 8px 0;
+            font-size: 0.9em;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .buy-btn, .modal-btn { /* Ortak buton stili */
+            background: var(--btn-gradient);
+            color: var(--btn-text);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.3s;
+            margin-top: 10px;
+            font-weight: 600;
+            font-size: 1em;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .inventory-item:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: var(--primary-color);
+        .buy-btn:hover, .modal-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
         }
 
-        .item-count {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #ff4757;
+        .buy-btn:disabled {
+            background: var(--disabled-btn-bg);
+            cursor: not-allowed;
+            transform: none;
+            opacity: 0.7;
+        }
+
+        .close-btn { /* Sadece kapatma butonu için özel renk */
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+        }
+        .close-btn:hover {
+             transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+
+
+        .power-up-indicator {
+            position: fixed;
+            top: 20px; /* Üstte göster */
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
             color: white;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            display: none;
+            z-index: 1001;
+            animation: powerUpFade 2s ease-out forwards; /* Animasyon */
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes powerUpFade { /* Giriş ve çıkış animasyonu */
+            0% { opacity: 0; transform: translate(-50%, -20px); }
+            20% { opacity: 1; transform: translate(-50%, 0); }
+            80% { opacity: 1; transform: translate(-50%, 0); }
+            100% { opacity: 0; transform: translate(-50%, -20px); }
+        }
+
+
+        .controls { /* Masaüstü kontrolleri */
+            display: grid;
+            grid-template-columns: repeat(3, 50px);
+            grid-template-rows: repeat(3, 50px);
+            gap: 8px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .control-btn {
+            background: var(--btn-gradient);
+            border: none;
+            border-radius: 15px;
+            color: var(--btn-text);
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            transition: all 0.2s ease-out;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8em;
-            font-weight: bold;
+            -webkit-tap-highlight-color: transparent;
         }
+        .control-center { grid-column: 2; grid-row: 2; border-radius: 50%; background: linear-gradient(135deg, #ff9f43, #ff6b6b); }
+        .control-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px var(--shadow-color); }
+        .control-btn:active { transform: translateY(0); box-shadow: 0 2px 8px var(--shadow-color); }
+        .control-btn.up { grid-column: 2; grid-row: 1; }
+        .control-btn.left { grid-column: 1; grid-row: 2; }
+        .control-btn.right { grid-column: 3; grid-row: 2; }
+        .control-btn.down { grid-column: 2; grid-row: 3; }
 
-        /* Mobil Düzen */
-        .mobile-controls {
-            display: none;
+        /* Geliştirilmiş Mobil Kontroller (iPhone ve diğerleri için) */
+        .mobile-controls-container {
+            display: none; /* Varsayılan olarak gizli, JS ile aktif edilecek */
             position: fixed;
-            bottom: 10px;
+            bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 10px;
-            backdrop-filter: blur(8px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-                
-        /* Mobil Menü Butonu */
-        .mobile-menu-button {
-            display: none;
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            font-size: 1.2em;
             z-index: 100;
+            justify-content: space-between; /* Sol ve sağa yasla */
+            align-items: center; /* Orta hizalama */
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
             backdrop-filter: blur(5px);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .mobile-dpad {
             display: grid;
-            grid-template-columns: repeat(3, var(--btn-size, 55px));
-            gap: 5px;
-            justify-content: center;
-            position: relative;
+            grid-template-columns: repeat(3, 40px); /* Küçültülmüş buton boyutu */
+            grid-template-rows: repeat(3, 40px);    /* Küçültülmüş buton boyutu */
+            gap: 8px; /* Boşluğu artır */
+            opacity: 0.8; /* Hafif şeffaflık */
         }
         
+        .mobile-action-buttons {
+            display: flex;
+            flex-direction: row; /* Yatay sıralama - daha kompakt */
+            gap: 10px; /* Butonlar arası boşluk */
+            opacity: 0.8;
+        }
+
         .mobile-btn {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%; /* Yuvarlak butonlar */
             color: white;
-            width: var(--btn-size, 55px);
-            height: var(--btn-size, 55px);
-            border-radius: 50%;
-            font-size: calc(var(--btn-size, 55px) * 0.4);
+            font-size: 22px; /* Küçültülmüş ikon boyutu */
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-            transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent; /* Dokunma vurgusunu kaldır */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: transform 0.1s ease, background-color 0.1s ease;
+            width: 45px; /* Buton boyutlarını arttır */
+            height: 45px;
         }
-        
+
         .mobile-btn:active {
-            transform: scale(0.95);
-            background: rgba(255, 255, 255, 0.25);
+            transform: scale(0.92);
+            background: rgba(0, 0, 0, 0.7);
         }
         
-        .resize-controls {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-        }
-        
-        .resize-btn {
-            background: rgba(255, 255, 255, 0.1);
+        /* D-Pad buton pozisyonları - DÜZELTİLDİ */
+        .mobile-dpad .mobile-btn.up    { grid-area: 1 / 2 / 2 / 3; } /* Satır 1, Sütun 2 */
+        .mobile-dpad .mobile-btn.left  { grid-area: 2 / 1 / 3 / 2; } /* Satır 2, Sütun 1 */
+        .mobile-dpad .mobile-btn.right { grid-area: 2 / 3 / 3 / 4; } /* Satır 2, Sütun 3 */
+        .mobile-dpad .mobile-btn.down  { grid-area: 3 / 2 / 4 / 3; } /* Satır 3, Sütun 2 */
+        .mobile-dpad .dpad-center      { grid-area: 2 / 2 / 3 / 3; background: transparent; border: none; box-shadow: none; pointer-events: none;} /* Ortadaki boşluk, tıklanamaz */
+        .mobile-dpad .autoplay-btn     { grid-area: 1 / 1 / 2 / 2; } /* Sol üst köşe */
+
+        .mobile-dpad .autoplay-btn {
+            background: rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            font-size: 1.2em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .resize-btn:active {
-            background: rgba(255, 255, 255, 0.25);
+            pointer-events: auto;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            body {
-                padding: 0;
-            }
-        
-            .game-container {
-                grid-template-columns: 1fr;
-                padding: 10px;
-                height: 100vh;
-                width: 100vw;
-                max-width: 100vw;
-                border-radius: 0;
-            }
-        
-            .game-sidebar {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                height: 100vh;
-                width: 70%;
-                max-width: 280px;
-                background: var(--container-bg);
-                z-index: 999;
-                overflow-y: auto;
-                padding: 15px;
-                box-shadow: 3px 0 10px rgba(0, 0, 0, 0.3);
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-                font-size: 0.9em;
-            }
-            
-            .game-sidebar.active {
-                display: block;
-                transform: translateX(0);
-            }
-            
-            .game-sidebar .info-card {
-                padding: 10px;
-                margin-bottom: 10px;
-            }
-            
-            .game-sidebar .score-item {
-                padding: 5px;
-            }
-            
-            .game-sidebar .score-value {
-                font-size: 1.2em;
-            }
-            
-            .mobile-menu-button {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-        
-            .mobile-controls {
-                display: block;
-            }
-        
-            .controls {
-                display: none;
-            }
-            
-            .sidebar-close {
-                position: absolute;
-                top: 10px;
-                right: 10px;
-                background: transparent;
-                border: none;
-                color: var(--text-color);
-                font-size: 1.2em;
-                cursor: pointer;
-                width: 30px;
-                height: 30px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border-radius: 50%;
-                background: rgba(0, 0, 0, 0.1);
-            }
-
-            /* Mobil Market İkonunu göster */
-            .mobile-market-icon {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
+        .mobile-dpad .autoplay-btn.active {
+            background: rgba(0, 150, 0, 0.7);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
         }
 
-        /* Utility Classes */
-        .hidden {
-            display: none !important;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .mt-10 {
-            margin-top: 10px;
-        }
-
-        .mb-10 {
-            margin-bottom: 10px;
-        }
-
-        /* Animasyonlar */
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.7;
-            }
-            100% {
-                opacity: 1;
-            }
-        }
-
-        /* Power-up Göstergesi */
-        .power-up-indicator {
+        .mobile-menu-btn {
             position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-weight: bold;
-            display: none;
-            z-index: 2000;
-        }
-
-        .power-up-indicator.show {
-            display: block;
-            animation: powerUpNotify 2s ease-out forwards;
-        }
-
-        @keyframes powerUpNotify {
-            0% {
-                transform: translate(-50%, -20px);
-                opacity: 0;
-            }
-            20% {
-                transform: translate(-50%, 0);
-                opacity: 1;
-            }
-            80% {
-                transform: translate(-50%, 0);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(-50%, -20px);
-                opacity: 0;
-            }
-        }
-
-        /* Mobil Market İkonu */
-        .mobile-market-icon {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
-            border: 3px solid #FFD700;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             color: white;
             font-size: 24px;
-            z-index: 1000;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            width: 40px;
+            height: 40px;
+            display: flex; /* Mobil modda görünür olmalı */
+            align-items: center;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .keyboard-help {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            opacity: 0.7;
+            z-index: 5; /* Canvas'ın üzerinde kalsın */
+        }
+        .keyboard-help:hover { opacity: 1; }
+
+        .lives {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .heart { color: var(--heart-color); font-size: 1.6em; filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3)); transition: transform 0.3s ease, opacity 0.3s ease; }
+        .heart.empty { opacity: 0.3; }
+        .heart-animation { animation: heartbeat 0.5s ease-in-out; }
+        @keyframes heartbeat { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+
+        .theme-toggle, .orientation-toggle {
+            position: absolute;
+            top: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            animation: marketPulse 2s infinite;
+            font-size: 20px;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s ease, transform 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .theme-toggle { right: 15px; }
+        .orientation-toggle { left: 15px; }
+        .theme-toggle:hover { background: rgba(0, 0, 0, 0.3); transform: rotate(30deg); }
+        .orientation-toggle:hover { background: rgba(0, 0, 0, 0.3); transform: rotate(90deg); }
+
+        .autoplay-switch { display: inline-block; position: relative; width: 50px; height: 24px; margin: 0 10px; }
+        .autoplay-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background: var(--btn-gradient); }
+        input:checked + .slider:before { transform: translateX(26px); }
+
+        .inventory { margin: 15px 0; text-align: center; background: var(--card-bg); padding: 10px; border-radius: 10px; box-shadow: 0 5px 15px var(--shadow-color); border: 1px solid var(--card-border); }
+        .inventory h3 { margin: 0 0 10px 0; font-size: 1rem; color: var(--text-color); }
+        .inventory-items { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .inventory-btn {
+            width: 50px; height: 50px; border-radius: 10px; border: none; background: var(--btn-gradient);
+            color: var(--btn-text); font-size: 20px; cursor: pointer; transition: all 0.2s ease;
+            box-shadow: 0 4px 10px var(--shadow-color); position: relative; -webkit-tap-highlight-color: transparent;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .inventory-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 15px var(--shadow-color); }
+        .inventory-btn:active { transform: translateY(0); }
+        .inventory-btn::after {
+            content: attr(data-count); position: absolute; top: -5px; right: -5px; background: red;
+            color: white; font-size: 12px; width: 20px; height: 20px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;
+            font-weight: bold;
+        }
+        .inventory-btn[data-count]:not([data-count="0"])::after { opacity: 1; }
+
+        .auto-play-container { display: flex; align-items: center; justify-content: center; margin: 15px 0; padding: 10px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--card-border); }
+
+        .screen-rotation-overlay, .orientation-warning {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--modal-overlay-bg); z-index: 2000; color: white;
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; padding: 20px; backdrop-filter: blur(5px);
+        }
+        .screen-rotation-overlay.show, .orientation-warning.show { display: flex; }
+        .screen-rotation-overlay img { width: 80px; height: 80px; margin-bottom: 20px; animation: rotateIcon 1.5s infinite ease-in-out; }
+        @keyframes rotateIcon { 0% { transform: rotate(0deg); } 100% { transform: rotate(90deg); } }
+        .screen-rotation-overlay h2, .orientation-warning h2 { margin-bottom: 15px; font-size: 1.5em; }
+        .screen-rotation-overlay p, .orientation-warning p { margin-bottom: 25px; font-size: 1em; max-width: 400px; }
+        .orientation-warning button { margin: 5px; }
+
+
+        /* Mobil Düzenlemeler */
+        @media screen and (max-width: 900px) { /* Daha genel bir breakpoint */
+            body {
+                padding: 0;
+                margin: 0;
+                overflow: hidden;
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+            }
+            
+            .game-container {
+                flex-direction: column;
+                padding: 0;
+                max-height: 100vh; /* Tam ekran kaplasın */
+                height: 100vh;
+                width: 100vw;
+                border-radius: 0;
+                box-shadow: none;
+                overflow-y: hidden; /* Dikeyde kaydırmayı engelle */
+                border: none;
+            }
+            .game-left { /* Sol panel mobilde üste gelsin */
+                order: 1;
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 10px;
+                flex-direction: column; /* İçerik dikey */
+                gap: 5px;
+                overflow-y: auto;
+                max-height: 25vh;
+                display: none; /* Varsayılan olarak gizlensin */
+                padding-bottom: 80px; /* Mobil kontrollere daha fazla yer bırak */
+            }
+            .game-right { /* Oyun alanı mobilde alta gelsin */
+                order: 2;
+                width: 100%;
+                flex: 1; /* Kalan tüm alanı kaplasın */
+                min-height: 0; /* flex için gerekli */
+            }
+            canvas {
+                width: 100%;
+                height: 100%; /* game-right içindeki alanı doldur */
+                max-height: none; /* Üstteki max-height'ı kaldır */
+            }
+            .controls { display: none; } /* Masaüstü kontrolleri mobilde gizle */
+            .mobile-controls-container { 
+                display: flex !important;
+                padding: 15px 10px;
+            }
+            .zoom-controls { display: none; } /* Zoom kontrollerini mobilde gizle */
+            .keyboard-help { display: none; } /* Klavye yardımını mobilde gizle */
+            .mobile-menu-btn { display: flex; } /* Mobil menü butonunu göster */
+
+            .score-board { gap: 5px; }
+            .score-item { padding: 8px 10px; font-size: 0.8em; min-width: 60px; }
+            .inventory-items { gap: 8px; }
+            .inventory-btn { width: 45px; height: 45px; font-size: 18px; }
+            .menu-btn { padding: 8px 12px; font-size: 13px; margin: 2px; }
+            .power-up-indicator { font-size: 14px; padding: 10px 20px; }
+            .lives { margin: 5px 0; }
+            .heart { font-size: 1.5em; }
+            .auto-play-container span { font-size: 0.9em; }
+        }
+        
+        @media screen and (max-width: 900px) and (orientation: landscape) {
+            .game-left {
+                display: none; /* Yatay modda da gizli olsun */
+            }
+            .score-board { width: 100%; justify-content: space-around; margin-bottom: 5px;}
+            .inventory { width: 100%; margin-top: 5px; }
+            .lives, .auto-play-container { width: auto; margin: 5px 10px;}
+
+            .mobile-controls-container {
+                bottom: 0;
+                padding: 5px 10px;
+            }
+            .mobile-dpad, .mobile-action-buttons {
+                gap: 3px;
+            }
+            .mobile-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 18px;
+            }
+            .mobile-dpad {
+                grid-template-columns: repeat(3, 35px);
+                grid-template-rows: repeat(3, 35px);
+            }
         }
 
-        .mobile-market-icon:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-        }
-
-        .mobile-market-icon:active {
-            transform: scale(0.95);
-        }
-
-        @keyframes marketPulse {
-            0% {
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), 0 0 0 0 rgba(255, 107, 107, 0.7);
-            }
-            50% {
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), 0 0 0 10px rgba(255, 107, 107, 0);
-            }
-            100% {
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), 0 0 0 0 rgba(255, 107, 107, 0);
-            }
+        /* Çok küçük ekranlar için ek ince ayarlar */
+        @media screen and (max-width: 380px) {
+            .score-item { padding: 5px; font-size: 0.7em; min-width: 50px; }
+            .inventory-btn { width: 40px; height: 40px; font-size: 16px; }
+            .menu-btn { padding: 6px 10px; font-size: 12px; }
+            .mobile-btn { width: 30px; height: 30px; font-size: 16px; }
+            .mobile-dpad { grid-template-columns: repeat(3, 30px); grid-template-rows: repeat(3, 30px); gap: 3px;}
         }
     </style>
 </head>
 <body>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Temayı Değiştir">🌓</button>
+    <button class="orientation-toggle" onclick="toggleOrientationLock()" title="Ekran Yönünü Kilitle/Aç">📱</button>
+    
     <div class="game-container">
-        <!-- Sol Panel -->
-        <aside class="game-sidebar">
-            <button class="sidebar-close" id="sidebarCloseBtn">✖</button>
-            <div class="info-card">
-                <div class="score-grid">
-                    <div class="score-item">
-                        <span>Skor</span>
-                        <span class="score-value" id="score">0</span>
-                    </div>
-                    <div class="score-item">
-                        <span>Seviye</span>
-                        <span class="score-value" id="level">1</span>
-                    </div>
-                    <div class="score-item">
-                        <span>Coin</span>
-                        <span class="score-value" id="coins">0</span>
-                    </div>
-                    <div class="score-item">
-                        <span>Rekor</span>
-                        <span class="score-value" id="highScore">0</span>
-                    </div>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressBar"></div>
+        <div class="game-left">
+            <div class="score-card">
+                <div class="score-board">
+                    <div class="score-item">Skor <span id="score">0</span></div>
+                    <div class="score-item">Level <span id="level">1</span></div>
+                    <div class="score-item">Coin <span id="coins">0</span></div>
+                    <div class="score-item">En Yüksek <span id="highScore">0</span></div>
                 </div>
             </div>
 
-            <div class="info-card">
-                <h3 class="text-center mb-10">Canlar</h3>
-                <div class="text-center" id="lives">
-                    <span style="font-size: 2em;">❤️❤️❤️</span>
+            <div class="lives" id="lives">
+                </div>
+
+            <div class="inventory">
+                <h3>Envanter</h3>
+                <div class="inventory-items">
+                    <button class="inventory-btn shield-btn" onclick="useItem('shield')" title="Kalkan Kullan (S)">🛡️</button>
+                    <button class="inventory-btn speed-btn" onclick="useItem('speedBoost')" title="Hız Artışı Kullan (H)">⚡</button>
+                    <button class="inventory-btn double-btn" onclick="useItem('doublePoints')" title="Çift Puan Kullan (D)">💫</button>
+                    <button class="inventory-btn ghost-btn" onclick="useItem('ghostMode')" title="Hayalet Modu Kullan (G)">👻</button>
+                    <button class="inventory-btn skin-btn" onclick="changeSkin()" title="Görünüm Değiştir (C)">🎨</button>
                 </div>
             </div>
 
-            <div class="info-card">
-                <h3 class="text-center mb-10">Envanter</h3>
-                <div class="inventory">
-                    <div class="inventory-item" data-item="shield">
-                        <span style="font-size: 2em;">🛡️</span>
-                        <div class="item-count">0</div>
-                    </div>
-                    <div class="inventory-item" data-item="speed">
-                        <span style="font-size: 2em;">⚡</span>
-                        <div class="item-count">0</div>
-                    </div>
-                    <div class="inventory-item" data-item="double">
-                        <span style="font-size: 2em;">💫</span>
-                        <div class="item-count">0</div>
-                    </div>
-                    <div class="inventory-item" data-item="ghost">
-                        <span style="font-size: 2em;">👻</span>
-                        <div class="item-count">0</div>
-                    </div>
-                </div>
+            <div class="controls"> <button class="control-btn up" onmousedown="changeDirection('up')" ontouchstart="changeDirection('up'); event.preventDefault()">⬆️</button>
+                <button class="control-btn left" onmousedown="changeDirection('left')" ontouchstart="changeDirection('left'); event.preventDefault()">⬅️</button>
+                <div class="control-center"></div>
+                <button class="control-btn right" onmousedown="changeDirection('right')" ontouchstart="changeDirection('right'); event.preventDefault()">➡️</button>
+                <button class="control-btn down" onmousedown="changeDirection('down')" ontouchstart="changeDirection('down'); event.preventDefault()">⬇️</button>
             </div>
 
-            <div class="controls">
-                <button class="btn" id="pauseBtn">⏸️ Duraklat</button>
-                <button class="btn" id="shopBtn">🛒 Market</button>
-                <button class="btn" id="resetBtn">🔄 Yeniden</button>
-                <button class="btn icon-only" id="soundBtn">🔊</button>
-                <button class="btn icon-only" id="themeBtn">🌓</button>
-                <button class="btn icon-only" id="autoBtn">🤖</button>
+            <div class="auto-play-container">
+                <span>🤖 Oto-Oyna:</span>
+                <label class="autoplay-switch">
+                    <input type="checkbox" id="autoplayToggle" onchange="toggleAutoplay()">
+                    <span class="slider"></span>
+                </label>
             </div>
-        </aside>
-
-        <!-- Ana Oyun Alanı -->
-        <main class="game-main">
-            <div class="canvas-wrapper">
-                <canvas id="gameCanvas"></canvas>
-            </div>
-        </main>
-    </div>
-
-    <!-- Mobil Menü Butonu -->
-    <button class="mobile-menu-button" id="mobileMenuBtn">☰</button>
-
-    <!-- Mobil Market İkonu -->
-    <button class="mobile-market-icon" id="mobileMarketBtn" title="Ücretsiz Market">🛒</button>
-
-    <!-- Mobil Kontroller -->
-    <div class="mobile-controls">
-        <div class="resize-controls">
-            <button class="resize-btn" id="increaseSize">+</button>
-            <button class="resize-btn" id="decreaseSize">-</button>
         </div>
+        
+        <div class="game-right">
+            <div class="game-menu">
+                <button class="menu-btn pause-btn" onclick="togglePause()">⏸️ Duraklat</button>
+                <button class="menu-btn" onclick="openShop()">🛒 Market</button>
+                <button class="menu-btn" onclick="confirmResetGame()">🔄 Yeniden Başla</button>
+                <button class="menu-btn sound-btn" onclick="toggleSound()">🔊 <span id="soundStatus">Açık</span></button>
+                
+                <div class="zoom-controls">
+                    <button class="zoom-btn" onclick="zoomCanvas('out')">-</button>
+                    <span>Ekran</span>
+                    <button class="zoom-btn" onclick="zoomCanvas('in')">+</button>
+                </div>
+            </div>
+
+            <div class="level-progress">
+                <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+            </div>
+
+            <canvas id="gameCanvas"></canvas> <div class="keyboard-help">
+                Klavye: ↑ ↓ ← → veya W A S D | Boşluk: Duraklat | S H D G C: Eşyalar
+            </div>
+        </div>
+    </div>
+    
+    <div class="mobile-controls-container">
         <div class="mobile-dpad">
-            <div></div>
-            <button class="mobile-btn" data-dir="up">↑</button>
-            <div></div>
-            <button class="mobile-btn" data-dir="left">←</button>
-            <button class="mobile-btn" id="mobilePause">⏸️</button>
-            <button class="mobile-btn" data-dir="right">→</button>
-            <div></div>
-            <button class="mobile-btn" data-dir="down">↓</button>
-            <button class="mobile-btn" id="mobileAutoBtn">🤖</button>
+            <button class="mobile-btn autoplay-btn" ontouchstart="toggleAutoplayMobile(); event.preventDefault()">🤖</button>
+            <button class="mobile-btn up" ontouchstart="changeDirection('up'); event.preventDefault()">↑</button>
+            <button class="mobile-btn left" ontouchstart="changeDirection('left'); event.preventDefault()">←</button>
+            <div class="mobile-btn dpad-center"></div>
+            <button class="mobile-btn right" ontouchstart="changeDirection('right'); event.preventDefault()">→</button>
+            <button class="mobile-btn down" ontouchstart="changeDirection('down'); event.preventDefault()">↓</button>
+        </div>
+        <div class="mobile-action-buttons">
+            <button class="mobile-btn pause" ontouchstart="togglePause(); event.preventDefault()">⏸️</button>
+            <button class="mobile-btn inventory" ontouchstart="openInventoryModal(); event.preventDefault()">🎒</button>
+            <button class="mobile-btn menu-toggle" ontouchstart="toggleMobileMenu(); event.preventDefault()">☰</button>
         </div>
     </div>
 
-    <!-- Market Modal -->
+    <button class="mobile-menu-btn" ontouchstart="toggleMobileMenu(); event.preventDefault()">☰</button>
+
     <div class="modal" id="shopModal">
         <div class="modal-content">
-            <h2 class="text-center mb-10">🛒 Market</h2>
-            <div id="shopItems" style="display: grid; gap: 15px;">
-                <!-- Market öğeleri dinamik olarak yüklenecek -->
-            </div>
-            <button class="btn mt-10" onclick="closeModal('shopModal')">Kapat</button>
+            <h2>🛒 Market</h2>
+            <div class="shop-grid">
+                </div>
+            <button class="modal-btn close-btn" onclick="closeShop()">Kapat</button>
         </div>
     </div>
 
-    <!-- Bildirim Modal -->
     <div class="modal" id="notificationModal">
         <div class="modal-content">
-            <h2 id="notificationTitle" class="text-center mb-10">Bildirim</h2>
-            <p id="notificationMessage" class="text-center mb-10"></p>
-            <button class="btn" id="notificationBtn">Tamam</button>
+            <h2 id="notificationTitle">Uyarı</h2>
+            <p id="notificationMessage">Bu bir bildirim mesajıdır.</p>
+            <button class="modal-btn" id="notificationCloseBtn">Tamam</button>
+        </div>
+    </div>
+    
+    <div class="modal" id="inventoryModal">
+        <div class="modal-content">
+            <h2>🎒 Envanter</h2>
+            <div class="inventory-items modal-inventory-items">
+                </div>
+            <button class="modal-btn close-btn" onclick="closeInventoryModal()">Kapat</button>
         </div>
     </div>
 
-    <!-- Power-up Göstergesi -->
+
     <div class="power-up-indicator" id="powerUpIndicator"></div>
+    
+    <div class="screen-rotation-overlay" id="rotationOverlay">
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgY2xhc3M9ImZlYXRoZXIgZmVhdGhlci1yb3RhdGUtY2N3Ij48cG9seWxpbmUgcG9pbnRzPSIxIDQgMSAxMCA3IDEwIj48L3BvbHlsaW5lPjxwYXRoIGQ9Ik0zLjUxIDE1YTkgOSAwIDEgMCAyLjEzLTkuMzZMMSAxMCI+PC9wYXRoPjwvc3ZnPg==" alt="Rotate Icon">
+        <h2>Ekranı Döndürün</h2>
+        <p>Daha iyi bir oyun deneyimi için lütfen ekranınızı <strong id="requiredOrientationText">yatay</strong> konuma çevirin.</p>
+    </div>
+
+    <div class="orientation-warning" id="orientationLockModal">
+        <h2 id="orientationLockTitle">Ekran Yönünü Kilitle</h2>
+        <p id="orientationLockMessage">Oyunu mevcut yönde (dikey/yatay) kilitlemek ister misiniz?</p>
+        <button class="modal-btn" onclick="confirmOrientationLock()">Evet, Kilitle</button>
+        <button class="modal-btn close-btn" onclick="cancelOrientationLock()">İptal</button>
+    </div>
+    
 
     <script>
-        // Oyun Yapılandırması
-        const GameConfig = {
-            CELL_SIZE: 20,
-            INITIAL_SPEED: 150,
-            MIN_SPEED: 50,
-            SPEED_INCREMENT: 8,
-            INITIAL_LIVES: 3,
-            POINTS_PER_FOOD: 10,
-            POINTS_PER_LEVEL: 100,
-            POWER_UP_DURATION: {
-                shield: Infinity,
-                speed: 5000,
-                double: 10000,
-                ghost: 7000,
-                slow: 5000
-            },
-            THEMES: [
-                {
-                    name: "Çimen",
-                    canvasBg: "#7FB069",
-                    snakeHeadColor: "#4B5842",
-                    snakeBodyColor: "#76946A",
-                    foodColor: "#FF6B6B",
-                    gridColor: "#94C973",
-                    obstacleColor: "#FF1744", // Kırmızı - yeşil arka planla zıt
-                    movingObstacleColor: "#E91E63", // Pembe - yeşil arka planla zıt
-                    backgroundImage: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"%237FB069\"/><path d=\"M0 20C10 20 10 0 20 0S30 20 40 20 50 0 60 0 70 20 80 20 90 0 100 0V100H0V20Z\" fill=\"%2394C973\" opacity=\"0.3\"/></svg>')"
-                },
-                {
-                    name: "Toprak",
-                    canvasBg: "#B88B4A",
-                    snakeHeadColor: "#7E4E2C",
-                    snakeBodyColor: "#A67B5B",
-                    foodColor: "#DB5A42",
-                    gridColor: "#C89F69",
-                    obstacleColor: "#2196F3", // Mavi - kahverengi arka planla zıt
-                    movingObstacleColor: "#03A9F4", // Açık mavi - kahverengi arka planla zıt
-                    backgroundImage: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"%23B88B4A\"/><circle cx=\"25\" cy=\"25\" r=\"10\" fill=\"%23A67B5B\" opacity=\"0.3\"/><circle cx=\"75\" cy=\"75\" r=\"15\" fill=\"%23A67B5B\" opacity=\"0.3\"/><circle cx=\"75\" cy=\"25\" r=\"5\" fill=\"%23A67B5B\" opacity=\"0.3\"/><circle cx=\"25\" cy=\"75\" r=\"8\" fill=\"%23A67B5B\" opacity=\"0.3\"/></svg>')"
-                },
-                {
-                    name: "Su",
-                    canvasBg: "#5B9BD5",
-                    snakeHeadColor: "#2A6099",
-                    snakeBodyColor: "#3A7CB8",
-                    foodColor: "#FF9A3C",
-                    gridColor: "#8BB8E6",
-                    obstacleColor: "#FF5722", // Turuncu - mavi arka planla zıt
-                    movingObstacleColor: "#FF9800", // Sarı-turuncu - mavi arka planla zıt
-                    backgroundImage: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"%235B9BD5\"/><path d=\"M0 20C20 40 40 0 60 20S80 40 100 20v80H0V20z\" fill=\"%238BB8E6\" opacity=\"0.3\"/></svg>')"
-                },
-                {
-                    name: "Gökyüzü",
-                    canvasBg: "#7EC4CF",
-                    snakeHeadColor: "#2E86AB",
-                    snakeBodyColor: "#4E9CB3",
-                    foodColor: "#FF686B",
-                    gridColor: "#A6D9E1",
-                    obstacleColor: "#9C27B0", // Mor - açık mavi arka planla zıt
-                    movingObstacleColor: "#673AB7", // Koyu mor - açık mavi arka planla zıt
-                    backgroundImage: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"%237EC4CF\"/><circle cx=\"20\" cy=\"30\" r=\"15\" fill=\"white\" opacity=\"0.6\"/><circle cx=\"70\" cy=\"65\" r=\"20\" fill=\"white\" opacity=\"0.6\"/><circle cx=\"90\" cy=\"40\" r=\"10\" fill=\"white\" opacity=\"0.6\"/></svg>')"
-                },
-                {
-                    name: "Uzay",
-                    canvasBg: "#0A0E29",
-                    snakeHeadColor: "#58A4B0",
-                    snakeBodyColor: "#2F6D84",
-                    foodColor: "#FF5A5F",
-                    gridColor: "#1E2749",
-                    obstacleColor: "#FFEB3B", // Sarı - koyu mavi arka planla zıt
-                    movingObstacleColor: "#FFC107", // Altın sarısı - koyu mavi arka planla zıt
-                    backgroundImage: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"%230A0E29\"/><circle cx=\"10\" cy=\"10\" r=\"1\" fill=\"white\"/><circle cx=\"25\" cy=\"30\" r=\"0.7\" fill=\"white\"/><circle cx=\"40\" cy=\"10\" r=\"0.5\" fill=\"white\"/><circle cx=\"60\" cy=\"40\" r=\"0.8\" fill=\"white\"/><circle cx=\"80\" cy=\"20\" r=\"1\" fill=\"white\"/><circle cx=\"90\" cy=\"50\" r=\"0.6\" fill=\"white\"/><circle cx=\"70\" cy=\"70\" r=\"0.7\" fill=\"white\"/><circle cx=\"30\" cy=\"50\" r=\"0.5\" fill=\"white\"/><circle cx=\"50\" cy=\"80\" r=\"0.8\" fill=\"white\"/><circle cx=\"20\" cy=\"90\" r=\"0.6\" fill=\"white\"/></svg>')"
-                }
-            ],
-            // Engel şekilleri
-            OBSTACLE_SHAPES: [
-                // Tek blok
-                [{ x: 0, y: 0 }],
-                // Yatay çizgi - 2 blok
-                [{ x: 0, y: 0 }, { x: 1, y: 0 }],
-                // Dikey çizgi - 2 blok
-                [{ x: 0, y: 0 }, { x: 0, y: 1 }],
-                // L şekli
-                [{ x: 0, y: 0 }, { x: 0, y: 1 }, { x: 1, y: 1 }],
-                // Ters L şekli
-                [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 0, y: 1 }],
-                // T şekli
-                [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 1, y: 1 }],
-                // + şekli
-                [{ x: 1, y: 0 }, { x: 0, y: 1 }, { x: 1, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 2 }],
-                // Z şekli
-                [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 1 }]
-            ]
+        // DOM Elementleri
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreDisplay = document.getElementById('score');
+        const levelDisplay = document.getElementById('level');
+        const coinsDisplay = document.getElementById('coins');
+        const highScoreDisplay = document.getElementById('highScore');
+        const livesContainer = document.getElementById('lives');
+        const progressBar = document.getElementById('progressBar');
+        const pauseBtn = document.querySelector('.pause-btn');
+        const mobilePauseBtn = document.querySelector('.mobile-controls-container .pause');
+        const soundStatusDisplay = document.getElementById('soundStatus');
+        const shopModal = document.getElementById('shopModal');
+        const shopGrid = shopModal.querySelector('.shop-grid');
+        const powerUpIndicator = document.getElementById('powerUpIndicator');
+        const autoplayToggle = document.getElementById('autoplayToggle');
+        const notificationModal = document.getElementById('notificationModal');
+        const notificationTitle = document.getElementById('notificationTitle');
+        const notificationMessage = document.getElementById('notificationMessage');
+        // const notificationCloseBtn = document.getElementById('notificationCloseBtn'); // This will be handled dynamically
+        const inventoryModal = document.getElementById('inventoryModal');
+        const modalInventoryItemsContainer = inventoryModal.querySelector('.modal-inventory-items');
+
+        // Oyun Ayarları ve Durumları
+        const INITIAL_LIVES = 3;
+        const POINTS_PER_FOOD = 10;
+        const POINTS_FOR_LEVEL_UP = 100;
+        const INITIAL_GAME_SPEED = 150; // ms
+        const MIN_GAME_SPEED = 50; // ms
+        const SPEED_INCREMENT_PER_LEVEL = 8; // ms
+
+        let cellSize = 20; 
+        let cols, rows; 
+
+        // *** HATA DÜZELTME: Diziler burada [] olarak başlatıldı ***
+        let snake = [], direction, nextDirection, food, specialItems = [], obstacles = [];
+        let score = 0, highScore = 0, level = 1, coins = 0, livesCount = INITIAL_LIVES, gameSpeed = INITIAL_GAME_SPEED;
+        let isPaused = false, soundEnabled = true, rainbowMode = false, autoplayEnabled = false;
+        let shieldActive = false, speedBoostActive = false, doublePointsActive = false, ghostModeActive = false;
+        let powerUpTimers = {};
+        let snakeColor = '#4CAF50';
+        let darkTheme = false;
+        let currentSkin = 'default';
+        let purchasedSkins = ['default'];
+        
+        let learningSystem = {
+            dangerousAreas: [],
+            deathPositions: [],
+            avoidanceRadius: 2,
+            learnRate: 0.8
         };
 
-        // Oyun Durumu
-        class GameState {
-            constructor() {
-                this.reset();
-            }
+        // Ekran Yönlendirme Kilidi
+        let preferredOrientation = null; 
+        const rotationOverlay = document.getElementById('rotationOverlay');
+        const requiredOrientationText = document.getElementById('requiredOrientationText');
+        const orientationLockModal = document.getElementById('orientationLockModal');
+        const orientationLockTitle = document.getElementById('orientationLockTitle');
+        const orientationLockMessage = document.getElementById('orientationLockMessage');
+        const orientationToggleBtn = document.querySelector('.orientation-toggle');
 
-            reset() {
-                this.snake = [{ x: 15, y: 15 }];
-                this.direction = 'right';
-                this.nextDirection = 'right';
-                this.food = null;
-                this.obstacles = [];
-                this.specialItems = [];
-                this.score = 0;
-                this.level = 1;
-                this.currentTheme = 0; // Başlangıç teması
-                this.lives = GameConfig.INITIAL_LIVES;
-                this.coins = 0;
-                this.isPaused = false;
-                this.isGameOver = false;
-                this.powerUps = {
-                    shield: false,
-                    speed: false,
-                    double: false,
-                    ghost: false,
-                    slow: false
-                };
-                this.inventory = {
-                    shield: 5,
-                    speed: 5,
-                    double: 5,
-                    ghost: 5
-                };
-            }
-        }
 
-        // Ses Yöneticisi
-        class SoundManager {
-            constructor() {
-                this.enabled = true;
-                this.context = null;
-                this.sounds = {
-                    eat: { frequency: [523, 659], duration: 50 },
-                    coin: { frequency: [880, 1318], duration: 50 },
-                    powerUp: { frequency: [440, 660, 880], duration: 80 },
-                    hurt: { frequency: [150, 100], duration: 100 },
-                    gameOver: { frequency: [200, 150, 100], duration: 150 },
-                    levelUp: { frequency: [261, 329, 392, 523], duration: 100 }
-                };
-            }
+        const levelThemes = [
+            { name: 'Toprak', background: '#8D6E63', obstacleColor: '#5D4037', foodColor: '#ff4757', borderColor: '#4CAF50', snakeBaseColor: '#4CAF50' },
+            { name: 'Çimen', background: '#e9ecef', obstacleColor: '#777', foodColor: '#ff4757', borderColor: '#4CAF50', snakeBaseColor: '#4CAF50' },
+            { name: 'Çöl', background: '#ffeaa7', obstacleColor: '#d35400', foodColor: '#e74c3c', borderColor: '#f39c12', snakeBaseColor: '#f39c12' },
+            { name: 'Buz', background: '#dff9fb', obstacleColor: '#74b9ff', foodColor: '#ff9ff3', borderColor: '#0abde3', snakeBaseColor: '#0abde3' },
+            { name: 'Volkanik', background: '#34495e', obstacleColor: '#e74c3c', foodColor: '#f1c40f', borderColor: '#c0392b', snakeBaseColor: '#e67e22' },
+            { name: 'Uzay', background: '#130f40', obstacleColor: '#9c88ff', foodColor: '#7bed9f', borderColor: '#4834d4', snakeBaseColor: '#8e44ad' },
+            { name: 'Orman', background: '#b8e994', obstacleColor: '#27ae60', foodColor: '#e55039', borderColor: '#16a085', snakeBaseColor: '#2ecc71' },
+            { name: 'Neon', background: '#000000', obstacleColor: '#ff00ff', foodColor: '#00ffff', borderColor: '#39ff14', snakeBaseColor: '#39ff14' }
+        ];
+        
+        // Hayvan ve yaratık karakterleri
+        const obstacleTypes = [
+            { type: 'basic', character: '🐱', name: 'Kedi' },       // Kedi
+            { type: 'spiky', character: '🐶', name: 'Köpek' },      // Köpek
+            { type: 'moving', character: '🐢', name: 'Kaplumbağa' }, // Kaplumbağa
+            { type: 'blinking', character: '🦁', name: 'Aslan' },    // Aslan
+            { type: 'basic', character: '🐵', name: 'Maymun' },      // Maymun
+            { type: 'moving', character: '👽', name: 'Uzaylı' },     // Uzaylı
+            { type: 'spiky', character: '🐙', name: 'Ahtapot' },     // Ahtapot
+            { type: 'blinking', character: '🦄', name: 'Unicorn' }   // Tek boynuzlu at
+        ];
 
-            init() {
-                if (!this.context && window.AudioContext) {
-                    this.context = new AudioContext();
-                    // Suspended context'i resume et
-                    if (this.context.state === 'suspended') {
-                        this.context.resume();
-                    }
-                }
-            }
+        const shopItemsData = [
+            { id: 'skin_red', name: 'Kırmızı Yılan', description: 'Yılanını kırmızı yap!', price: 0, type: 'skin', value: '#e74c3c' },
+            { id: 'skin_blue', name: 'Mavi Yılan', description: 'Yılanını mavi yap!', price: 0, type: 'skin', value: '#3498db' },
+            { id: 'skin_rainbow', name: 'Gökkuşağı Yılan', description: 'Rengarenk bir yılan!', price: 0, type: 'skin', value: 'rainbow' },
+            { id: 'shield_pack', name: 'Kalkan (x1)', description: 'Bir çarpmaya karşı koruma.', price: 0, type: 'item', value: 'shield' },
+            { id: 'speedBoost_pack', name: 'Hız Artışı (x1)', description: 'Kısa süreli hızlanma.', price: 0, type: 'item', value: 'speedBoost' },
+            { id: 'doublePoints_pack', name: 'Çift Puan (x1)', description: 'Kısa süreli puanları ikiye katla.', price: 0, type: 'item', value: 'doublePoints' },
+            { id: 'ghostMode_pack', name: 'Hayalet Modu (x1)', description: 'Kısa süreli engellerden geç.', price: 0, type: 'item', value: 'ghostMode' },
+            { id: 'extraLife', name: '+1 Can', description: 'Ekstra bir can kazan.', price: 0, type: 'item', value: 'extraLifePerm' }
+        ];
+        
+        let inventory = {
+            shield: 5,
+            speedBoost: 5,
+            doublePoints: 5,
+            ghostMode: 5 
+        };
 
-            play(soundName) {
-                if (!this.enabled || !this.context) return;
-                
-                const sound = this.sounds[soundName];
-                if (!sound) return;
+        // --- SES ---
+        let audioContext;
+        const sounds = {
+            eat: { freq: [523.25, 659.25], duration: 0.05, type: 'triangle', delay: 30 },
+            gameOver: { freq: [200, 150, 100], duration: [0.1, 0.1, 0.2], type: 'sawtooth', delay: [0, 80, 180] },
+            levelUp: { freq: [261.63, 329.63, 392, 523.25], duration: [0.05, 0.05, 0.05, 0.1], type: 'sine', delay: [0, 80, 160, 240] },
+            coin: { freq: [880, 1318.51], duration: 0.05, type: 'square', delay: 30 },
+            powerUp: { freq: [440, 660, 880], duration: [0.05, 0.05, 0.1], type: 'square', delay: [0, 80, 160] },
+            hurt: { freq: [150, 100], duration: [0.08, 0.15], type: 'square', delay: [0, 70] },
+            click: { freq: [600], duration: 0.03, type: 'triangle' }
+        };
 
-                const now = this.context.currentTime;
-                const frequencies = Array.isArray(sound.frequency) ? sound.frequency : [sound.frequency];
-                
-                frequencies.forEach((freq, index) => {
-                    const oscillator = this.context.createOscillator();
-                    const gainNode = this.context.createGain();
-                    
-                    oscillator.connect(gainNode);
-                    gainNode.connect(this.context.destination);
-                    
-                    oscillator.frequency.value = freq;
-                    oscillator.type = 'triangle';
-                    
-                    const startTime = now + (index * sound.duration / 1000);
-                    gainNode.gain.setValueAtTime(0.1, startTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + sound.duration / 1000);
-                    
-                    oscillator.start(startTime);
-                    oscillator.stop(startTime + sound.duration / 1000);
-                });
-            }
-
-            toggle() {
-                this.enabled = !this.enabled;
-                return this.enabled;
+        function initAudio() {
+            if (!audioContext && (window.AudioContext || window.webkitAudioContext)) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
             }
         }
 
-        // Ana Oyun Sınıfı
-        class SnakeGame {
-            constructor() {
-                this.canvas = document.getElementById('gameCanvas');
-                this.ctx = this.canvas.getContext('2d');
-                this.state = new GameState();
-                this.sound = new SoundManager();
-                this.autoPlay = false;
-                this.darkTheme = false;
-                this.animationId = null;
-                this.lastTime = 0;
-                this.accumulator = 0;
-                
-                this.init();
-            }
+        function playSoundSequence(soundName) {
+            if (!soundEnabled || !audioContext || !sounds[soundName]) return;
+            initAudio(); 
+            if (audioContext.state === 'suspended') audioContext.resume();
 
-            init() {
-                this.setupCanvas();
-                this.setupEventListeners();
-                this.loadSavedData();
-                this.generateFood();
-                this.generateObstacles();
-                this.updateUI();
-                this.gameLoop();
-            }
 
-            setupCanvas() {
-                const container = this.canvas.parentElement;
-                if (!container) {
-                    console.error('Canvas container not found');
-                    return;
-                }
-                
-                const width = container.clientWidth - 20;
-                const height = Math.min(window.innerHeight * 0.7, 600);
-                
-                this.cols = Math.floor(width / GameConfig.CELL_SIZE);
-                this.rows = Math.floor(height / GameConfig.CELL_SIZE);
-                
-                // Minimum boyutları garanti et
-                this.cols = Math.max(20, this.cols);
-                this.rows = Math.max(20, this.rows);
-                
-                this.canvas.width = this.cols * GameConfig.CELL_SIZE;
-                this.canvas.height = this.rows * GameConfig.CELL_SIZE;
-            }
+            const sound = sounds[soundName];
+            const baseTime = audioContext.currentTime;
 
-            setupEventListeners() {
-                // Klavye kontrolleri
-                document.addEventListener('keydown', (e) => this.handleKeyPress(e));
-                
-                // Buton kontrolleri
-                document.getElementById('pauseBtn').addEventListener('click', () => this.togglePause());
-                document.getElementById('shopBtn').addEventListener('click', () => this.openShop());
-                document.getElementById('resetBtn').addEventListener('click', () => this.confirmReset());
-                document.getElementById('soundBtn').addEventListener('click', () => this.toggleSound());
-                document.getElementById('themeBtn').addEventListener('click', () => this.toggleTheme());
-                document.getElementById('autoBtn').addEventListener('click', () => this.toggleAutoPlay());
-                
-                // Mobil kontroller
-                document.querySelectorAll('.mobile-btn[data-dir]').forEach(btn => {
-                    btn.addEventListener('touchstart', (e) => {
-                        e.preventDefault();
-                        this.changeDirection(btn.dataset.dir);
-                    });
-                });
-                
-                document.getElementById('mobilePause').addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    this.togglePause();
-                });
-                
-                // Envanter tıklamaları
-                document.querySelectorAll('.inventory-item').forEach(item => {
-                    item.addEventListener('click', () => this.useItem(item.dataset.item));
-                });
-                
-                // Pencere boyutlandırma
-                window.addEventListener('resize', () => this.setupCanvas());
-                
-                // Ses başlatma
-                document.addEventListener('click', () => this.sound.init(), { once: true });
-            }
+            for (let i = 0; i < sound.freq.length; i++) {
+                const osc = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                osc.connect(gainNode);
+                gainNode.connect(audioContext.destination);
 
-            handleKeyPress(e) {
-                const keyMap = {
-                    'ArrowUp': 'up', 'w': 'up',
-                    'ArrowDown': 'down', 's': 'down',
-                    'ArrowLeft': 'left', 'a': 'left',
-                    'ArrowRight': 'right', 'd': 'right',
-                    ' ': 'pause', 'p': 'pause',
-                    '1': () => this.useItem('shield'),
-                    '2': () => this.useItem('speed'),
-                    '3': () => this.useItem('double'),
-                    '4': () => this.useItem('ghost')
+                osc.type = sound.type;
+                osc.frequency.setValueAtTime(sound.freq[i], baseTime + (sound.delay ? (sound.delay[i] || 0) / 1000 : 0));
+                
+                const noteDuration = Array.isArray(sound.duration) ? sound.duration[i] : sound.duration;
+                const startTime = baseTime + (sound.delay ? (sound.delay[i] || 0) / 1000 : 0);
+                
+                gainNode.gain.setValueAtTime(0.15, startTime); 
+                gainNode.gain.exponentialRampToValueAtTime(0.00001, startTime + noteDuration);
+                
+                osc.start(startTime);
+                osc.stop(startTime + noteDuration + 0.05); 
+            }
+        }
+        
+        // --- TEMEL FONKSİYONLAR ---
+        function showNotification(title, message, onConfirm = null) {
+            notificationTitle.textContent = title;
+            notificationMessage.innerHTML = message; 
+            notificationModal.style.display = 'flex';
+            
+            const currentBtn = document.getElementById('notificationCloseBtn');
+            const newBtn = currentBtn.cloneNode(true); 
+            currentBtn.parentNode.replaceChild(newBtn, currentBtn);
+            
+            const freshBtn = document.getElementById('notificationCloseBtn');
+
+
+            if (onConfirm) {
+                freshBtn.onclick = () => {
+                    notificationModal.style.display = 'none';
+                    onConfirm();
                 };
-
-                const action = keyMap[e.key] || keyMap[e.key.toLowerCase()];
-                
-                if (action) {
-                    e.preventDefault();
-                    
-                    if (typeof action === 'function') {
-                        action();
-                    } else if (action === 'pause') {
-                        this.togglePause();
-                    } else {
-                        this.changeDirection(action);
+            } else {
+                 freshBtn.onclick = () => {
+                    notificationModal.style.display = 'none';
+                     if (!isPaused && livesCount > 0 && shopModal.style.display !== 'flex' && inventoryModal.style.display !== 'flex') {
+                        gameLoop();
                     }
-                }
-            }
-
-            changeDirection(dir) {
-                if (this.state.isPaused || this.state.isGameOver) return;
-                
-                const opposites = {
-                    'up': 'down', 'down': 'up',
-                    'left': 'right', 'right': 'left'
                 };
-                
-                // Ters yöne gitmeyi engelle
-                if (this.state.snake.length > 1 && opposites[dir] === this.state.direction) {
-                    return;
-                }
-                
-                this.state.nextDirection = dir;
             }
+        }
+        
+        function confirmResetGame() {
+            isPaused = true; 
+            clearTimeout(gameLoopTimeout);
 
-            update(deltaTime) {
-                if (this.state.isPaused || this.state.isGameOver) return;
-                
-                // Hız hesaplama
-                const speed = this.calculateSpeed();
-                this.accumulator += deltaTime;
-                
-                if (this.accumulator >= speed) {
-                    this.accumulator = 0;
-                    
-                    if (this.autoPlay) {
-                        this.autoPlayLogic();
-                    }
-                    
-                    this.moveSnake();
-                    this.checkCollisions();
-                    this.updateSpecialItems();
-                    this.moveObstacles();
+            showNotification(
+                'Yeniden Başla?',
+                'Mevcut oyunu sıfırlamak istediğinizden emin misiniz? Skorunuz ve ilerlemeniz kaybolacak.',
+                () => { 
+                    resetGame();
+                    isPaused = false; 
+                    gameLoop(); 
                 }
-            }
+            );
+        }
 
-            calculateSpeed() {
-                let speed = GameConfig.INITIAL_SPEED - (this.state.level - 1) * GameConfig.SPEED_INCREMENT;
-                
-                if (this.state.powerUps.speed) speed *= 0.7;
-                if (this.state.powerUps.slow) speed *= 1.5;
-                
-                return Math.max(GameConfig.MIN_SPEED, speed);
-            }
 
-            moveSnake() {
-                const head = { ...this.state.snake[0] };
-                this.state.direction = this.state.nextDirection;
-                
-                // Yeni kafa pozisyonu
-                switch (this.state.direction) {
-                    case 'up': head.y--; break;
-                    case 'down': head.y++; break;
-                    case 'left': head.x--; break;
-                    case 'right': head.x++; break;
-                }
-                
-                // Duvar çarpma kontrolü
-                if (!this.state.powerUps.ghost) {
-                    if (head.x < 0) head.x = this.cols - 1;
-                    else if (head.x >= this.cols) head.x = 0;
-                    if (head.y < 0) head.y = this.rows - 1;
-                    else if (head.y >= this.rows) head.y = 0;
-                }
-                
-                // Yılanı hareket ettir
-                this.state.snake.unshift(head);
-                
-                // Yemek kontrolü
-                if (this.state.food && head.x === this.state.food.x && head.y === this.state.food.y) {
-                    this.eatFood();
+        function updateDisplays() {
+            scoreDisplay.textContent = score;
+            if (typeof level !== 'undefined' && levelDisplay && levelThemes && levelThemes.length > 0) {
+                levelDisplay.textContent = level;
+                const themeIndex = Math.max(0, level - 1) % levelThemes.length; // Negatif veya tanımsız indeksi önle
+                if (levelThemes[themeIndex] && typeof levelThemes[themeIndex].name !== 'undefined') {
+                    levelDisplay.title = levelThemes[themeIndex].name + " Teması";
                 } else {
-                    this.state.snake.pop();
+                    levelDisplay.title = "Bilinmeyen Tema"; // Fallback
                 }
+            } else if (levelDisplay) {
+                 levelDisplay.textContent = level || 1; // level tanımsızsa 1 göster
+                 levelDisplay.title = "Tema Yükleniyor...";
             }
 
-            checkCollisions() {
-                const head = this.state.snake[0];
-                
-                // Kendine çarpma
-                if (!this.state.powerUps.ghost) {
-                    for (let i = 1; i < this.state.snake.length; i++) {
-                        if (head.x === this.state.snake[i].x && head.y === this.state.snake[i].y) {
-                            this.handleCollision();
-                            return;
-                        }
-                    }
+
+            coinsDisplay.textContent = coins;
+            highScoreDisplay.textContent = highScore;
+
+            const progress = (score % POINTS_FOR_LEVEL_UP) / POINTS_FOR_LEVEL_UP * 100;
+            progressBar.style.width = progress + '%';
+
+            updateLivesDisplay();
+            updateInventoryDisplay();
+        }
+
+        function updateLivesDisplay() {
+            livesContainer.innerHTML = '';
+            for (let i = 0; i < INITIAL_LIVES; i++) {
+                const heartSpan = document.createElement('span');
+                heartSpan.classList.add('heart');
+                heartSpan.innerHTML = '❤️';
+                if (i >= livesCount) {
+                    heartSpan.classList.add('empty');
                 }
-                
-                // Engellere çarpma
-                for (const obstacle of this.state.obstacles) {
-                    if (head.x === obstacle.x && head.y === obstacle.y) {
-                        if (!this.state.powerUps.ghost) {
-                            this.handleCollision();
-                            return;
+                livesContainer.appendChild(heartSpan);
+            }
+        }
+        
+        function updateInventoryDisplay() {
+            document.querySelector('.shield-btn').setAttribute('data-count', inventory.shield);
+            document.querySelector('.speed-btn').setAttribute('data-count', inventory.speedBoost);
+            document.querySelector('.double-btn').setAttribute('data-count', inventory.doublePoints);
+            document.querySelector('.ghost-btn').setAttribute('data-count', inventory.ghostMode);
+
+            const skinBtn = document.querySelector('.skin-btn');
+            if (currentSkin === 'rainbow') skinBtn.textContent = '🌈';
+            else if (snakeColor === '#e74c3c') skinBtn.textContent = '🔴'; // Kırmızı skin için id yerine renk kontrolü
+            else if (snakeColor === '#3498db') skinBtn.textContent = '🔵'; // Mavi skin için
+            else skinBtn.textContent = '🎨';
+
+
+            if (modalInventoryItemsContainer) {
+                modalInventoryItemsContainer.innerHTML = ''; 
+                const desktopInventoryButtons = document.querySelectorAll('.game-left .inventory-btn');
+                desktopInventoryButtons.forEach(btn => {
+                    const clone = btn.cloneNode(true);
+                    clone.onclick = () => { 
+                        const itemType = btn.classList.contains('shield-btn') ? 'shield' :
+                                       btn.classList.contains('speed-btn') ? 'speedBoost' :
+                                       btn.classList.contains('double-btn') ? 'doublePoints' :
+                                       btn.classList.contains('ghost-btn') ? 'ghostMode' :
+                                       btn.classList.contains('skin-btn') ? 'skin' : '';
+                        
+                        if (itemType === 'skin') {
+                            changeSkin();
+                        } else if (itemType) {
+                            useItem(itemType);
                         }
-                    }
-                }
-                
-                // Özel eşyaları topla
-                this.state.specialItems = this.state.specialItems.filter(item => {
-                    if (head.x === item.x && head.y === item.y) {
-                        this.collectSpecialItem(item);
-                        return false;
-                    }
-                    return true;
+                        closeInventoryModal(); 
+                    };
+                    modalInventoryItemsContainer.appendChild(clone);
                 });
             }
+        }
 
-            handleCollision() {
-                if (this.state.powerUps.shield) {
-                    this.state.powerUps.shield = false;
-                    this.showPowerUpMessage('Kalkan kullanıldı!');
-                    this.sound.play('hurt');
-                    return;
-                }
-                
-                this.state.lives--;
-                this.sound.play('hurt');
-                
-                if (this.state.lives <= 0) {
-                    this.gameOver();
-                } else {
-                    this.showPowerUpMessage(`${this.state.lives} can kaldı!`);
-                    this.respawn();
-                }
-                
-                this.updateUI();
-            }
 
-            respawn() {
-                this.state.snake = [{ x: Math.floor(this.cols / 2), y: Math.floor(this.rows / 2) }];
-                this.state.direction = 'right';
-                this.state.nextDirection = 'right';
-                
-                // Geçici dokunulmazlık
-                this.state.powerUps.ghost = true;
-                setTimeout(() => {
-                    this.state.powerUps.ghost = false;
-                }, 2000);
-            }
+        function generateFood() {
+            let newFoodPos;
+            do {
+                newFoodPos = {
+                    x: Math.floor(Math.random() * cols),
+                    y: Math.floor(Math.random() * rows)
+                };
+            } while (
+                (snake && snake.some(seg => seg.x === newFoodPos.x && seg.y === newFoodPos.y)) || 
+                (obstacles && obstacles.some(obs => obs.x === newFoodPos.x && obs.y === newFoodPos.y)) || 
+                (specialItems && specialItems.some(item => item.x === newFoodPos.x && item.y === newFoodPos.y)) 
+            );
+            return { ...newFoodPos, type: 'normal' };
+        }
 
-            eatFood() {
-                const points = this.state.powerUps.double ? GameConfig.POINTS_PER_FOOD * 2 : GameConfig.POINTS_PER_FOOD;
-                this.state.score += points;
-                this.sound.play('eat');
-                
-                // Seviye atlama kontrolü
-                if (this.state.score >= this.state.level * GameConfig.POINTS_PER_LEVEL) {
-                    this.levelUp();
-                }
-                
-                this.generateFood();
-                this.tryGenerateSpecialItem();
-                this.updateUI();
-            }
-
-            levelUp() {
-                this.state.level++;
-                this.sound.play('levelUp');
-                this.showPowerUpMessage(`Seviye ${this.state.level}!`);
-                
-                // Tema değiştirme
-                this.state.currentTheme = (this.state.level - 1) % GameConfig.THEMES.length;
-                
-                // Arka plan rengini güncelle
-                document.body.style.backgroundImage = GameConfig.THEMES[this.state.currentTheme].backgroundImage;
-                
-                // Engelleri yeniden oluştur
-                this.generateObstacles();
-                
-                // Bonus can
-                if (this.state.level % 3 === 0 && this.state.lives < GameConfig.INITIAL_LIVES) {
-                    this.state.lives++;
-                    this.showPowerUpMessage('+1 Can!');
-                }
-                
-                // Tema değişikliği bildirimi
-                this.showPowerUpMessage(`${GameConfig.THEMES[this.state.currentTheme].name} Teması!`);
-            }
-
-            generateFood() {
-                let position;
+        function generateSpecialItem() {
+            if (Math.random() < 0.15) { 
+                const types = ['coin', 'powerFood', 'slowMotion', 'extraLifeToken', 'shieldToken', 'ghostToken'];
+                const type = types[Math.floor(Math.random() * types.length)];
+                let itemPos;
                 let attempts = 0;
-                const maxAttempts = 100;
-                
                 do {
-                    position = {
-                        x: Math.floor(Math.random() * this.cols),
-                        y: Math.floor(Math.random() * this.rows),
-                        type: 'normal'
+                    itemPos = {
+                        x: Math.floor(Math.random() * cols),
+                        y: Math.floor(Math.random() * rows)
                     };
                     attempts++;
-                } while (this.isPositionOccupied(position) && attempts < maxAttempts);
-                
-                if (attempts < maxAttempts) {
-                    this.state.food = position;
-                } else {
-                    console.warn('Could not find valid position for food');
+                } while (
+                    ((snake && snake.some(seg => seg.x === itemPos.x && seg.y === itemPos.y)) ||
+                    (obstacles && obstacles.some(obs => obs.x === itemPos.x && obs.y === itemPos.y)) ||
+                    (specialItems && specialItems.some(item => item.x === itemPos.x && item.y === itemPos.y)) ||
+                    (food && food.x === itemPos.x && food.y === itemPos.y)) && attempts < 50
+                );
+
+                if (attempts < 50) {
+                    specialItems.push({ ...itemPos, type: type, lifeTime: 200 + Math.floor(Math.random() * 100) }); 
                 }
             }
+        }
 
-            generateObstacles() {
-                this.state.obstacles = [];
-                
-                // Basit engeller için sayı (seviye başına)
-                const simpleCount = Math.max(1, Math.floor(this.state.level / 3));
-                
-                // Karmaşık engeller için sayı (seviye arttıkça artar)
-                const complexShapeCount = Math.min(Math.floor(this.state.level / 2), 5);
-                
-                // Basit engelleri oluştur
-                for (let i = 0; i < simpleCount; i++) {
-                    this.placeObstacle([{ x: 0, y: 0 }], Math.random() > 0.7 ? 'moving' : 'static');
-                }
-                
-                // Karmaşık şekilli engelleri oluştur
-                for (let i = 0; i < complexShapeCount; i++) {
-                    // Level arttıkça karmaşık şekil kullanma olasılığı artar
-                    const minShapeIndex = Math.min(Math.floor(this.state.level / 5), 4);
-                    const shapeIndex = minShapeIndex + Math.floor(Math.random() * (GameConfig.OBSTACLE_SHAPES.length - minShapeIndex));
-                    const shape = GameConfig.OBSTACLE_SHAPES[shapeIndex];
+        function generateObstacles() {
+            obstacles = [];
+            // Level 1'de bile en az 3 engel olmasını sağla
+            const numObstacles = Math.max(3, Math.min(Math.floor(level * 2), Math.floor(rows * cols * 0.08)));
+            const currentTheme = levelThemes[Math.max(0, level - 1) % levelThemes.length];
+            
+            console.log(`Level ${level}: Generating ${numObstacles} obstacles`);
+
+            // Engel oluştur
+            for (let i = 0; i < numObstacles; i++) {
+                let obsPos;
+                let attempts = 0;
+                do {
+                    obsPos = {
+                        x: Math.floor(Math.random() * cols),
+                        y: Math.floor(Math.random() * rows)
+                    };
+                    attempts++;
+                } while (
+                    ((snake && snake.some(seg => Math.abs(seg.x - obsPos.x) < 3 && Math.abs(seg.y - obsPos.y) < 3)) ||
+                    (obstacles && obstacles.some(obs => obs.x === obsPos.x && obs.y === obsPos.y)) ||
+                    (food && food.x === obsPos.x && food.y === obsPos.y)) && attempts < 50
+                );
+
+                if (attempts < 50) {
+                    // Rasgele bir engel türü seç
+                    const typeIndex = Math.floor(Math.random() * obstacleTypes.length);
+                    const typeInfo = obstacleTypes[typeIndex];
                     
-                    // Hareket eden engellerin oranı seviye arttıkça artar
-                    const movingProbability = Math.min(0.3 + (this.state.level / 20), 0.8);
-                    const isMoving = Math.random() < movingProbability ? 'moving' : 'static';
+                    // Engel nesnesini oluştur
+                    const obstacle = {
+                        ...obsPos,
+                        type: typeInfo.type,
+                        characterInfo: typeInfo
+                    };
                     
-                    this.placeObstacle(shape, isMoving);
+                    // Hareketli engeller için yön ekle
+                    if (obstacle.type === 'moving') {
+                        obstacle.direction = ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)];
+                        obstacle.moveCounter = 0;
+                    }
+                    
+                    obstacles.push(obstacle);
                 }
             }
             
-            placeObstacle(shape, type) {
-                let baseX, baseY;
-                let isValid = false;
-                let attempts = 0;
-                const maxAttempts = 50;
-                
-                do {
-                    // Ana pozisyon
-                    baseX = Math.floor(Math.random() * (this.cols - 3)) + 1;
-                    baseY = Math.floor(Math.random() * (this.rows - 3)) + 1;
-                    
-                    // Tüm blokların geçerli olup olmadığını kontrol et
-                    isValid = true;
-                    for (const block of shape) {
-                        const pos = {
-                            x: baseX + block.x,
-                            y: baseY + block.y
-                        };
-                        
-                        // Sınırları kontrol et
-                        if (pos.x < 0 || pos.x >= this.cols || pos.y < 0 || pos.y >= this.rows) {
-                            isValid = false;
-                            break;
-                        }
-                        
-                        // Çakışmaları kontrol et
-                        if (this.isPositionOccupied(pos) || this.isNearSnake(pos, 2)) {
-                            isValid = false;
-                            break;
-                        }
-                    }
-                    
-                    attempts++;
-                } while (!isValid && attempts < maxAttempts);
-                
-                // Eğer geçerli bir pozisyon bulunduysa, engeli yerleştir
-                if (isValid) {
-                    // Rastgele bir yön seç (hareket eden engeller için)
-                    const direction = ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)];
-                    
-                    // Şeklin tüm bloklarını ekle
-                    for (const block of shape) {
-                        this.state.obstacles.push({
-                            x: baseX + block.x,
-                            y: baseY + block.y,
-                            type: type,
-                            direction: direction,
-                            baseShape: shape,      // Şekil referansı
-                            baseX: baseX,          // Ana koordinat
-                            baseY: baseY,
-                            relX: block.x,         // Şekle göre bağıl konum
-                            relY: block.y
-                        });
-                    }
-                }
-            }
+            console.log(`Created ${obstacles.length} obstacles`);
+        }
+        
+        // --- ÇİZİM FONKSİYONLARI ---
+        function drawGame() {
+            const currentTheme = levelThemes[Math.max(0, level - 1) % levelThemes.length];
 
-            tryGenerateSpecialItem() {
-                if (Math.random() < 0.15) {
-                    const types = ['coin', 'powerFood', 'shield', 'speed', 'double', 'ghost', 'slowMotion', 'extraLife'];
-                    const type = types[Math.floor(Math.random() * types.length)];
-                    
-                    let position;
-                    let attempts = 0;
-                    const maxAttempts = 50;
-                    
-                    do {
-                        position = {
-                            x: Math.floor(Math.random() * this.cols),
-                            y: Math.floor(Math.random() * this.rows),
-                            type: type,
-                            lifetime: 200
-                        };
-                        attempts++;
-                    } while (this.isPositionOccupied(position) && attempts < maxAttempts);
-                    
-                    if (attempts < maxAttempts) {
-                        this.state.specialItems.push(position);
-                    }
-                }
+            ctx.fillStyle = darkTheme ? currentTheme.background : lightenColor(currentTheme.background, 20);
+            if (darkTheme && (currentTheme.name === 'Uzay' || currentTheme.name === 'Neon' || currentTheme.name === 'Volkanik')) {
+                 ctx.fillStyle = currentTheme.background; 
+            } else if (darkTheme) {
+                 ctx.fillStyle = darkenColor(currentTheme.background, 30);
+            } else {
+                 ctx.fillStyle = currentTheme.background;
             }
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            updateSpecialItems() {
-                this.state.specialItems = this.state.specialItems.filter(item => {
-                    item.lifetime--;
-                    return item.lifetime > 0;
-                });
+            ctx.strokeStyle = darkTheme ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+            ctx.lineWidth = 1;
+            for (let i = 1; i < cols; i++) { ctx.beginPath(); ctx.moveTo(i * cellSize, 0); ctx.lineTo(i * cellSize, canvas.height); ctx.stroke(); }
+            for (let i = 1; i < rows; i++) { ctx.beginPath(); ctx.moveTo(0, i * cellSize); ctx.lineTo(canvas.width, i * cellSize); ctx.stroke(); }
+            
+            if (food) drawFood(currentTheme); // food tanımsız değilse çiz
+            if (specialItems) drawSpecialItems(); // specialItems tanımsız değilse çiz
+            if (obstacles) drawObstacles(currentTheme); // obstacles tanımsız değilse çiz
+            if (snake) drawSnake(currentTheme); // snake tanımsız değilse çiz
+
+
+            ctx.strokeStyle = currentTheme.borderColor;
+            ctx.lineWidth = 4; 
+            ctx.strokeRect(0, 0, canvas.width, canvas.height);
+
+            if (autoplayEnabled && false) { 
+                drawDangerousAreas();
             }
+        }
 
-            moveObstacles() {
-                // Hareket eden engelleri grupla (aynı şeklin parçalarını birlikte hareket ettirmek için)
-                const movingGroups = new Map();
-                
-                this.state.obstacles.forEach(obstacle => {
-                    if (obstacle.type === 'moving') {
-                        // Engelin orijinal şekline göre gruplayalım
-                        const groupKey = `${obstacle.baseX},${obstacle.baseY}`;
-                        
-                        if (!movingGroups.has(groupKey)) {
-                            movingGroups.set(groupKey, {
-                                obstacles: [],
-                                direction: obstacle.direction,
-                                moved: false
-                            });
-                        }
-                        
-                        movingGroups.get(groupKey).obstacles.push(obstacle);
-                    }
-                });
-                
-                // Her grubu ayrı ayrı hareket ettir
-                movingGroups.forEach(group => {
-                    // Hareket etme olasılığı
-                    if (Math.random() < 0.1) {
-                        // Tüm grup için geçerli bir hareket olup olmadığını kontrol et
-                        const newPositions = [];
-                        let canMove = true;
-                        
-                        group.obstacles.forEach(obstacle => {
-                            const newPos = { x: obstacle.x, y: obstacle.y };
-                            
-                            switch (group.direction) {
-                                case 'up': newPos.y--; break;
-                                case 'down': newPos.y++; break;
-                                case 'left': newPos.x--; break;
-                                case 'right': newPos.x++; break;
-                            }
-                            
-                            // Sınır kontrolü
-                            if (newPos.x < 0 || newPos.x >= this.cols ||
-                                newPos.y < 0 || newPos.y >= this.rows) {
-                                canMove = false;
-                            }
-                            
-                            newPositions.push(newPos);
-                        });
-                        
-                        // Çakışma kontrolü
-                        if (canMove) {
-                            for (const newPos of newPositions) {
-                                // Engelin kendisini hariç tut
-                                if (this.state.snake.some(seg => seg.x === newPos.x && seg.y === newPos.y) ||
-                                    this.state.obstacles.some(obs =>
-                                        !group.obstacles.includes(obs) &&
-                                        obs.x === newPos.x &&
-                                        obs.y === newPos.y
-                                    )) {
-                                    canMove = false;
-                                    break;
-                                }
-                            }
-                        }
-                        
-                        // Eğer hareket geçerliyse, uygula
-                        if (canMove) {
-                            group.obstacles.forEach((obstacle, index) => {
-                                obstacle.x = newPositions[index].x;
-                                obstacle.y = newPositions[index].y;
-                                
-                                // Baz koordinatları da güncelle
-                                if (index === 0) {
-                                    const deltaX = group.direction === 'left' ? -1 : (group.direction === 'right' ? 1 : 0);
-                                    const deltaY = group.direction === 'up' ? -1 : (group.direction === 'down' ? 1 : 0);
-                                    
-                                    group.obstacles.forEach(obs => {
-                                        obs.baseX += deltaX;
-                                        obs.baseY += deltaY;
-                                    });
-                                }
-                            });
-                        } else {
-                            // Engel hareketi geçersizse, yeni bir yön seç
-                            const newDirection = ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)];
-                            group.obstacles.forEach(obstacle => {
-                                obstacle.direction = newDirection;
-                            });
-                        }
-                    }
-                });
-            }
+        function drawFood(theme) {
+            ctx.fillStyle = theme.foodColor;
+            ctx.beginPath();
+            ctx.arc(food.x * cellSize + cellSize / 2, food.y * cellSize + cellSize / 2, cellSize / 2 - 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = lightenColor(theme.foodColor, 30);
+            ctx.beginPath();
+            ctx.arc(food.x * cellSize + cellSize / 2 - 2, food.y * cellSize + cellSize / 2 - 2, cellSize / 4, 0, Math.PI * 2);
+            ctx.fill();
+        }
 
-            collectSpecialItem(item) {
-                this.sound.play('coin');
-                
+        function drawSpecialItems() {
+            specialItems = specialItems.filter(item => {
+                item.lifeTime--;
+                if (item.lifeTime <= 0) return false;
+
+                const opacity = item.lifeTime < 50 ? (item.lifeTime / 50) * 0.8 + 0.2 : 1; 
+                let itemSymbol = '?';
+                let itemColor = `rgba(200, 200, 200, ${opacity})`;
+
                 switch (item.type) {
-                    case 'coin':
-                        this.state.coins += this.state.level * 2;
-                        this.showPowerUpMessage(`+${this.state.level * 2} Coin!`);
-                        break;
-                    case 'powerFood':
-                        this.state.score += this.state.powerUps.double ? 40 : 20;
-                        this.showPowerUpMessage('+20 Puan!');
-                        break;
-                    case 'shield':
-                        this.state.inventory.shield++;
-                        this.showPowerUpMessage('Kalkan eklendi!');
-                        break;
-                    case 'speed':
-                        this.state.inventory.speed++;
-                        this.showPowerUpMessage('Hız eklendi!');
-                        break;
-                    case 'double':
-                        this.state.inventory.double++;
-                        this.showPowerUpMessage('Çift puan eklendi!');
-                        break;
-                    case 'ghost':
-                        this.state.inventory.ghost++;
-                        this.showPowerUpMessage('Hayalet modu eklendi!');
-                        break;
-                    case 'slowMotion':
-                        this.activatePowerUp('slow', 5000);
-                        break;
-                    case 'extraLife':
-                        if (this.state.lives < GameConfig.INITIAL_LIVES) {
-                            this.state.lives++;
-                            this.showPowerUpMessage('+1 Can!');
-                            this.sound.play('levelUp');
-                        } else {
-                            this.state.coins += 10;
-                            this.showPowerUpMessage('+10 Coin (Max Can)!');
-                        }
-                        break;
+                    case 'coin': itemSymbol = '💰'; itemColor = `rgba(255, 215, 0, ${opacity})`; break;
+                    case 'powerFood': itemSymbol = '🌟'; itemColor = `rgba(255, 100, 255, ${opacity})`; break;
+                    case 'slowMotion': itemSymbol = '🐌'; itemColor = `rgba(52, 152, 219, ${opacity})`; break;
+                    case 'extraLifeToken': itemSymbol = '💖'; itemColor = `rgba(255, 71, 87, ${opacity})`; break;
+                    case 'shieldToken': itemSymbol = '🛡️'; itemColor = `rgba(0, 200, 255, ${opacity})`; break;
+                    case 'ghostToken': itemSymbol = '👻'; itemColor = `rgba(180, 180, 220, ${opacity})`; break;
                 }
                 
-                this.updateUI();
-            }
+                ctx.font = `${cellSize * 0.8}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = `rgba(0,0,0, ${opacity * 0.3})`;
+                ctx.fillText(itemSymbol, item.x * cellSize + cellSize / 2 + 2, item.y * cellSize + cellSize / 2 + 2);
+                ctx.fillStyle = itemColor;
+                ctx.fillText(itemSymbol, item.x * cellSize + cellSize / 2, item.y * cellSize + cellSize / 2);
+                return true;
+            });
+        }
 
-            useItem(itemType) {
-                if (this.state.isPaused || this.state.isGameOver) return;
-                
-                if (this.state.inventory[itemType] > 0) {
-                    this.state.inventory[itemType]--;
-                    
-                    switch (itemType) {
-                        case 'shield':
-                            if (!this.state.powerUps.shield) {
-                                this.state.powerUps.shield = true;
-                                this.showPowerUpMessage('Kalkan aktif!');
-                                this.sound.play('powerUp');
-                            }
-                            break;
-                        case 'speed':
-                            this.activatePowerUp('speed', GameConfig.POWER_UP_DURATION.speed);
-                            break;
-                        case 'double':
-                            this.activatePowerUp('double', GameConfig.POWER_UP_DURATION.double);
-                            break;
-                        case 'ghost':
-                            this.activatePowerUp('ghost', GameConfig.POWER_UP_DURATION.ghost);
-                            break;
-                    }
-                    
-                    this.updateUI();
-                    this.saveData();
-                }
+        function drawObstacles(theme) {
+            if (obstacles.length === 0) {
+                console.log("No obstacles to draw");
+                return;
             }
-
-            activatePowerUp(type, duration) {
-                this.state.powerUps[type] = true;
-                this.sound.play('powerUp');
+            
+            obstacles.forEach(obstacle => {
+                const x = obstacle.x * cellSize;
+                const y = obstacle.y * cellSize;
                 
-                const messages = {
-                    speed: 'Hız artışı aktif!',
-                    double: 'Çift puan aktif!',
-                    ghost: 'Hayalet modu aktif!',
-                    slow: 'Yavaş hareket aktif!'
-                };
-                
-                this.showPowerUpMessage(messages[type]);
-                
-                if (duration !== Infinity) {
-                    setTimeout(() => {
-                        this.state.powerUps[type] = false;
-                        this.showPowerUpMessage(`${messages[type].split(' ')[0]} bitti!`);
-                    }, duration);
-                }
-            }
-
-            isPositionOccupied(pos) {
-                // Yılan kontrolü
-                if (this.state.snake.some(seg => seg.x === pos.x && seg.y === pos.y)) return true;
-                
-                // Yemek kontrolü
-                if (this.state.food && this.state.food.x === pos.x && this.state.food.y === pos.y) return true;
-                
-                // Engel kontrolü
-                if (this.state.obstacles.some(obs => obs.x === pos.x && obs.y === pos.y)) return true;
-                
-                // Özel eşya kontrolü
-                if (this.state.specialItems.some(item => item.x === pos.x && item.y === pos.y)) return true;
-                
-                return false;
-            }
-
-            isNearSnake(pos, distance) {
-                if (!this.state.snake || this.state.snake.length === 0) return false;
-                const head = this.state.snake[0];
-                return Math.abs(head.x - pos.x) < distance && Math.abs(head.y - pos.y) < distance;
-            }
-
-            autoPlayLogic() {
-                const head = this.state.snake[0];
-                const target = this.state.food;
-                
-                if (!target) return;
-                
-                // Geliştirilmiş pathfinding
-                const possibleMoves = [];
-                const directions = ['up', 'down', 'left', 'right'];
-                
-                // Mevcut yönü öncelikle değerlendir
-                const currentDir = this.state.direction;
-                directions.sort((a, b) => {
-                    if (a === currentDir) return -1;
-                    if (b === currentDir) return 1;
-                    return 0;
-                });
-                
-                for (const dir of directions) {
-                    const newHead = { ...head };
-                    
-                    switch (dir) {
-                        case 'up': newHead.y--; break;
-                        case 'down': newHead.y++; break;
-                        case 'left': newHead.x--; break;
-                        case 'right': newHead.x++; break;
-                    }
-                    
-                    // Duvar kontrolü
-                    if (newHead.x < 0) newHead.x = this.cols - 1;
-                    else if (newHead.x >= this.cols) newHead.x = 0;
-                    if (newHead.y < 0) newHead.y = this.rows - 1;
-                    else if (newHead.y >= this.rows) newHead.y = 0;
-                    
-                    // Güvenlik kontrolü
-                    let safe = true;
-                    
-                    // Kendine çarpma kontrolü
-                    if (this.state.snake.some((seg, i) => i > 0 && seg.x === newHead.x && seg.y === newHead.y)) {
-                        safe = false;
-                    }
-                    
-                    // Engel kontrolü
-                    if (this.state.obstacles.some(obs => obs.x === newHead.x && obs.y === newHead.y)) {
-                        safe = false;
-                    }
-                    
-                    // Özel eşyaları tercih et
-                    let bonus = 0;
-                    this.state.specialItems.forEach(item => {
-                        if (item.x === newHead.x && item.y === newHead.y) {
-                            bonus = 10;
-                        }
-                    });
-                    
-                    if (safe) {
-                        // Eğer hayalet modu aktifse, engelleri görmezden gelebiliriz
-                        if (this.state.powerUps.ghost) {
-                            safe = true;
-                        }
-                        
-                        // Manhattan mesafesi - hedefi takip etmek için
-                        const distance = Math.abs(target.x - newHead.x) + Math.abs(target.y - newHead.y);
-                        
-                        // Devam eden yönü tercih et (daha düzgün hareket için)
-                        const directionPreference = dir === this.state.direction ? 0.5 : 0;
-                        
-                        // Toplam puan (düşük daha iyi)
-                        const score = distance - bonus - directionPreference;
-                        
-                        possibleMoves.push({ dir, score });
-                    }
+                // Karakter bilgisini al
+                let characterInfo = obstacle.characterInfo;
+                if (!characterInfo) {
+                    // Eğer karakteri yoksa (eski engeller için) bir tane ata
+                    const typeIndex = Math.floor(Math.random() * obstacleTypes.length);
+                    characterInfo = obstacleTypes[typeIndex];
+                    obstacle.characterInfo = characterInfo;
                 }
                 
-                // En iyi hareketi seç
-                if (possibleMoves.length > 0) {
-                    possibleMoves.sort((a, b) => a.score - b.score);
-                    this.state.nextDirection = possibleMoves[0].dir;
+                let opacity = 1.0;
+                if (obstacle.type === 'blinking' && Math.floor(Date.now() / 300) % 2 === 0) {
+                    opacity = 0.6;
                 }
-            }
 
-            render() {
-                const ctx = this.ctx;
-                const cellSize = GameConfig.CELL_SIZE;
-                const currentTheme = GameConfig.THEMES[this.state.currentTheme];
+                // Emoji karakteri çiz - boyutu artır
+                ctx.font = `${cellSize}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
                 
-                // Canvas temizle
-                ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                // Hafif gölge ekle
+                ctx.fillStyle = `rgba(0,0,0,${opacity * 0.5})`;
+                ctx.fillText(characterInfo.character, x + cellSize / 2 + 1, y + cellSize / 2 + 1);
                 
-                // Arka plan rengini ayarla
-                ctx.fillStyle = currentTheme.canvasBg;
-                ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-                
-                // Grid çiz
-                ctx.strokeStyle = currentTheme.gridColor;
-                ctx.lineWidth = 1;
-                
-                for (let i = 0; i <= this.cols; i++) {
-                    ctx.beginPath();
-                    ctx.moveTo(i * cellSize, 0);
-                    ctx.lineTo(i * cellSize, this.canvas.height);
-                    ctx.stroke();
-                }
-                
-                for (let j = 0; j <= this.rows; j++) {
-                    ctx.beginPath();
-                    ctx.moveTo(0, j * cellSize);
-                    ctx.lineTo(this.canvas.width, j * cellSize);
-                    ctx.stroke();
-                }
-                
-                // Yemek çiz
-                if (this.state.food) {
-                    ctx.fillStyle = currentTheme.foodColor;
-                    ctx.beginPath();
-                    ctx.arc(
-                        this.state.food.x * cellSize + cellSize / 2,
-                        this.state.food.y * cellSize + cellSize / 2,
-                        cellSize / 2 - 2,
-                        0,
-                        Math.PI * 2
-                    );
-                    ctx.fill();
-                }
-                
-                // Özel eşyaları çiz
-                this.state.specialItems.forEach(item => {
-                    const opacity = Math.min(item.lifetime / 50, 1);
-                    ctx.save();
-                    ctx.globalAlpha = opacity;
-                    
-                    const icons = {
-                        coin: '💰',
-                        powerFood: '🌟',
-                        shield: '🛡️',
-                        speed: '⚡',
-                        double: '💫',
-                        ghost: '👻',
-                        slowMotion: '🐌',
-                        extraLife: '💖'
-                    };
-                    
-                    ctx.font = `${cellSize * 0.8}px Arial`;
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText(
-                        icons[item.type] || '?',
-                        item.x * cellSize + cellSize / 2,
-                        item.y * cellSize + cellSize / 2
-                    );
-                    
-                    ctx.restore();
-                });
-                
-                // Engelleri çiz
-                this.state.obstacles.forEach(obstacle => {
-                    ctx.fillStyle = obstacle.type === 'moving'
-                        ? currentTheme.movingObstacleColor
-                        : currentTheme.obstacleColor;
-                        
-                    ctx.fillRect(
-                        obstacle.x * cellSize + 2,
-                        obstacle.y * cellSize + 2,
-                        cellSize - 4,
-                        cellSize - 4
-                    );
-                });
-                
-                // Yılanı çiz
-                this.state.snake.forEach((segment, index) => {
-                    const hue = (index * 10 + Date.now() / 20) % 360;
-                    
-                    if (this.state.powerUps.ghost) {
-                        ctx.fillStyle = `hsla(${hue}, 70%, 60%, 0.7)`;
-                    } else if (index === 0) {
-                        ctx.fillStyle = currentTheme.snakeHeadColor;
-                    } else {
-                        ctx.fillStyle = currentTheme.snakeBodyColor;
-                    }
-                    
-                    // Yuvarlak köşeli yılan
-                    const radius = 3;
-                    ctx.beginPath();
-                    ctx.roundRect(
-                        segment.x * cellSize,
-                        segment.y * cellSize,
-                        cellSize - 1,
-                        cellSize - 1,
-                        radius
-                    );
-                    ctx.fill();
-                    
-                    // Baş için gözler
-                    if (index === 0) {
-                        ctx.fillStyle = 'white';
-                        const eyeSize = cellSize / 5;
-                        const eyeOffset = cellSize / 3;
-                        
-                        // Yöne göre göz pozisyonu
-                        let eye1X, eye1Y, eye2X, eye2Y;
-                        
-                        switch (this.state.direction) {
-                            case 'up':
-                                eye1X = segment.x * cellSize + eyeOffset;
-                                eye1Y = segment.y * cellSize + eyeOffset;
-                                eye2X = segment.x * cellSize + cellSize - eyeOffset;
-                                eye2Y = segment.y * cellSize + eyeOffset;
-                                break;
-                            case 'down':
-                                eye1X = segment.x * cellSize + eyeOffset;
-                                eye1Y = segment.y * cellSize + cellSize - eyeOffset;
-                                eye2X = segment.x * cellSize + cellSize - eyeOffset;
-                                eye2Y = segment.y * cellSize + cellSize - eyeOffset;
-                                break;
-                            case 'left':
-                                eye1X = segment.x * cellSize + eyeOffset;
-                                eye1Y = segment.y * cellSize + eyeOffset;
-                                eye2X = segment.x * cellSize + eyeOffset;
-                                eye2Y = segment.y * cellSize + cellSize - eyeOffset;
-                                break;
-                            case 'right':
-                                eye1X = segment.x * cellSize + cellSize - eyeOffset;
-                                eye1Y = segment.y * cellSize + eyeOffset;
-                                eye2X = segment.x * cellSize + cellSize - eyeOffset;
-                                eye2Y = segment.y * cellSize + cellSize - eyeOffset;
-                                break;
-                        }
-                        
-                        ctx.beginPath();
-                        ctx.arc(eye1X, eye1Y, eyeSize, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.beginPath();
-                        ctx.arc(eye2X, eye2Y, eyeSize, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                });
-                
-                // Kalkan efekti
-                if (this.state.powerUps.shield) {
-                    const head = this.state.snake[0];
-                    ctx.strokeStyle = 'rgba(0, 150, 255, 0.5)';
-                    ctx.lineWidth = 3;
-                    ctx.beginPath();
-                    ctx.arc(
-                        head.x * cellSize + cellSize / 2,
-                        head.y * cellSize + cellSize / 2,
-                        cellSize,
-                        0,
-                        Math.PI * 2
-                    );
-                    ctx.stroke();
-                }
-            }
+                // Ana karakteri çiz
+                ctx.fillStyle = `rgba(255,255,255,${opacity})`;
+                ctx.fillText(characterInfo.character, x + cellSize / 2, y + cellSize / 2);
+            });
+        }
 
-            gameLoop(currentTime = 0) {
-                const deltaTime = currentTime - this.lastTime;
-                this.lastTime = currentTime;
-                
-                this.update(deltaTime);
-                this.render();
-                
-                this.animationId = requestAnimationFrame((time) => this.gameLoop(time));
-            }
-
-            togglePause() {
-                this.state.isPaused = !this.state.isPaused;
-                const pauseBtn = document.getElementById('pauseBtn');
-                const mobilePause = document.getElementById('mobilePause');
-                
-                if (this.state.isPaused) {
-                    pauseBtn.innerHTML = '▶️ Devam';
-                    mobilePause.innerHTML = '▶️';
+        function drawSnake(theme) {
+            const baseColor = rainbowMode ? null : (snakeColor || theme.snakeBaseColor);
+            
+            snake.forEach((segment, index) => {
+                let segmentColor;
+                if (rainbowMode) {
+                    segmentColor = `hsl(${(index * 15 + Date.now() / 20) % 360}, 90%, 60%)`;
                 } else {
-                    pauseBtn.innerHTML = '⏸️ Duraklat';
-                    mobilePause.innerHTML = '⏸️';
+                    segmentColor = index === 0 ? baseColor : darkenColor(baseColor, 15 + index * 2);
+                }
+
+                if (ghostModeActive) {
+                    ctx.globalAlpha = 0.6; 
+                    segmentColor = rainbowMode ? segmentColor : `rgba(${hexToRgb(baseColor).r}, ${hexToRgb(baseColor).g}, ${hexToRgb(baseColor).b}, 0.6)`;
                 }
                 
-                this.sound.play('coin');
+                ctx.fillStyle = segmentColor;
+                ctx.fillRect(segment.x * cellSize, segment.y * cellSize, cellSize, cellSize);
+                ctx.strokeStyle = darkenColor(segmentColor, 20);
+                ctx.strokeRect(segment.x * cellSize, segment.y * cellSize, cellSize, cellSize);
+
+
+                if (index === 0 && !ghostModeActive) { 
+                    ctx.fillStyle = 'white';
+                    const eyeSize = cellSize / 5;
+                    const eyeOffset = cellSize / 4;
+                    if (direction === 'right') {
+                        ctx.beginPath(); ctx.arc(segment.x * cellSize + cellSize - eyeOffset, segment.y * cellSize + eyeOffset, eyeSize / 2, 0, Math.PI*2); ctx.fill();
+                        ctx.beginPath(); ctx.arc(segment.x * cellSize + cellSize - eyeOffset, segment.y * cellSize + cellSize - eyeOffset, eyeSize / 2, 0, Math.PI*2); ctx.fill();
+                    } else if (direction === 'left') {
+                        ctx.beginPath(); ctx.arc(segment.x * cellSize + eyeOffset, segment.y * cellSize + eyeOffset, eyeSize / 2, 0, Math.PI*2); ctx.fill();
+                        ctx.beginPath(); ctx.arc(segment.x * cellSize + eyeOffset, segment.y * cellSize + cellSize - eyeOffset, eyeSize / 2, 0, Math.PI*2); ctx.fill();
+                    } else if (direction === 'up') {
+                        ctx.beginPath(); ctx.arc(segment.x * cellSize + eyeOffset, segment.y * cellSize + eyeOffset, eyeSize / 2, 0, Math.PI*2); ctx.fill();
+                        ctx.beginPath(); ctx.arc(segment.x * cellSize + cellSize - eyeOffset, segment.y * cellSize + eyeOffset, eyeSize / 2, 0, Math.PI*2); ctx.fill();
+                    } else if (direction === 'down') {
+                        ctx.beginPath(); ctx.arc(segment.x * cellSize + eyeOffset, segment.y * cellSize + cellSize - eyeOffset, eyeSize / 2, 0, Math.PI*2); ctx.fill();
+                        ctx.beginPath(); ctx.arc(segment.x * cellSize + cellSize - eyeOffset, segment.y * cellSize + cellSize - eyeOffset, eyeSize / 2, 0, Math.PI*2); ctx.fill();
+                    }
+                }
+                 ctx.globalAlpha = 1.0; 
+            });
+
+            if (shieldActive) {
+                ctx.strokeStyle = 'rgba(0, 180, 255, 0.8)';
+                ctx.lineWidth = 3;
+                const head = snake[0];
+                ctx.beginPath();
+                ctx.arc(head.x * cellSize + cellSize / 2, head.y * cellSize + cellSize / 2, cellSize * 0.7, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+        }
+        
+        function drawDangerousAreas() { 
+            ctx.fillStyle = 'rgba(255, 0, 0, 0.1)';
+            learningSystem.dangerousAreas.forEach(area => {
+                ctx.fillRect(area.x * cellSize, area.y * cellSize, cellSize, cellSize);
+            });
+            ctx.fillStyle = 'rgba(255, 100, 0, 0.2)';
+            learningSystem.deathPositions.forEach(pos => {
+                 ctx.fillRect(pos.x * cellSize, pos.y * cellSize, cellSize, cellSize);
+            });
+        }
+
+        // --- OYUN MANTIĞI ---
+        function moveSnake() {
+            if (isPaused) return;
+
+            if (autoplayEnabled) {
+                autoplayChooseDirection();
             }
 
-            toggleSound() {
-                const enabled = this.sound.toggle();
-                document.getElementById('soundBtn').innerHTML = enabled ? '🔊' : '🔇';
-                localStorage.setItem('snakeSoundEnabled', enabled);
+            const head = { ...snake[0] };
+            direction = nextDirection; 
+
+            switch (direction) {
+                case 'up': head.y--; break;
+                case 'down': head.y++; break;
+                case 'left': head.x--; break;
+                case 'right': head.x++; break;
             }
 
-            toggleTheme() {
-                this.darkTheme = !this.darkTheme;
-                document.body.classList.toggle('dark-theme', this.darkTheme);
-                localStorage.setItem('snakeDarkTheme', this.darkTheme);
+            if (!ghostModeActive) {
+                if (head.x < 0) head.x = cols - 1;
+                else if (head.x >= cols) head.x = 0;
+                if (head.y < 0) head.y = rows - 1;
+                else if (head.y >= rows) head.y = 0;
+            } else { 
+                 if (head.x < 0 || head.x >= cols || head.y < 0 || head.y >= rows) {
+                    handleCollision(true); 
+                    return;
+                }
             }
 
-            toggleAutoPlay() {
-                this.autoPlay = !this.autoPlay;
-                document.getElementById('autoBtn').style.opacity = this.autoPlay ? '1' : '0.5';
-                this.showPowerUpMessage(this.autoPlay ? 'Oto-oyun açık!' : 'Oto-oyun kapalı!');
+
+            if (checkCollision(head)) return;
+
+            snake.unshift(head); 
+
+            if (food && head.x === food.x && head.y === food.y) { // food tanımsız değilse kontrol et
+                score += doublePointsActive ? (POINTS_PER_FOOD * 2) : POINTS_PER_FOOD;
+                playSoundSequence('eat');
+                food = generateFood();
+                generateSpecialItem();
+                if (score >= level * POINTS_FOR_LEVEL_UP) { 
+                    levelUp();
+                }
+            } else {
+                snake.pop(); 
             }
 
-            openShop() {
-                this.state.isPaused = true;
-                const modal = document.getElementById('shopModal');
-                modal.classList.add('active');
+            specialItems.forEach((item, index) => {
+                if (head.x === item.x && head.y === item.y) {
+                    collectSpecialItem(item.type);
+                    specialItems.splice(index, 1);
+                }
+            });
+            
+            moveMovingObstacles();
+            updateDisplays();
+        }
+        
+        function checkCollision(head) {
+            if (!ghostModeActive) {
+                for (let i = 1; i < snake.length; i++) {
+                    if (snake[i].x === head.x && snake[i].y === head.y) {
+                        return handleCollision();
+                    }
+                }
+            }
+
+            const collidedObstacle = obstacles.find(obs => obs.x === head.x && obs.y === head.y);
+            if (collidedObstacle) {
+                if (ghostModeActive && collidedObstacle.type !== 'explosive') { 
+                    
+                } else {
+                     return handleCollision(collidedObstacle.type === 'explosive');
+                }
+            }
+            return false; 
+        }
+
+        function handleCollision(isExplosive = false) {
+            if (shieldActive) {
+                shieldActive = false;
+                showPowerUpMessage('Kalkan Kullanıldı!');
+                playSoundSequence('hurt'); 
+                if (isExplosive) { 
+                    obstacles = obstacles.filter(obs => !(obs.x === snake[0].x && obs.y === snake[0].y));
+                }
+                return false; 
+            }
+            
+            addDangerousArea(snake[0]); 
+            livesCount--;
+            playSoundSequence('hurt');
+            updateLivesDisplay();
+
+            if (livesCount <= 0) {
+                gameOver();
+                return true; 
+            }
+            showPowerUpMessage('Can Kaybedildi!');
+            snake = [{ x: Math.floor(cols / 2), y: Math.floor(rows / 2) }];
+            direction = 'right';
+            nextDirection = 'right';
+            if (obstacles.length > 3) obstacles.splice(0, Math.floor(obstacles.length / 3)); 
+            
+            activatePowerUp('ghostMode', 1500, true); 
+
+            return true; 
+        }
+
+        function collectSpecialItem(type) {
+            playSoundSequence('coin'); 
+            switch (type) {
+                case 'coin':
+                    coins += (level * 2); 
+                    showPowerUpMessage(`+${level * 2} Coin!`);
+                    break;
+                case 'powerFood':
+                    score += doublePointsActive ? 40 : 20;
+                    showPowerUpMessage('+20 Puan!');
+                    break;
+                case 'slowMotion':
+                    activatePowerUp('slowMotion', 5000);
+                    showPowerUpMessage('Yavaş Hareket!');
+                    break;
+                case 'extraLifeToken':
+                    if (livesCount < INITIAL_LIVES) {
+                        livesCount++;
+                        showPowerUpMessage('+1 Can!');
+                        playSoundSequence('levelUp'); 
+                    } else {
+                        coins += 10; 
+                        showPowerUpMessage('+10 Coin (Max Can)!');
+                    }
+                    break;
+                case 'shieldToken':
+                    inventory.shield++;
+                    showPowerUpMessage('Kalkan Envantere Eklendi!');
+                    break;
+                case 'ghostToken':
+                    inventory.ghostMode++;
+                    showPowerUpMessage('Hayalet Modu Envantere Eklendi!');
+                    break;
+            }
+            updateDisplays();
+        }
+        
+        function moveMovingObstacles() {
+            obstacles.forEach(obstacle => {
+                if (obstacle.type === 'moving') {
+                    obstacle.moveCounter = (obstacle.moveCounter || 0) + 1;
+                    if (obstacle.moveCounter % (8 - Math.min(5, Math.floor(level/2))) === 0) { 
+                        const oldPos = { x: obstacle.x, y: obstacle.y };
+                        switch (obstacle.direction) {
+                            case 'up': obstacle.y--; break;
+                            case 'down': obstacle.y++; break;
+                            case 'left': obstacle.x--; break;
+                            case 'right': obstacle.x++; break;
+                        }
+                        if (obstacle.x < 0 || obstacle.x >= cols || obstacle.y < 0 || obstacle.y >= rows ||
+                            obstacles.some(otherObs => otherObs !== obstacle && otherObs.x === obstacle.x && otherObs.y === obstacle.y) ||
+                            (food && food.x === obstacle.x && food.y === obstacle.y)) { // food tanımsız değilse kontrol et
+                            obstacle.x = oldPos.x; obstacle.y = oldPos.y;
+                            obstacle.direction = ['up', 'down', 'left', 'right'].filter(d => d !== obstacle.direction)[Math.floor(Math.random() * 3)];
+                        }
+                    }
+                }
+            });
+        }
+
+
+        function levelUp() {
+            level++;
+            playSoundSequence('levelUp');
+            const currentThemeName = levelThemes[Math.max(0, level - 1) % levelThemes.length].name;
+            showPowerUpMessage(`Level ${level}! Yeni Tema: ${currentThemeName}`);
+            updateGameSpeed();
+            generateObstacles(); 
+            if (level % 3 === 0 && livesCount < INITIAL_LIVES) { 
+                livesCount++;
+                showPowerUpMessage('+1 Can Bonusu!');
+            }
+        }
+
+        function updateGameSpeed() {
+            let newSpeed = INITIAL_GAME_SPEED - (level - 1) * SPEED_INCREMENT_PER_LEVEL;
+            if (speedBoostActive) newSpeed -= 50;
+            if (powerUpTimers.slowMotion) newSpeed += 70; 
+            gameSpeed = Math.max(MIN_GAME_SPEED, newSpeed);
+        }
+        
+        function gameOver() {
+            isPaused = true; 
+            playSoundSequence('gameOver');
+            const finalCoinsEarned = Math.floor(score / 20); 
+            coins += finalCoinsEarned;
+            saveGameState(); 
+
+            showNotification(
+                'Oyun Bitti!',
+                `Skorunuz: ${score}<br>Level: ${level}<br>Kazanılan Coin: ${finalCoinsEarned}<br>Toplam Coin: ${coins}`,
+                () => { 
+                    resetGame();
+                    isPaused = false;
+                    gameLoop(); 
+                }
+            );
+        }
+
+        function resetGame() {
+            snake = [{ x: Math.floor(cols / 2), y: Math.floor(rows / 2) }];
+            direction = 'right';
+            nextDirection = 'right';
+            score = 0; 
+            level = 1; 
+            livesCount = INITIAL_LIVES;
+            isPaused = false;
+            
+            shieldActive = false; speedBoostActive = false; doublePointsActive = false; ghostModeActive = false;
+            Object.values(powerUpTimers).forEach(timer => clearTimeout(timer));
+            powerUpTimers = {};
+
+            specialItems = []; 
+            food = generateFood(); 
+            generateObstacles();
+            
+            learningSystem.dangerousAreas = []; 
+            learningSystem.deathPositions = [];
+
+            updateGameSpeed(); 
+            updateDisplays();
+            
+            pauseBtn.innerHTML = '⏸️ Duraklat';
+            if(mobilePauseBtn) mobilePauseBtn.innerHTML = '⏸️';
+        }
+
+        // --- KONTROLLER ---
+        function changeDirection(newDir) {
+            if (isPaused && !(newDir === 'pauseToggle')) return; 
+            
+            const opposites = { 'up': 'down', 'down': 'up', 'left': 'right', 'right': 'left' };
+            if (snake.length > 1 && opposites[newDir] === direction) {
+                return;
+            }
+            nextDirection = newDir;
+        }
+
+        function togglePause() {
+            if (livesCount <= 0 && isPaused) return; 
+            if (livesCount <= 0 && !isPaused) return; 
+
+            isPaused = !isPaused;
+            playSoundSequence('click');
+            if (isPaused) {
+                pauseBtn.innerHTML = '▶️ Devam Et';
+                if(mobilePauseBtn) mobilePauseBtn.innerHTML = '▶️';
+                clearTimeout(gameLoopTimeout); 
+            } else {
+                pauseBtn.innerHTML = '⏸️ Duraklat';
+                 if(mobilePauseBtn) mobilePauseBtn.innerHTML = '⏸️';
+                gameLoop(); 
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            soundStatusDisplay.textContent = soundEnabled ? 'Açık' : 'Kapalı';
+            localStorage.setItem('snakeSoundEnabled', soundEnabled);
+            playSoundSequence('click');
+        }
+        
+        function toggleAutoplay() {
+            autoplayEnabled = autoplayToggle.checked;
+            showPowerUpMessage(`Oto-Oyna ${autoplayEnabled ? 'Aktif' : 'Devre Dışı'}`);
+        }
+
+        // --- GÜÇLENDİRMELER VE ENVANTER ---
+        function useItem(itemType) {
+            if (isPaused || livesCount <= 0) return;
+            let itemUsed = false;
+            switch (itemType) {
+                case 'shield':
+                    if (inventory.shield > 0 && !shieldActive) {
+                        inventory.shield--; shieldActive = true; itemUsed = true;
+                        showPowerUpMessage('Kalkan Aktif!');
+                    } else if (shieldActive) showPowerUpMessage('Kalkan Zaten Aktif!'); else showPowerUpMessage('Kalkan Yok!');
+                    break;
+                case 'speedBoost':
+                    if (inventory.speedBoost > 0 && !speedBoostActive) {
+                        inventory.speedBoost--; activatePowerUp('speedBoost', 5000); itemUsed = true;
+                    } else if (speedBoostActive) showPowerUpMessage('Hız Zaten Aktif!'); else showPowerUpMessage('Hız Artışı Yok!');
+                    break;
+                case 'doublePoints':
+                    if (inventory.doublePoints > 0 && !doublePointsActive) {
+                        inventory.doublePoints--; activatePowerUp('doublePoints', 10000); itemUsed = true;
+                    } else if (doublePointsActive) showPowerUpMessage('Çift Puan Zaten Aktif!'); else showPowerUpMessage('Çift Puan Yok!');
+                    break;
+                case 'ghostMode':
+                    if (inventory.ghostMode > 0 && !ghostModeActive) {
+                        inventory.ghostMode--; activatePowerUp('ghostMode', 7000); itemUsed = true; 
+                    } else if (ghostModeActive) showPowerUpMessage('Hayalet Modu Zaten Aktif!'); else showPowerUpMessage('Hayalet Modu Yok!');
+                    break;
+            }
+            if (itemUsed) {
+                playSoundSequence('powerUp');
+                updateInventoryDisplay();
+                saveGameState(); 
+            }
+        }
+        
+        function activatePowerUp(type, duration, temporary = false) { 
+            if (powerUpTimers[type]) clearTimeout(powerUpTimers[type]);
+
+            let message = '';
+            switch (type) {
+                case 'speedBoost':
+                    speedBoostActive = true; message = 'Hız Artışı Aktif!';
+                    break;
+                case 'slowMotion': 
+                    message = 'Yavaş Hareket!';
+                    break;
+                case 'doublePoints':
+                    doublePointsActive = true; message = 'Çift Puan Aktif!';
+                    break;
+                case 'ghostMode':
+                    ghostModeActive = true; message = temporary ? 'Dokunulmaz!' : 'Hayalet Modu Aktif!';
+                    break;
+            }
+            if(!temporary) showPowerUpMessage(message); 
+            updateGameSpeed(); 
+
+            powerUpTimers[type] = setTimeout(() => {
+                switch (type) {
+                    case 'speedBoost': speedBoostActive = false; break;
+                    case 'doublePoints': doublePointsActive = false; break;
+                    case 'ghostMode': ghostModeActive = false; break;
+                }
+                if(!temporary && message) showPowerUpMessage(`${message.split(' ')[0]} Bitti!`);
+                updateGameSpeed(); 
+                delete powerUpTimers[type];
+            }, duration);
+        }
+
+        function showPowerUpMessage(message) {
+            powerUpIndicator.textContent = message;
+            powerUpIndicator.style.animation = 'none'; 
+            powerUpIndicator.offsetHeight; 
+            powerUpIndicator.style.animation = 'powerUpFade 2s ease-out forwards';
+            powerUpIndicator.style.display = 'block';
+        }
+        
+        function changeSkin() {
+            if (isPaused) return;
+            const availableSkins = ['default', ...purchasedSkins.filter(s => s !== 'default' && s !== 'rainbow' && shopItemsData.find(item => item.id === s)), ...(purchasedSkins.includes('skin_rainbow') ? ['skin_rainbow'] : [])];
+            let currentSkinIndex = availableSkins.indexOf(currentSkin); 
+            currentSkinIndex = (currentSkinIndex + 1) % availableSkins.length;
+            const newSkinId = availableSkins[currentSkinIndex];
+
+            const skinData = shopItemsData.find(item => item.id === newSkinId);
+            
+            if (newSkinId === 'default') {
+                snakeColor = '#4CAF50'; 
+                rainbowMode = false;
+                currentSkin = 'default';
+                showPowerUpMessage('Yeşil Yılan Aktif!');
+            } else if (skinData && skinData.value === 'rainbow') { 
+                snakeColor = null; 
+                rainbowMode = true;
+                currentSkin = newSkinId;
+                showPowerUpMessage('Gökkuşağı Yılan Aktif!');
+            } else if (skinData) {
+                snakeColor = skinData.value;
+                rainbowMode = false;
+                currentSkin = newSkinId; 
+                showPowerUpMessage(`${skinData.name} Aktif!`);
+            }
+            
+            playSoundSequence('click');
+            updateInventoryDisplay(); 
+            localStorage.setItem('snakeCurrentSkin', currentSkin); 
+        }
+
+
+        // --- MARKET ---
+        function openShop() {
+            isPaused = true;
+            clearTimeout(gameLoopTimeout);
+            populateShop();
+            shopModal.style.display = 'flex';
+            playSoundSequence('click');
+        }
+
+        function closeShop() {
+            shopModal.style.display = 'none';
+            isPaused = false;
+            if (livesCount > 0) gameLoop(); 
+            playSoundSequence('click');
+        }
+
+        function populateShop() {
+            shopGrid.innerHTML = '';
+            shopItemsData.forEach(itemData => {
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('shop-item');
                 
-                // Market öğelerini oluştur - ÜCRETSİZ MARKET
-                const shopItems = document.getElementById('shopItems');
-                shopItems.innerHTML = `
-                    <div style="background: linear-gradient(45deg, #4CAF50, #8BC34A); padding: 15px; border-radius: 8px; border: 2px solid #FFD700;">
-                        <h3>🛡️ Ücretsiz Kalkan Paketi</h3>
-                        <p>10 adet kalkan - ÜCRETSİZ! 🎁</p>
-                        <button class="btn" style="background: linear-gradient(45deg, #4CAF50, #66BB6A); border: 2px solid #FFD700;" onclick="game.buyItem('shield', 10, 0)">Ücretsiz Al!</button>
-                    </div>
-                    <div style="background: linear-gradient(45deg, #2196F3, #03A9F4); padding: 15px; border-radius: 8px; border: 2px solid #FFD700;">
-                        <h3>⚡ Ücretsiz Hız Paketi</h3>
-                        <p>10 adet hız artışı - ÜCRETSİZ! 🎁</p>
-                        <button class="btn" style="background: linear-gradient(45deg, #2196F3, #42A5F5); border: 2px solid #FFD700;" onclick="game.buyItem('speed', 10, 0)">Ücretsiz Al!</button>
-                    </div>
-                    <div style="background: linear-gradient(45deg, #9C27B0, #BA68C8); padding: 15px; border-radius: 8px; border: 2px solid #FFD700;">
-                        <h3>💫 Ücretsiz Çift Puan Paketi</h3>
-                        <p>10 adet çift puan - ÜCRETSİZ! 🎁</p>
-                        <button class="btn" style="background: linear-gradient(45deg, #9C27B0, #AB47BC); border: 2px solid #FFD700;" onclick="game.buyItem('double', 10, 0)">Ücretsiz Al!</button>
-                    </div>
-                    <div style="background: linear-gradient(45deg, #FF5722, #FF7043); padding: 15px; border-radius: 8px; border: 2px solid #FFD700;">
-                        <h3>👻 Ücretsiz Hayalet Paketi</h3>
-                        <p>10 adet hayalet modu - ÜCRETSİZ! 🎁</p>
-                        <button class="btn" style="background: linear-gradient(45deg, #FF5722, #FF6F00); border: 2px solid #FFD700;" onclick="game.buyItem('ghost', 10, 0)">Ücretsiz Al!</button>
-                    </div>
-                    <div style="background: linear-gradient(45deg, #FF9800, #FFC107); padding: 15px; border-radius: 8px; border: 2px solid #FFD700;">
-                        <h3>💰 Ücretsiz Coin Paketi</h3>
-                        <p>100 adet coin - ÜCRETSİZ! 🎁</p>
-                        <button class="btn" style="background: linear-gradient(45deg, #FF9800, #FFB74D); border: 2px solid #FFD700;" onclick="game.buyItem('coins', 100, 0)">Ücretsiz Al!</button>
-                    </div>
-                    <div style="background: linear-gradient(45deg, #E91E63, #F06292); padding: 15px; border-radius: 8px; border: 2px solid #FFD700;">
-                        <h3>❤️ Ücretsiz Can Paketi</h3>
-                        <p>1 adet ekstra can - ÜCRETSİZ! 🎁</p>
-                        <button class="btn" style="background: linear-gradient(45deg, #E91E63, #EC407A); border: 2px solid #FFD700;" onclick="game.buyItem('life', 1, 0)">Ücretsiz Al!</button>
-                    </div>
+                let statusText = 'Ücretsiz - Sınırsız Alım';
+
+                itemDiv.innerHTML = `
+                    <h3>${itemData.name}</h3>
+                    <p>${itemData.description}</p>
+                    <p class="item-status">${statusText}</p>
+                    <button class="buy-btn" data-id="${itemData.id}">
+                        Ücretsiz Al
+                    </button>
                 `;
-            }
+                shopGrid.appendChild(itemDiv);
+            });
 
-            buyItem(type, amount, cost) {
-                if (this.state.coins >= cost) {
-                    this.state.coins -= cost;
-                    
-                    // Özel eşya türleri için farklı işlemler
-                    if (type === 'coins') {
-                        this.state.coins += amount;
-                        this.showNotification('Ücretsiz Coin Alındı! 🎁', `${amount} coin hesabınıza eklendi!`);
-                    } else if (type === 'life') {
-                        if (this.state.lives < GameConfig.INITIAL_LIVES) {
-                            this.state.lives += amount;
-                            this.showNotification('Ücretsiz Can Alındı! 🎁', `${amount} can eklendi!`);
-                        } else {
-                            this.state.coins += 50; // Maksimum canda ise coin ver
-                            this.showNotification('Maksimum Can! 🎁', 'Zaten maksimum cansınız! 50 coin aldınız!');
-                        }
-                    } else {
-                        // Normal envanter eşyaları
-                        this.state.inventory[type] += amount;
-                        this.showNotification('Ücretsiz Eşya Alındı! 🎁', `${amount} adet ${this.getItemName(type)} alındı!`);
-                    }
-                    
-                    this.updateUI();
-                    this.saveData();
-                    this.sound.play('coin');
+            shopGrid.querySelectorAll('.buy-btn').forEach(btn => {
+                btn.onclick = () => buyItem(btn.dataset.id);
+            });
+        }
+
+        function buyItem(itemId) {
+            const itemData = shopItemsData.find(item => item.id === itemId);
+            if (!itemData) return;
+
+            // Tüm sınırlamalar kaldırıldı - her şey ücretsiz ve sınırsız
+            playSoundSequence('coin');
+
+            if (itemData.type === 'skin') {
+                if (!purchasedSkins.includes(itemData.id)) { 
+                    purchasedSkins.push(itemData.id);
+                }
+                localStorage.setItem('snakePurchasedSkins', JSON.stringify(purchasedSkins));
+                showNotification('Başarılı!', `${itemData.name} ücretsiz olarak alındı ve envanterinize eklendi.`);
+            } else if (itemData.type === 'item') {
+                if (itemData.value === 'extraLifePerm') {
+                    livesCount++; 
+                    showNotification('Başarılı!', `${itemData.name} ücretsiz olarak alındı ve 1 can eklendi.`);
                 } else {
-                    this.showNotification('Yetersiz Coin!', `Bu eşyayı almak için ${cost - this.state.coins} coin daha gerekli.`);
+                    inventory[itemData.value] = (inventory[itemData.value] || 0) + 1;
+                    showNotification('Başarılı!', `${itemData.name} ücretsiz olarak alındı ve envanterinize eklendi.`);
                 }
             }
+            updateDisplays();
+            populateShop(); 
+            saveGameState();
+        }
+        
+        // --- OTOMATİK OYNATMA ---
+        function autoplayChooseDirection() {
+            const head = snake[0];
+            const possibleMoves = []; 
 
-            getItemName(type) {
-                const names = {
-                    'shield': 'kalkan',
-                    'speed': 'hız artışı',
-                    'double': 'çift puan',
-                    'ghost': 'hayalet modu'
-                };
-                return names[type] || type;
-            }
+            ['up', 'down', 'left', 'right'].forEach(d => {
+                if (snake.length > 1 && nextDirection === {up:'down',down:'up',left:'right',right:'left'}[d]) return; 
 
-            confirmReset() {
-                this.showNotification(
-                    'Oyunu Sıfırla?',
-                    'Tüm ilerlemeniz kaybolacak. Emin misiniz?',
-                    () => {
-                        this.state.reset();
-                        this.generateFood();
-                        this.generateObstacles();
-                        this.updateUI();
-                        this.sound.play('levelUp');
-                    }
-                );
-            }
+                const nextPos = {...head};
+                if (d === 'up') nextPos.y--; else if (d === 'down') nextPos.y++;
+                else if (d === 'left') nextPos.x--; else if (d === 'right') nextPos.x++;
 
-            gameOver() {
-                this.state.isGameOver = true;
-                this.sound.play('gameOver');
-                
-                // Yüksek skor kontrolü
-                const highScore = parseInt(localStorage.getItem('snakeHighScore') || '0');
-                if (this.state.score > highScore) {
-                    localStorage.setItem('snakeHighScore', this.state.score);
+                if (!ghostModeActive) {
+                    if (nextPos.x < 0) nextPos.x = cols - 1; else if (nextPos.x >= cols) nextPos.x = 0;
+                    if (nextPos.y < 0) nextPos.y = rows - 1; else if (nextPos.y >= rows) nextPos.y = 0;
+                } else { 
+                    if (nextPos.x < 0 || nextPos.x >= cols || nextPos.y < 0 || nextPos.y >= rows) return;
                 }
-                
-                // Kazanılan coin
-                const earnedCoins = Math.floor(this.state.score / 20);
-                this.state.coins += earnedCoins;
-                
-                this.showNotification(
-                    'Oyun Bitti!',
-                    `Skor: ${this.state.score}<br>Seviye: ${this.state.level}<br>Kazanılan Coin: ${earnedCoins}`,
-                    () => {
-                        this.state.reset();
-                        this.generateFood();
-                        this.generateObstacles();
-                        this.updateUI();
+
+
+                let score = 0;
+                if (food) score += 1000 / (1 + Math.abs(nextPos.x - food.x) + Math.abs(nextPos.y - food.y)); // food tanımsız değilse
+                specialItems.forEach(item => {
+                    score += 500 / (1 + Math.abs(nextPos.x - item.x) + Math.abs(nextPos.y - item.y));
+                     if(item.type === 'extraLifeToken' && livesCount < INITIAL_LIVES) score *= 1.5; 
+                });
+
+                let isSafe = true;
+                if (!ghostModeActive) { 
+                    if (obstacles.some(obs => obs.x === nextPos.x && obs.y === nextPos.y)) {
+                        score -= 5000; isSafe = false;
                     }
-                );
-                
-                this.saveData();
+                    for(let i=0; i < snake.length; i++) { 
+                        if(snake[i].x === nextPos.x && snake[i].y === nextPos.y) {
+                             score -= 10000 / (i+1); isSafe = false; break;
+                        }
+                    }
+                }
+                if (isDangerousPosition(nextPos)) {
+                    score -= 2000;
+                }
+
+
+                if(isSafe || ghostModeActive) possibleMoves.push({ direction: d, score });
+                else if (possibleMoves.length === 0 && d === ['up', 'down', 'left', 'right'][0]) { 
+                     possibleMoves.push({ direction: d, score: -Infinity }); 
+                }
+            });
+
+            if (possibleMoves.length > 0) {
+                possibleMoves.sort((a, b) => b.score - a.score); 
+                nextDirection = possibleMoves[0].direction;
+            } else {
+                const validDirs = ['up', 'down', 'left', 'right'].filter(d => !(snake.length > 1 && nextDirection === {up:'down',down:'up',left:'right',right:'left'}[d]));
+                if (validDirs.length > 0) nextDirection = validDirs[Math.floor(Math.random() * validDirs.length)];
+            }
+        }
+        
+        function addDangerousArea(position) {
+            learningSystem.deathPositions.push({...position});
+            if (learningSystem.deathPositions.length > 20) learningSystem.deathPositions.shift();
+
+            const existingArea = learningSystem.dangerousAreas.find(area => area.x === position.x && area.y === position.y);
+            if (existingArea) {
+                existingArea.weight = Math.min(1, existingArea.weight + 0.2);
+            } else {
+                learningSystem.dangerousAreas.push({...position, weight: learningSystem.learnRate});
+            }
+            if (learningSystem.dangerousAreas.length > 50) {
+                learningSystem.dangerousAreas.sort((a,b) => a.weight - b.weight); 
+                learningSystem.dangerousAreas.shift();
+            }
+        }
+
+        function isDangerousPosition(position, radiusMultiplier = 1) {
+            return learningSystem.dangerousAreas.some(area => {
+                const dist = Math.sqrt(Math.pow(area.x - position.x, 2) + Math.pow(area.y - position.y, 2));
+                return dist < learningSystem.avoidanceRadius * area.weight * radiusMultiplier;
+            });
+        }
+
+
+        // --- KAYIT VE YÜKLEME ---
+        function saveGameState() {
+            localStorage.setItem('snakeHighScore', highScore);
+            localStorage.setItem('snakeCoins', coins);
+            localStorage.setItem('snakeInventory', JSON.stringify(inventory));
+            localStorage.setItem('snakePurchasedSkins', JSON.stringify(purchasedSkins));
+            localStorage.setItem('snakeCurrentSkin', currentSkin); 
+        }
+
+        function loadGameState() {
+            highScore = parseInt(localStorage.getItem('snakeHighScore')) || 0;
+            coins = parseInt(localStorage.getItem('snakeCoins')) || 0;
+            soundEnabled = localStorage.getItem('snakeSoundEnabled') !== 'false'; 
+            darkTheme = localStorage.getItem('snakeTheme') === 'dark';
+            preferredOrientation = localStorage.getItem('snakeOrientationLock') || null;
+
+            const savedInventory = JSON.parse(localStorage.getItem('snakeInventory'));
+            if (savedInventory) inventory = savedInventory;
+            
+            const savedSkins = JSON.parse(localStorage.getItem('snakePurchasedSkins'));
+            if (savedSkins && Array.isArray(savedSkins)) { 
+                 purchasedSkins = savedSkins;
+            } else {
+                purchasedSkins = ['default']; 
+            }
+            
+            currentSkin = localStorage.getItem('snakeCurrentSkin') || 'default'; 
+            
+            if (currentSkin === 'skin_rainbow') { 
+                rainbowMode = true; snakeColor = null;
+            } else if (currentSkin !== 'default') {
+                const skinData = shopItemsData.find(s => s.id === currentSkin);
+                if (skinData) snakeColor = skinData.value; else { currentSkin = 'default'; snakeColor = '#4CAF50'; }
+                rainbowMode = false;
+            } else { 
+                snakeColor = '#4CAF50'; rainbowMode = false;
+            }
+        }
+
+        // --- YARDIMCI FONKSİYONLAR ---
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : {r:0,g:0,b:0}; 
+        }
+
+        function darkenColor(hex, percent) {
+            if (!hex) return '#000000'; 
+            let { r, g, b } = hexToRgb(hex);
+            r = Math.max(0, Math.floor(r * (1 - percent / 100)));
+            g = Math.max(0, Math.floor(g * (1 - percent / 100)));
+            b = Math.max(0, Math.floor(b * (1 - percent / 100)));
+            return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).padStart(6, '0')}`;
+        }
+        function lightenColor(hex, percent) {
+            if (!hex) return '#FFFFFF'; 
+            let { r, g, b } = hexToRgb(hex);
+            r = Math.min(255, Math.floor(r + (255 - r) * (percent / 100)));
+            g = Math.min(255, Math.floor(g + (255 - g) * (percent / 100)));
+            b = Math.min(255, Math.floor(b + (255 - b) * (percent / 100)));
+            return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).padStart(6, '0')}`;
+        }
+        
+        // --- EKRAN YÖNÜ VE BOYUTLANDIRMA ---
+        function setupCanvas() {
+            const gameRight = document.querySelector('.game-right');
+            const menuHeight = document.querySelector('.game-menu').offsetHeight;
+            const progressHeight = document.querySelector('.level-progress').offsetHeight;
+            
+            const paddingAndMargins = 40; 
+
+            const availableWidth = gameRight.clientWidth - 10; 
+            const availableHeight = gameRight.clientHeight - menuHeight - progressHeight - paddingAndMargins;
+
+
+            const potentialCellSizeWidth = availableWidth / 40; 
+            const potentialCellSizeHeight = availableHeight / 25; 
+            
+            cellSize = Math.floor(Math.min(potentialCellSizeWidth, potentialCellSizeHeight));
+            cellSize = Math.max(10, Math.min(cellSize, 22)); 
+
+            cols = Math.floor(availableWidth / cellSize);
+            rows = Math.floor(availableHeight / cellSize);
+            
+            canvas.width = cols * cellSize;
+            canvas.height = rows * cellSize;
+        }
+
+        function zoomCanvas(type) {
+            const step = type === 'in' ? 1.1 : 0.9;
+            let newCellSize = Math.round(cellSize * step);
+            newCellSize = Math.max(8, Math.min(newCellSize, 30)); 
+
+            if (newCellSize !== cellSize) {
+                cellSize = newCellSize;
+                setupCanvas(); 
+                if (!isPaused && livesCount > 0) drawGame();
+            }
+            playSoundSequence('click');
+        }
+        
+        function checkScreenOrientation() {
+            if (!preferredOrientation) {
+                rotationOverlay.classList.remove('show');
+                return;
+            }
+            const currentOrientation = window.innerHeight > window.innerWidth ? 'portrait' : 'landscape';
+            if (currentOrientation !== preferredOrientation) {
+                requiredOrientationText.textContent = preferredOrientation === 'landscape' ? 'yatay' : 'dikey';
+                rotationOverlay.classList.add('show');
+            } else {
+                rotationOverlay.classList.remove('show');
+            }
+        }
+
+        function toggleOrientationLock() {
+            playSoundSequence('click');
+            const currentOrientation = window.innerHeight > window.innerWidth ? 'portrait' : 'landscape';
+            if (preferredOrientation) { 
+                preferredOrientation = null;
+                localStorage.removeItem('snakeOrientationLock');
+                orientationToggleBtn.title = 'Ekran Yönünü Kilitle/Aç';
+                orientationToggleBtn.innerHTML = '📱';
+                showPowerUpMessage('Ekran Yön Kilidi Kaldırıldı');
+            } else { 
+                orientationLockTitle.textContent = `Ekranı ${currentOrientation === 'landscape' ? 'Yatay' : 'Dikey'} Kilitle?`;
+                orientationLockMessage.textContent = `Oyunu mevcut ${currentOrientation === 'landscape' ? 'yatay' : 'dikey'} yönde kilitlemek istiyor musunuz?`;
+                orientationLockModal.style.display = 'flex';
+            }
+            checkScreenOrientation();
+        }
+
+        function confirmOrientationLock() {
+            preferredOrientation = window.innerHeight > window.innerWidth ? 'portrait' : 'landscape';
+            localStorage.setItem('snakeOrientationLock', preferredOrientation);
+            orientationToggleBtn.title = `Yön Kilitli (${preferredOrientation})`;
+            orientationToggleBtn.innerHTML = preferredOrientation === 'landscape' ? '📲↔️' : '📲↕️';
+            showPowerUpMessage(`Ekran ${preferredOrientation} Yönüne Kilitlendi`);
+            orientationLockModal.style.display = 'none';
+            checkScreenOrientation();
+        }
+        function cancelOrientationLock() {
+            orientationLockModal.style.display = 'none';
+        }
+        
+        function toggleTheme() {
+            darkTheme = !darkTheme;
+            document.body.classList.toggle('dark-theme', darkTheme);
+            localStorage.setItem('snakeTheme', darkTheme ? 'dark' : 'light');
+            if (!isPaused && livesCount > 0) drawGame();
+            playSoundSequence('click');
+        }
+        
+        function openInventoryModal() {
+            if (isPaused && inventoryModal.style.display === 'flex') return; 
+            isPaused = true; 
+            clearTimeout(gameLoopTimeout);
+            updateInventoryDisplay(); 
+            inventoryModal.style.display = 'flex';
+            playSoundSequence('click');
+        }
+
+        function closeInventoryModal() {
+            inventoryModal.style.display = 'none';
+            isPaused = false; 
+            if (livesCount > 0) gameLoop();
+            playSoundSequence('click');
+        }
+
+        // Ekran yönlendirmesi için değişkenler
+// isLandscapeLock is already declared at the bottom of the file
+// isPortraitLock is already declared at the bottom of the file
+
+        function updateOrientationToggleIcon() {
+            const orientationToggle = document.querySelector('.orientation-toggle');
+            
+            if (isLandscapeLock) {
+                orientationToggle.textContent = '📱↔️';
+                orientationToggle.title = 'Yatay Mod Kilitli';
+            } else if (isPortraitLock) {
+                orientationToggle.textContent = '📱↕️';
+                orientationToggle.title = 'Dikey Mod Kilitli';
+            } else {
+                orientationToggle.textContent = '📱';
+                orientationToggle.title = 'Ekran Yönünü Değiştir';
+            }
+        }
+
+        // --- MOBİL AYARLARI ---
+        function setupMobileFullscreen() {
+            // Tam ekran desteği varsa kullan
+            document.documentElement.addEventListener('click', () => {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen().catch(err => {
+                        // Tam ekran hatasını yok say
+                    });
+                } else if (document.documentElement.webkitRequestFullscreen) {
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.mozRequestFullScreen) {
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.msRequestFullscreen) {
+                    document.documentElement.msRequestFullscreen();
+                }
+            }, { once: true });
+        }
+        
+        // --- BAŞLANGIÇ ---
+        let gameLoopTimeout;
+        function gameLoop() {
+            if (isPaused || livesCount <= 0) return;
+            
+            const startTime = performance.now();
+            
+            moveSnake();
+            if (livesCount > 0 && !isPaused) { 
+                 drawGame();
+            }
+            
+            const endTime = performance.now();
+            const elapsedTime = endTime - startTime;
+            
+            const nextTickDelay = Math.max(0, gameSpeed - elapsedTime);
+            gameLoopTimeout = setTimeout(gameLoop, nextTickDelay);
+        }
+        
+        function initGame() {
+            document.removeEventListener('click', initAudio); 
+            document.addEventListener('click', initAudio, { once: true }); 
+
+            loadGameState(); 
+            setupCanvas();    
+            resetGame();      
+
+            if (darkTheme) document.body.classList.add('dark-theme');
+            soundStatusDisplay.textContent = soundEnabled ? 'Açık' : 'Kapalı';
+            updateOrientationToggleIcon(); 
+            checkScreenOrientation(); 
+            
+            // Mobil menu butonu için kontroller
+            const isMobile = window.innerWidth <= 900;
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            if (mobileMenuBtn) {
+                mobileMenuBtn.style.display = isMobile ? 'flex' : 'none';
             }
 
-            showPowerUpMessage(message) {
-                const indicator = document.getElementById('powerUpIndicator');
-                indicator.textContent = message;
-                indicator.classList.add('show');
-                
-                setTimeout(() => {
-                    indicator.classList.remove('show');
-                }, 2000);
-            }
+            document.addEventListener('keydown', (e) => {
+                if (notificationModal.style.display === 'flex' || shopModal.style.display === 'flex' || inventoryModal.style.display === 'flex' || orientationLockModal.style.display === 'flex') {
+                    if (e.key === 'Escape') {
+                        if (notificationModal.style.display === 'flex') notificationModal.style.display = 'none';
+                        if (shopModal.style.display === 'flex') closeShop();
+                        if (inventoryModal.style.display === 'flex') closeInventoryModal();
+                        if (orientationLockModal.style.display === 'flex') cancelOrientationLock();
+                        if (!isPaused && livesCount > 0 && 
+                            shopModal.style.display !== 'flex' && 
+                            inventoryModal.style.display !== 'flex' &&
+                            orientationLockModal.style.display !== 'flex' &&
+                            notificationModal.style.display !== 'flex'
+                           ) {
+                           // gameLoop(); 
+                        }
+                    }
+                    return; 
+                }
 
-            showNotification(title, message, onConfirm) {
-                const modal = document.getElementById('notificationModal');
-                document.getElementById('notificationTitle').textContent = title;
-                document.getElementById('notificationMessage').innerHTML = message;
-                
-                const btn = document.getElementById('notificationBtn');
-                btn.onclick = () => {
-                    modal.classList.remove('active');
-                    if (onConfirm) onConfirm();
+                const keyMap = {
+                    'ArrowUp': 'up', 'w': 'up', 'W': 'up',
+                    'ArrowDown': 'down', 's': 'down', 'S': 'down',
+                    'ArrowLeft': 'left', 'a': 'left', 'A': 'left',
+                    'ArrowRight': 'right', 'd': 'right', 'D': 'right',
+                    ' ': 'pauseToggle',
+                    'p': 'pauseToggle', 'P': 'pauseToggle',
+                    'm': 'toggleSound', 'M': 'toggleSound', 
+                    'Escape': 'pauseToggle' 
                 };
-                
-                modal.classList.add('active');
-            }
+                const inventoryKeyMap = {
+                    '1': 'shield', 'q': 'shield', 
+                    '2': 'speedBoost', 'e': 'speedBoost', 
+                    '3': 'doublePoints', 'r': 'doublePoints', 
+                    '4': 'ghostMode', 'f': 'ghostMode', 
+                    '5': 'skin', 'c': 'skin', 
+                };
 
-            updateUI() {
-                // Skorlar
-                document.getElementById('score').textContent = this.state.score;
-                document.getElementById('level').textContent = this.state.level;
-                document.getElementById('coins').textContent = this.state.coins;
-                
-                const highScore = parseInt(localStorage.getItem('snakeHighScore') || '0');
-                document.getElementById('highScore').textContent = Math.max(highScore, this.state.score);
-                
-                // Progress bar
-                const progress = (this.state.score % GameConfig.POINTS_PER_LEVEL) / GameConfig.POINTS_PER_LEVEL * 100;
-                document.getElementById('progressBar').style.width = `${progress}%`;
-                
-                // Canlar
-                const hearts = Array(GameConfig.INITIAL_LIVES).fill('❤️')
-                    .map((heart, i) => i < this.state.lives ? heart : '🖤')
-                    .join('');
-                document.getElementById('lives').innerHTML = `<span style="font-size: 2em;">${hearts}</span>`;
-                
-                // Envanter
-                document.querySelectorAll('.inventory-item').forEach(item => {
-                    const type = item.dataset.item;
-                    const count = item.querySelector('.item-count');
-                    count.textContent = this.state.inventory[type];
-                    count.style.display = this.state.inventory[type] > 0 ? 'flex' : 'none';
+                const lowerKey = e.key.toLowerCase();
+
+                if (keyMap[e.key] || keyMap[lowerKey]) { 
+                    e.preventDefault();
+                    const action = keyMap[e.key] || keyMap[lowerKey];
+                    if (action === 'pauseToggle') togglePause();
+                    else if (action === 'toggleSound') toggleSound();
+                    else changeDirection(action);
+                } else if (inventoryKeyMap[lowerKey]) {
+                    e.preventDefault();
+                    if (inventoryKeyMap[lowerKey] === 'skin') changeSkin();
+                    else useItem(inventoryKeyMap[lowerKey]);
+                }
+            });
+            
+            window.addEventListener('resize', () => {
+                setupCanvas();
+                checkScreenOrientation();
+                if (!isPaused && livesCount > 0) drawGame(); 
+            });
+            window.addEventListener('orientationchange', () => {
+                setTimeout(() => { 
+                    setupCanvas();
+                    checkScreenOrientation();
+                    if (!isPaused && livesCount > 0) drawGame();
+                }, 200);
+            });
+            
+            const mobileInventoryBtn = document.querySelector('.mobile-controls-container .inventory');
+            if(mobileInventoryBtn) {
+                mobileInventoryBtn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    openInventoryModal();
                 });
             }
-
-            saveData() {
-                localStorage.setItem('snakeCoins', this.state.coins);
-                localStorage.setItem('snakeInventory', JSON.stringify(this.state.inventory));
-            }
-
-            loadSavedData() {
-                // Coin yükle
-                const savedCoins = localStorage.getItem('snakeCoins');
-                if (savedCoins) this.state.coins = parseInt(savedCoins);
-                
-                // Envanter yükle
-                const savedInventory = localStorage.getItem('snakeInventory');
-                if (savedInventory) {
-                    try {
-                        const inventory = JSON.parse(savedInventory);
-                        Object.assign(this.state.inventory, inventory);
-                    } catch (e) {
-                        console.error('Envanter yüklenemedi:', e);
-                    }
-                }
-                
-                // Tema yükle
-                this.darkTheme = localStorage.getItem('snakeDarkTheme') === 'true';
-                if (this.darkTheme) {
-                    document.body.classList.add('dark-theme');
-                }
-                
-                // Ses ayarı yükle
-                this.sound.enabled = localStorage.getItem('snakeSoundEnabled') !== 'false';
-                document.getElementById('soundBtn').innerHTML = this.sound.enabled ? '🔊' : '🔇';
-            }
+            
+            // Mobil tam ekran modunu başlat
+            setupMobileFullscreen();
+            
+            gameLoop();
         }
 
-        // Modal kapatma fonksiyonu
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-            if (game && !game.state.isGameOver) {
-                game.state.isPaused = false;
-            }
-        }
+        document.addEventListener('DOMContentLoaded', initGame);
 
-        // Mobil menü açma/kapama
         function toggleMobileMenu() {
-            const sidebar = document.querySelector('.game-sidebar');
-            sidebar.classList.toggle('active');
-        }
-
-        // Oyunu başlat
-        const game = new SnakeGame();
-
-        // Mobil menü butonu işleyicisi
-        document.getElementById('mobileMenuBtn').addEventListener('click', toggleMobileMenu);
-        
-        // Mobil sidebar kapatma butonu işleyicisi
-        document.getElementById('sidebarCloseBtn').addEventListener('click', toggleMobileMenu);
-
-        // Mobil market ikonu işleyicisi
-        document.getElementById('mobileMarketBtn').addEventListener('click', function() {
-            game.openShop();
-        });
-
-        // Mobil otomatik oynatma butonu işleyicisi
-        document.getElementById('mobileAutoBtn').addEventListener('click', function() {
-            game.toggleAutoPlay();
-        });
-        
-        // Denetim boyutu ayarlama
-        let currentSize = 55;
-        const minSize = 40;
-        const maxSize = 70;
-        const sizeStep = 5;
-        
-        // Boyut değişim işlemleri
-        document.getElementById('increaseSize').addEventListener('click', function() {
-            if (currentSize < maxSize) {
-                currentSize += sizeStep;
-                updateControlSize();
+            const gameLeft = document.querySelector('.game-left');
+            const menu = document.querySelector('.game-menu');
+            
+            if (!gameLeft) return;
+            
+            // Envanter kısmını aç/kapa
+            gameLeft.style.display = (gameLeft.style.display === 'none' || gameLeft.style.display === '') ? 'flex' : 'none';
+            
+            // Menü açıldığında oyunu duraklat
+            if (gameLeft.style.display === 'flex' && !isPaused) {
+                isPaused = true;
+                clearTimeout(gameLoopTimeout);
+            } else if (gameLeft.style.display === 'none' && isPaused && livesCount > 0 && 
+                 shopModal.style.display !== 'flex' && 
+                 inventoryModal.style.display !== 'flex') {
+                isPaused = false;
+                gameLoop();
             }
-        });
-        
-        document.getElementById('decreaseSize').addEventListener('click', function() {
-            if (currentSize > minSize) {
-                currentSize -= sizeStep;
-                updateControlSize();
+        }
+
+        function toggleAutoplayMobile() {
+            autoplayEnabled = !autoplayEnabled;
+            const autoplayBtn = document.querySelector('.autoplay-btn');
+            if (autoplayBtn) {
+                if (autoplayEnabled) {
+                    autoplayBtn.classList.add('active');
+                    autoplayBtn.innerHTML = '🤖✓';
+                } else {
+                    autoplayBtn.classList.remove('active');
+                    autoplayBtn.innerHTML = '🤖';
+                }
             }
-        });
-        
-        function updateControlSize() {
-            document.documentElement.style.setProperty('--btn-size', currentSize + 'px');
-            localStorage.setItem('snakeControlSize', currentSize);
+            showPowerUpMessage(`Oto-Oyna ${autoplayEnabled ? 'Aktif' : 'Devre Dışı'}`);
+            playSoundSequence('click');
         }
-        
-        // Kayıtlı boyutu yükle
-        const savedSize = localStorage.getItem('snakeControlSize');
-        if (savedSize) {
-            currentSize = parseInt(savedSize);
-            updateControlSize();
-        }
+
+        // Ekran yönlendirmesi için değişkenler
+        let isLandscapeLock = false;
+        let isPortraitLock = false;
     </script>
 </body>
 </html>
