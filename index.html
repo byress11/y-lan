@@ -421,75 +421,315 @@
 
         /* Geliştirilmiş Mobil Kontroller (iPhone ve diğerleri için) */
         .mobile-controls-container {
-            display: none; /* Varsayılan olarak gizli, JS ile aktif edilecek */
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            justify-content: space-between; /* Sol ve sağa yasla */
-            align-items: center; /* Orta hizalama */
-            background: rgba(0, 0, 0, 0.5);
-            padding: 10px;
-            backdrop-filter: blur(5px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: none; /* Mobil kontroller tamamen gizlendi */
+            /* Tüm önceki stiller devre dışı */
         }
 
         .mobile-dpad {
+            position: absolute; 
+            bottom: 40px; 
+            left: 20px;
+            width: 200px; /* Yatay düzen için genişlik artırıldı */
+            height: 50px;  /* Yükseklik azaltıldı - yatay düzen */
             display: grid;
-            grid-template-columns: repeat(3, 40px); /* Küçültülmüş buton boyutu */
-            grid-template-rows: repeat(3, 40px);    /* Küçültülmüş buton boyutu */
-            gap: 8px; /* Boşluğu artır */
-            opacity: 0.8; /* Hafif şeffaflık */
-        }
-        
-        .mobile-action-buttons {
-            display: flex;
-            flex-direction: row; /* Yatay sıralama - daha kompakt */
-            gap: 10px; /* Butonlar arası boşluk */
-            opacity: 0.8;
+            grid-template-columns: repeat(4, 1fr); /* 4 sütun - yatay sıralama */
+            grid-template-rows: 1fr;    /* 1 satır */
+            gap: 4px; /* Butonlar arası boşluk */
+            z-index: 1001;
+            background: rgba(0,0,0,0.3);
+            border-radius: 25px; /* Daha oval şekil */
+            padding: 6px; /* İç dolgu azaltıldı */
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(255,255,255,0.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
 
-        .mobile-btn {
-            background: rgba(0, 0, 0, 0.4);
+        /* D-Pad içindeki genel buton stili */
+        .mobile-dpad .mobile-btn {
+            position: relative;
+            width: 100%; 
+            height: 100%; 
+            background: rgba(255, 255, 255, 0.12);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%; /* Yuvarlak butonlar */
             color: white;
-            font-size: 22px; /* Küçültülmüş ikon boyutu */
+            font-size: 18px; /* İkon boyutu küçültüldü (24px → 18px) */
+            cursor: pointer;
+            transition: all 0.15s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            -webkit-tap-highlight-color: transparent; /* Dokunma vurgusunu kaldır */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            transition: transform 0.1s ease, background-color 0.1s ease;
-            width: 45px; /* Buton boyutlarını arttır */
-            height: 45px;
+            user-select: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
 
-        .mobile-btn:active {
-            transform: scale(0.92);
-            background: rgba(0, 0, 0, 0.7);
+        /* Yön butonlarının pozisyonları - yatay sıralama */
+        .mobile-dpad .mobile-btn.left {
+            grid-area: 1 / 1 / 2 / 2; /* 1. pozisyon (sol) */
         }
-        
-        /* D-Pad buton pozisyonları - DÜZELTİLDİ */
-        .mobile-dpad .mobile-btn.up    { grid-area: 1 / 2 / 2 / 3; } /* Satır 1, Sütun 2 */
-        .mobile-dpad .mobile-btn.left  { grid-area: 2 / 1 / 3 / 2; } /* Satır 2, Sütun 1 */
-        .mobile-dpad .mobile-btn.right { grid-area: 2 / 3 / 3 / 4; } /* Satır 2, Sütun 3 */
-        .mobile-dpad .mobile-btn.down  { grid-area: 3 / 2 / 4 / 3; } /* Satır 3, Sütun 2 */
-        .mobile-dpad .dpad-center      { grid-area: 2 / 2 / 3 / 3; background: transparent; border: none; box-shadow: none; pointer-events: none;} /* Ortadaki boşluk, tıklanamaz */
-        .mobile-dpad .autoplay-btn     { grid-area: 1 / 1 / 2 / 2; } /* Sol üst köşe */
+
+        .mobile-dpad .mobile-btn.up {
+            grid-area: 1 / 2 / 2 / 3; /* 2. pozisyon (yukarı) */
+        }
+
+        .mobile-dpad .mobile-btn.down {
+            grid-area: 1 / 3 / 2 / 4; /* 3. pozisyon (aşağı) */
+        }
+
+        .mobile-dpad .mobile-btn.right {
+            grid-area: 1 / 4 / 2 / 5; /* 4. pozisyon (sağ) */
+        }
+
+        /* Merkez alan boş kalacak - artık autoplay butonu yok */
+
+        /* Aksiyon butonları - 2x2 grid düzeni */
+        .mobile-action-buttons {
+            position: absolute; 
+            bottom: 40px; /* D-Pad ile aynı hizada */
+            right: 20px;
+            display: grid; /* Flex yerine grid */
+            grid-template-columns: repeat(2, 1fr); /* 2 sütun */
+            grid-template-rows: repeat(2, 1fr);    /* 2 satır */
+            gap: 8px; /* Butonlar arası boşluk */
+            z-index: 1001;
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 10px 12px; /* Kare şekil için padding ayarlandı */
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(255,255,255,0.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            width: auto; /* Grid için otomatik genişlik */
+            height: auto; /* Grid için otomatik yükseklik */
+        }
+
+        .mobile-action-buttons .mobile-btn {
+            position: relative;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%; 
+            width: 42px; /* 2x2 grid için uygun boyut */
+            height: 42px;
+            font-size: 18px; /* İkon boyutu */
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+
+        /* Özel buton stilleri */
+        .mobile-action-buttons .mobile-btn.autoplay-btn {
+            background: rgba(100, 200, 100, 0.2);
+            border-color: rgba(100, 200, 100, 0.3);
+        }
+
+        .mobile-action-buttons .mobile-btn.pause {
+            background: rgba(200, 100, 100, 0.2);
+            border-color: rgba(200, 100, 100, 0.3);
+        }
+
+        /* Buton aktif durumları */
+        .mobile-dpad .mobile-btn:active, 
+        .mobile-action-buttons .mobile-btn:active {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(0.95);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .mobile-dpad .dpad-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .mobile-action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+            position: relative;
+        }
+
+        .mobile-action-buttons .mobile-btn {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            font-size: 18px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #5a4a7a, #3a2a5a);
+            border: 2px solid #8a7aaa;
+            z-index: 2;
+        }
+
+        /* Pause butonu - özel stil */
+        .mobile-action-buttons .mobile-btn.pause {
+            background: linear-gradient(145deg, #7a5a4a, #5a3a2a);
+            border-color: #aa8a7a;
+        }
+
+        /* Buton hover/active efektleri */
+        .mobile-btn:active {
+            transform: scale(0.9);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .mobile-dpad .mobile-btn.up:active {
+            transform: translateX(-50%) scale(0.9);
+        }
+
+        .mobile-dpad .mobile-btn.down:active {
+            transform: translateX(-50%) scale(0.9);
+        }
+
+        .mobile-dpad .mobile-btn.left:active {
+            transform: translateY(-50%) scale(0.9);
+        }
+
+        .mobile-dpad .mobile-btn.right:active {
+            transform: translateY(-50%) scale(0.9);
+        }
+
+        .mobile-dpad .mobile-btn.autoplay-btn:active {
+            transform: translate(-50%, -50%) scale(0.9);
+        }
+
+        /* Adjust game area for larger control pad */
+        .game-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            margin-bottom: 220px; /* Increased for larger control area */
+            max-height: 55vh; /* Reduced to accommodate larger controls */
+        }
+
+        canvas {
+            border: 3px solid #fff;
+            border-radius: 10px;
+            background: #000;
+            box-shadow: 0 0 20px rgba(255,255,255,0.3);
+            max-width: 100%;
+            max-height: 50vh; /* Reduced for larger control area */
+            width: 100%;
+            height: auto;
+        }
+
+        /* Landscape mode adjustments */
+        @media screen and (orientation: landscape) and (max-height: 500px) {
+            .mobile-controls-container {
+                padding: 20px 10px;
+                min-height: 120px;
+                max-height: 140px;
+            }
+
+            .game-right {
+                margin-bottom: 160px;
+                max-height: 45vh;
+            }
+
+            canvas {
+                max-height: 40vh;
+            }
+
+            .mobile-dpad {
+                width: 150px;
+                height: 150px;
+                gap: 10px;
+            }
+
+            .mobile-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 22px;
+            }
+
+            .mobile-action-buttons .mobile-btn {
+                width: 55px;
+                height: 55px;
+                font-size: 20px;
+            }
+        }
+
+        /* Very small screens */
+        @media screen and (max-width: 380px) {
+            .mobile-controls-container {
+                padding: 20px 10px;
+                min-height: 140px;
+                max-height: 180px;
+            }
+
+            .game-right {
+                margin-bottom: 200px;
+                max-height: 45vh;
+            }
+
+            canvas {
+                max-height: 40vh;
+            }
+
+            .mobile-dpad {
+                width: 160px;
+                height: 160px;
+                gap: 12px;
+            }
+
+            .mobile-btn {
+                width: 48px;
+                height: 48px;
+                font-size: 24px;
+            }
+
+            .mobile-action-buttons .mobile-btn {
+                width: 58px;
+                height: 58px;
+                font-size: 22px;
+            }
+        }
+
+        .mobile-dpad .mobile-btn.up    { 
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .mobile-dpad .mobile-btn.left  { 
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .mobile-dpad .mobile-btn.right { 
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .mobile-dpad .mobile-btn.down  { 
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .mobile-dpad .dpad-center      { 
+            display: none;
+        }
+        .mobile-dpad .autoplay-btn     { 
+            display: none;
+        }
 
         .mobile-dpad .autoplay-btn {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            pointer-events: auto;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            display: none;
         }
 
         .mobile-dpad .autoplay-btn.active {
-            background: rgba(0, 150, 0, 0.7);
-            border-color: rgba(255, 255, 255, 0.5);
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            display: none;
         }
 
         .mobile-menu-btn {
@@ -617,16 +857,33 @@
             
             .game-container {
                 flex-direction: column;
-                padding: 0;
-                max-height: 100vh; /* Tam ekran kaplasın */
+                max-width: 100vw;
+                max-height: 100vh;
+                padding: 10px 10px 0; /* Alt padding'i kaldır */
+                border-radius: 0; /* Mobilde köşeleri düzleştir */
                 height: 100vh;
-                width: 100vw;
-                border-radius: 0;
-                box-shadow: none;
-                overflow-y: hidden; /* Dikeyde kaydırmayı engelle */
-                border: none;
+                box-sizing: border-box;
+                overflow: hidden;
+                /* Mobilde alt kenarlık ekle */
+                border-bottom: 3px solid rgba(127, 90, 240, 0.4);
+                position: relative;
             }
-            .game-left { /* Sol panel mobilde üste gelsin */
+            
+            /* Oyun container'ının altına gradient kenarlık */
+            .game-container::after {
+                content: '';
+                position: absolute;
+                bottom: -3px;
+                left: 0;
+                right: 0;
+                height: 3px;
+                background: linear-gradient(90deg, #7f5af0, #2cb67d, #ff6b6b, #feca57);
+                background-size: 200% 100%;
+                animation: gradientMove 3s ease-in-out infinite;
+                z-index: 1;
+            }
+
+            .game-left { /* Mobilde üste gelsin */
                 order: 1;
                 width: 100%;
                 margin-right: 0;
@@ -636,18 +893,24 @@
                 overflow-y: auto;
                 max-height: 25vh;
                 display: none; /* Varsayılan olarak gizlensin */
-                padding-bottom: 80px; /* Mobil kontrollere daha fazla yer bırak */
+                padding-bottom: 0; /* Padding'i azalt */
             }
             .game-right { /* Oyun alanı mobilde alta gelsin */
                 order: 2;
                 width: 100%;
                 flex: 1; /* Kalan tüm alanı kaplasın */
                 min-height: 0; /* flex için gerekli */
+                margin-bottom: 180px; /* Mobil kontroller için daha fazla yer bırak */
+                position: relative;
+                max-height: 60vh; /* Oyun alanının maksimum yüksekliğini sınırla */
             }
             canvas {
                 width: 100%;
-                height: 100%; /* game-right içindeki alanı doldur */
-                max-height: none; /* Üstteki max-height'ı kaldır */
+                height: calc(100% - 40px); /* Kenarlık için daha fazla yer bırak */
+                max-height: 55vh; /* Canvas'ın maksimum yüksekliğini sınırla */
+                max-width: 100%;
+                border-bottom: 2px solid var(--canvas-border); /* Canvas alt kenarlığı */
+                box-shadow: 0 3px 15px var(--shadow-color); /* Alt gölge */
             }
             .controls { display: none; } /* Masaüstü kontrolleri mobilde gizle */
             .mobile-controls-container { 
@@ -659,14 +922,40 @@
             .mobile-menu-btn { display: flex; } /* Mobil menü butonunu göster */
 
             .score-board { gap: 5px; }
-            .score-item { padding: 8px 10px; font-size: 0.8em; min-width: 60px; }
-            .inventory-items { gap: 8px; }
-            .inventory-btn { width: 45px; height: 45px; font-size: 18px; }
-            .menu-btn { padding: 8px 12px; font-size: 13px; margin: 2px; }
+            .score-item { padding: 6px 8px; font-size: 0.75em; min-width: 55px; }
+            
+            /* Envanter düzenlemeleri */
+            .inventory { margin: 8px 0; padding: 8px; }
+            .inventory h3 { font-size: 0.9em; margin-bottom: 8px; }
+            .inventory-items { gap: 6px; flex-wrap: wrap; justify-content: center; }
+            .inventory-btn { 
+                width: 38px; 
+                height: 38px; 
+                font-size: 16px; 
+                margin: 2px; /* Ek margin ekle */
+                flex-shrink: 0; /* Sıkışmasın */
+            }
+            
+            /* Menü butonları düzenlemeleri */
+            .game-menu { gap: 4px; margin-bottom: 8px; flex-wrap: wrap; }
+            .menu-btn { 
+                padding: 6px 10px; 
+                font-size: 12px; 
+                margin: 2px; 
+                white-space: nowrap; /* Yazı satırı bölünmesin */
+                flex-shrink: 0; /* Sıkışmasın */
+            }
+            
             .power-up-indicator { font-size: 14px; padding: 10px 20px; }
             .lives { margin: 5px 0; }
-            .heart { font-size: 1.5em; }
-            .auto-play-container span { font-size: 0.9em; }
+            .heart { font-size: 1.4em; }
+            .auto-play-container { 
+                margin: 8px 0; 
+                padding: 8px; 
+                flex-wrap: wrap; 
+                gap: 8px; 
+            }
+            .auto-play-container span { font-size: 0.85em; }
         }
         
         @media screen and (max-width: 900px) and (orientation: landscape) {
@@ -677,37 +966,1049 @@
             .inventory { width: 100%; margin-top: 5px; }
             .lives, .auto-play-container { width: auto; margin: 5px 10px;}
 
+            /* Yatay modda oyun alanı düzenlemesi */
+            .game-right {
+                margin-bottom: 120px; /* Yatay D-Pad için margin azaltıldı */
+                max-height: 55vh; /* Biraz daha fazla alan */
+            }
+            
+            canvas {
+                max-height: 50vh; /* Canvas'ı biraz büyüt */
+            }
+
             .mobile-controls-container {
                 bottom: 0;
-                padding: 5px 10px;
+                padding: 10px; /* Padding azaltıldı */
+                height: 80px; /* Yatay D-Pad için yükseklik azaltıldı */
+                min-height: 80px;
             }
-            .mobile-dpad, .mobile-action-buttons {
+            
+            .mobile-dpad {
+                width: 180px; /* Yatay modda biraz küçük */
+                height: 40px;
+                grid-template-columns: repeat(4, 1fr); /* 4 sütun - yatay */
+                grid-template-rows: 1fr; /* 1 satır */
                 gap: 3px;
             }
-            .mobile-btn {
-                width: 35px;
-                height: 35px;
-                font-size: 18px;
+            
+            .mobile-dpad .mobile-btn {
+                font-size: 16px; /* Yatay modda daha küçük ikonlar */
             }
-            .mobile-dpad {
-                grid-template-columns: repeat(3, 35px);
-                grid-template-rows: repeat(3, 35px);
+            
+            /* Aksiyon butonları yatay düzen - landscape */
+            .mobile-action-buttons {
+                flex-direction: row; /* Yatay sıralama */
+                gap: 6px; /* Butonlar arası küçük boşluk */
+                padding: 6px 8px; /* Kompakt padding */
+            }
+            
+            .mobile-action-buttons .mobile-btn {
+                width: 35px; /* Yatay modda küçük aksiyon butonları */
+                height: 35px;
+                font-size: 16px;
             }
         }
 
         /* Çok küçük ekranlar için ek ince ayarlar */
         @media screen and (max-width: 380px) {
-            .score-item { padding: 5px; font-size: 0.7em; min-width: 50px; }
-            .inventory-btn { width: 40px; height: 40px; font-size: 16px; }
-            .menu-btn { padding: 6px 10px; font-size: 12px; }
-            .mobile-btn { width: 30px; height: 30px; font-size: 16px; }
-            .mobile-dpad { grid-template-columns: repeat(3, 30px); grid-template-rows: repeat(3, 30px); gap: 3px;}
+            .score-item { padding: 4px 6px; font-size: 0.7em; min-width: 45px; }
+            
+            /* Envanter butonları çok küçük ekranlarda */
+            .inventory { margin: 5px 0; padding: 6px; }
+            .inventory h3 { font-size: 0.8em; margin-bottom: 6px; }
+            .inventory-items { gap: 4px; }
+            .inventory-btn { 
+                width: 32px; 
+                height: 32px; 
+                font-size: 14px;
+                margin: 1px; 
+            }
+            
+            /* Menü butonları çok küçük ekranlarda */
+            .game-menu { gap: 2px; margin-bottom: 6px; }
+            .menu-btn { 
+                padding: 4px 8px; 
+                font-size: 11px; 
+                margin: 1px;
+            }
+            
+            /* Oyun alanını daha da küçült */
+            .game-right {
+                max-height: 45vh;
+                margin-bottom: 120px; /* Kontrol alanı için yer - azaltıldı */
+            }
+            
+            canvas {
+                max-height: 40vh;
+            }
+            
+            /* Mobil kontrol butonları - küçük ekranlarda kompakt */
+            .mobile-controls-container {
+                min-height: 80px; /* Yükseklik azaltıldı */
+                padding: 8px;
+            }
+            
+            .mobile-dpad {
+                width: 150px; /* Küçük ekranlarda daha küçük */
+                height: 32px;
+                grid-template-columns: repeat(4, 1fr); /* 4 sütun - yatay */
+                grid-template-rows: 1fr; /* 1 satır */
+                gap: 2px;
+                padding: 4px; /* Padding azaltıldı */
+            }
+            
+            .mobile-dpad .mobile-btn {
+                font-size: 13px; /* Küçük ekranlarda daha küçük ikonlar */
+            }
+            
+            /* Aksiyon butonları yatay düzen - küçük ekranlar */
+            .mobile-action-buttons {
+                flex-direction: row; /* Yatay sıralama */
+                gap: 5px; /* Butonlar arası küçük boşluk */
+                padding: 4px 6px; /* Kompakt padding */
+            }
+            
+            .mobile-action-buttons .mobile-btn {
+                width: 32px; /* Küçük ekranlarda mini aksiyon butonları */
+                height: 32px;
+                font-size: 14px;
+            }
+            
+            /* Diğer öğeler */
+            .auto-play-container { margin: 5px 0; padding: 6px; }
+            .auto-play-container span { font-size: 0.8em; }
+            .lives { margin: 3px 0; }
+            .heart { font-size: 1.2em; }
+        }
+
+        /* Normal mobil ekranlar için de 2x2 grid düzen */
+        @media screen and (max-width: 768px) {
+            .game-container {
+                flex-direction: column;
+                height: 100vh;
+                overflow: hidden;
+            }
+            
+            .game-left {
+                display: none; /* Mobilde sol panel gizli */
+            }
+            
+            .game-right {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 160px; /* Retro kontroller için yer */
+            }
+            
+            .score-board {
+                width: 100%;
+                justify-content: space-around;
+                margin-bottom: 10px;
+                padding: 8px;
+                background: rgba(0,0,0,0.8);
+                border-radius: 10px;
+                backdrop-filter: blur(5px);
+            }
+            
+            .inventory {
+                width: 100%;
+                margin-top: 10px;
+                padding: 8px;
+                background: rgba(0,0,0,0.8);
+                border-radius: 10px;
+                backdrop-filter: blur(5px);
+            }
+            
+            .lives, .auto-play-container {
+                width: auto;
+                margin: 8px 10px;
+                padding: 8px;
+                background: rgba(0,0,0,0.8);
+                border-radius: 10px;
+                backdrop-filter: blur(5px);
+            }
+            
+            /* Retro kontroller için küçük ekran ayarları */
+            .retro-dpad {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .retro-btn.direction {
+                font-size: 16px;
+            }
+            
+            .retro-action-grid {
+                gap: 8px;
+            }
+            
+            .retro-btn.action {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .btn-icon {
+                font-size: 18px;
+            }
+            
+            .btn-label {
+                font-size: 7px;
+            }
+        }
+        
+        @media screen and (max-width: 900px) and (orientation: landscape) {
+            .game-left {
+                display: none; /* Yatay modda da gizli olsun */
+            }
+            .score-board { width: 100%; justify-content: space-around; margin-bottom: 5px;}
+            .inventory { width: 100%; margin-top: 5px; }
+            .lives, .auto-play-container { width: auto; margin: 5px 10px;}
+
+            /* Yatay modda oyun alanı düzenlemesi */
+            .game-right {
+                margin-bottom: 130px; /* 2x2 grid için margin artırıldı */
+                max-height: 50vh; /* Biraz daha az alan */
+            }
+            
+            canvas {
+                max-height: 45vh; /* Canvas'ı küçült */
+            }
+
+            .mobile-controls-container {
+                bottom: 0;
+                padding: 8px; /* Padding azaltıldı */
+                height: 90px; /* 2x2 grid için yükseklik artırıldı */
+                min-height: 90px;
+            }
+            
+            .mobile-dpad {
+                width: 160px; /* Yatay modda daha küçük */
+                height: 35px;
+                grid-template-columns: repeat(4, 1fr); /* 4 sütun - yatay */
+                grid-template-rows: 1fr; /* 1 satır */
+                gap: 2px;
+            }
+            
+            .mobile-dpad .mobile-btn {
+                font-size: 14px; /* Yatay modda daha küçük ikonlar */
+            }
+            
+            /* Aksiyon butonları 2x2 grid - landscape */
+            .mobile-action-buttons {
+                display: grid; /* Grid düzeni */
+                grid-template-columns: repeat(2, 1fr); /* 2 sütun */
+                grid-template-rows: repeat(2, 1fr);    /* 2 satır */
+                gap: 4px; /* Butonlar arası küçük boşluk */
+                padding: 6px; /* Kompakt padding */
+            }
+            
+            .mobile-action-buttons .mobile-btn {
+                width: 32px; /* Yatay modda küçük aksiyon butonları */
+                height: 32px;
+                font-size: 14px;
+            }
+        }
+
+        /* Çok küçük ekranlar için ek ince ayarlar */
+        @media screen and (max-width: 380px) {
+            .score-item { padding: 4px 6px; font-size: 0.7em; min-width: 45px; }
+            
+            /* Envanter butonları çok küçük ekranlarda */
+            .inventory { margin: 5px 0; padding: 6px; }
+            .inventory h3 { font-size: 0.8em; margin-bottom: 6px; }
+            .inventory-items { gap: 4px; }
+            .inventory-btn { 
+                width: 32px; 
+                height: 32px; 
+                font-size: 14px;
+                margin: 1px; 
+            }
+            
+            /* Menü butonları çok küçük ekranlarda */
+            .game-menu { gap: 2px; margin-bottom: 6px; }
+            .menu-btn { 
+                padding: 4px 8px; 
+                font-size: 11px; 
+                margin: 1px;
+            }
+            
+            /* Oyun alanını daha da küçült */
+            .game-right {
+                max-height: 40vh;
+                margin-bottom: 130px; /* Kontrol alanı için yer - 2x2 grid */
+            }
+            
+            canvas {
+                max-height: 35vh;
+            }
+            
+            /* Mobil kontrol butonları - küçük ekranlarda kompakt */
+            .mobile-controls-container {
+                min-height: 90px; /* 2x2 grid için yükseklik */
+                padding: 6px;
+            }
+            
+            .mobile-dpad {
+                width: 140px; /* Küçük ekranlarda daha küçük */
+                height: 30px;
+                grid-template-columns: repeat(4, 1fr); /* 4 sütun - yatay */
+                grid-template-rows: 1fr; /* 1 satır */
+                gap: 2px;
+                padding: 3px; /* Padding azaltıldı */
+            }
+            
+            .mobile-dpad .mobile-btn {
+                font-size: 12px; /* Küçük ekranlarda daha küçük ikonlar */
+            }
+            
+            /* Aksiyon butonları 2x2 grid - küçük ekranlar */
+            .mobile-action-buttons {
+                display: grid; /* Grid düzeni */
+                grid-template-columns: repeat(2, 1fr); /* 2 sütun */
+                grid-template-rows: repeat(2, 1fr);    /* 2 satır */
+                gap: 3px; /* Butonlar arası küçük boşluk */
+                padding: 4px; /* Kompakt padding */
+            }
+            
+            .mobile-action-buttons .mobile-btn {
+                width: 28px; /* Küçük ekranlarda mini aksiyon butonları */
+                height: 28px;
+                font-size: 12px;
+            }
+            
+            /* Diğer öğeler */
+            .auto-play-container { margin: 5px 0; padding: 6px; }
+            .auto-play-container span { font-size: 0.8em; }
+            .lives { margin: 3px 0; }
+            .heart { font-size: 1.2em; }
+        }
+
+        .mobile-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 100%;
+            height: 100%;
+            gap: 30px;
+            position: relative;
+        }
+
+        .mobile-dpad {
+            position: relative;
+            width: 130px; /* D-pad boyutu */
+            height: 130px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 0; /* Butonlar arası boşluk olmasın */
+        }
+
+        /* Ana daire (merkez) */
+        .mobile-dpad::before {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(145deg, #3a3a3a, #1a1a1a);
+            border: 3px solid #666;
+            border-radius: 50%;
+            z-index: 1;
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.1), 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        /* Yön butonları - iç içe yerleşim */
+        .mobile-btn {
+            position: absolute;
+            background: linear-gradient(145deg, #4a4a4a, #2a2a2a);
+            border: 2px solid #777;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            width: 45px;
+            height: 45px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+            z-index: 2;
+        }
+
+        /* Yön butonlarının pozisyonları - merkeze yakın */
+        .mobile-dpad .mobile-btn.up {
+            grid-area: 1 / 2 / 2 / 3;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .mobile-dpad .mobile-btn.down {
+            grid-area: 3 / 2 / 4 / 3;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .mobile-dpad .mobile-btn.left {
+            grid-area: 2 / 1 / 3 / 2;
+            border-radius: 10px 0 0 10px;
+        }
+
+        .mobile-dpad .mobile-btn.right {
+            grid-area: 2 / 3 / 3 / 4;
+            border-radius: 0 10px 10px 0;
+        }
+
+        /* Aksiyon butonları - kompakt düzenleme */
+        .mobile-action-buttons {
+            position: absolute; 
+            bottom: 20px; /* Alttan bosluk */
+            right: 20px;  /* Sagdan bosluk */
+            display: flex;
+            flex-direction: row; /* Butonlari yatay sirala */
+            gap: 8px; /* Butonlar arasi bosluk azaltildi */
+            z-index: 1001;
+            background: rgba(0,0,0,0.25);
+            border-radius: 15px; /* Konteyner koseleri */
+            padding: 8px 10px; /* Ic dolgu: ust/alt 8px, sag/sol 10px */
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.1);
+            align-items: center; /* Butonlari dikeyde ortala */
+        }
+
+        .mobile-action-buttons .mobile-btn {
+            position: relative;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%; 
+            width: 42px; /* Buton genisligi azaltildi */
+            height: 42px; /* Buton yuksekligi azaltildi */
+            font-size: 18px; /* Ikon boyutu (font-size) azaltildi */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            display: flex; /* Ikonu ortalamak icin */
+            align-items: center; /* Ikonu dikeyde ortala */
+            justify-content: center; /* Ikonu yatayda ortala */
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.1s ease, transform 0.1s ease;
+            user-select: none;
+        }
+
+        .mobile-action-buttons .mobile-btn.pause {
+            background: rgba(200, 100, 100, 0.25);
+            border-color: rgba(200, 100, 100, 0.3);
+        }
+        
+        /* Active state for action buttons */
+        .mobile-action-buttons .mobile-btn:active {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0.92);
+        }
+
+        /* Landscape mode adjustments */
+        @media screen and (orientation: landscape) and (max-height: 500px) {
+            .mobile-controls {
+                gap: 20px;
+            }
+
+            .mobile-dpad {
+                width: 120px;
+                height: 120px;
+            }
+
+            .mobile-dpad::before {
+                width: 70px;
+                height: 70px;
+            }
+
+            .mobile-dpad .mobile-btn.up {
+                top: 3px;
+            }
+
+            .mobile-dpad .mobile-btn.down {
+                bottom: 3px;
+            }
+
+            .mobile-dpad .mobile-btn.left {
+                left: 3px;
+            }
+
+            .mobile-dpad .mobile-btn.right {
+                right: 3px;
+            }
+
+            .mobile-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            .mobile-action-buttons .mobile-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 16px;
+            }
+        }
+
+        /* Very small screens */
+        @media screen and (max-width: 380px) {
+            .mobile-controls {
+                gap: 25px;
+            }
+
+            .mobile-dpad {
+                width: 130px;
+                height: 130px;
+            }
+
+            .mobile-dpad::before {
+                width: 75px;
+                height: 75px;
+            }
+
+            .mobile-dpad .mobile-btn.up {
+                top: 4px;
+            }
+
+            .mobile-dpad .mobile-btn.down {
+                bottom: 4px;
+            }
+
+            .mobile-dpad .mobile-btn.left {
+                left: 4px;
+            }
+
+            .mobile-dpad .mobile-btn.right {
+                right: 4px;
+            }
+
+            .mobile-btn {
+                width: 42px;
+                height: 42px;
+                font-size: 19px;
+            }
+
+            .mobile-action-buttons .mobile-btn {
+                width: 48px;
+                height: 48px;
+                font-size: 17px;
+            }
+        }
+
+        /* Mobile Controls - Separate and Draggable */
+        .mobile-controls {
+            display: block;
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Direction Pad - Separate and Draggable */
+        .mobile-dpad {
+            position: absolute; /* Konteyner içinde sabit */
+            bottom: 20px;
+            left: 20px;
+            width: 130px;
+            height: 130px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 0;
+            /* cursor: move; Sürükleme kaldırıldı */
+            z-index: 1001;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 10px;
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(255,255,255,0.1);
+            /* touch-action: none; Sürükleme kaldırıldı */
+        }
+
+        /* Remove center circle */
+        .mobile-dpad::before {
+            display: none;
+        }
+
+        /* Direction buttons - Grid positioning */
+        .mobile-dpad .mobile-btn.up {
+            grid-area: 1 / 2 / 2 / 3;
+            position: relative;
+            transform: none;
+            top: auto;
+            left: auto;
+            right: auto;
+            bottom: auto;
+        }
+
+        .mobile-dpad .mobile-btn.left {
+            grid-area: 2 / 1 / 3 / 2;
+            position: relative;
+            transform: none;
+            top: auto;
+            left: auto;
+            right: auto;
+            bottom: auto;
+        }
+
+        .mobile-dpad .mobile-btn.right {
+            grid-area: 2 / 3 / 3 / 4;
+            position: relative;
+            transform: none;
+            top: auto;
+            left: auto;
+            right: auto;
+            bottom: auto;
+        }
+
+        .mobile-dpad .mobile-btn.down {
+            grid-area: 3 / 2 / 4 / 3;
+            position: relative;
+            transform: none;
+            top: auto;
+            left: auto;
+            right: auto;
+            bottom: auto;
+        }
+
+        /* Mobile buttons - Standard style */
+        .mobile-btn {
+            background: linear-gradient(145deg, #4a4a4a, #2a2a2a);
+            border: 2px solid #777;
+            border-radius: 12px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            width: 100%;
+            height: 100%;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+            z-index: 2;
+            position: relative;
+        }
+
+        /* Action Buttons - Separate and Draggable */
+        .mobile-action-buttons {
+            position: absolute; /* Konteyner içinde sabit */
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            /* cursor: move; Sürükleme kaldırıldı */
+            z-index: 1001;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 15px;
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(255,255,255,0.1);
+            /* touch-action: none; Sürükleme kaldırıldı */
+        }
+
+        .mobile-action-buttons .mobile-btn {
+            width: 55px;
+            height: 55px;
+            font-size: 20px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #5a4a7a, #3a2a5a);
+            border: 2px solid #8a7aaa;
+            position: relative;
+        }
+
+        /* Pause button special style */
+        .mobile-action-buttons .mobile-btn:first-child {
+            background: linear-gradient(145deg, #7a5a4a, #5a3a2a);
+            border-color: #aa8a7a;
+        }
+
+        /* Draggable indicators */
+        /* .mobile-dpad::after { ... } */
+        /* .mobile-action-buttons::after { ... } */
+
+        /* Button active states */
+        .mobile-btn:active {
+            transform: scale(0.9);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Landscape mode adjustments */
+        @media screen and (orientation: landscape) and (max-height: 500px) {
+            .mobile-dpad {
+                width: 100px;
+                height: 100px;
+                bottom: 15px;
+                left: 15px;
+                gap: 6px;
+                padding: 8px;
+            }
+
+            .mobile-action-buttons {
+                bottom: 15px;
+                right: 15px;
+                gap: 8px;
+                padding: 12px;
+            }
+
+            .mobile-btn {
+                font-size: 16px;
+            }
+
+            .mobile-action-buttons .mobile-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
+        }
+
+        /* Very small screens */
+        @media screen and (max-width: 380px) {
+            .mobile-dpad {
+                width: 110px;
+                height: 110px;
+                bottom: 15px;
+                left: 15px;
+                gap: 6px;
+                padding: 8px;
+            }
+
+            .mobile-action-buttons {
+                bottom: 15px;
+                right: 15px;
+                gap: 10px;
+                padding: 12px;
+            }
+
+            .mobile-btn {
+                font-size: 17px;
+            }
+
+            .mobile-action-buttons .mobile-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 19px;
+            }
+        }
+
+        /* Yatay mod için özel düzenlemeler */
+        @media screen and (max-width: 900px) and (orientation: landscape) {
+            .game-left {
+                display: none; /* Yatay modda sol panel gizli */
+            }
+            
+            .game-right {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 140px; /* Retro kontroller için yer */
+                max-height: 60vh; /* Yatay modda daha az alan */
+            }
+            
+            .score-board {
+                width: 100%;
+                justify-content: space-around;
+                margin-bottom: 8px;
+                padding: 6px;
+                background: rgba(0,0,0,0.8);
+                border-radius: 8px;
+                backdrop-filter: blur(5px);
+            }
+            
+            .inventory {
+                width: 100%;
+                margin-top: 8px;
+                padding: 6px;
+                background: rgba(0,0,0,0.8);
+                border-radius: 8px;
+                backdrop-filter: blur(5px);
+            }
+            
+            .lives, .auto-play-container {
+                width: auto;
+                margin: 6px 8px;
+                padding: 6px;
+                background: rgba(0,0,0,0.8);
+                border-radius: 8px;
+                backdrop-filter: blur(5px);
+            }
+            
+            /* Yatay modda retro kontroller daha küçük */
+            .mobile-controls-container {
+                min-height: 120px;
+                padding: 15px;
+            }
+            
+            .retro-dpad {
+                width: 110px; /* 90px'den 110px'e büyütüldü */
+                height: 110px;
+            }
+            
+            .retro-btn.direction {
+                font-size: 18px; /* 14px'den 18px'e büyütüldü */
+            }
+            
+            .retro-btn.action {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .btn-icon {
+                font-size: 16px;
+            }
+            
+            .btn-label {
+                font-size: 6px;
+            }
+        }
+
+        /* Çok küçük ekranlar için optimizasyon */
+        @media screen and (max-width: 380px) {
+            .score-item {
+                padding: 4px 6px;
+                font-size: 0.7em;
+            }
+            
+            .inventory {
+                margin: 8px 0;
+                padding: 6px;
+            }
+            
+            .inventory h3 {
+                font-size: 0.8em;
+            }
+            
+            .game-right {
+                max-height: 45vh;
+                margin-bottom: 150px; /* Retro kontroller için yer */
+            }
+            
+            canvas {
+                max-height: 40vh;
+            }
+            
+            /* Çok küçük ekranlarda retro kontroller */
+            .mobile-controls-container {
+                min-height: 130px;
+                padding: 12px;
+            }
+            
+            .retro-dpad {
+                width: 100px; /* 85px'den 100px'e büyütüldü */
+                height: 100px;
+            }
+            
+            .retro-btn.direction {
+                font-size: 16px; /* 12px'den 16px'e büyütüldü */
+            }
+            
+            .retro-action-grid {
+                gap: 6px;
+            }
+            
+            .retro-btn.action {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .btn-icon {
+                font-size: 14px;
+            }
+            
+            .btn-label {
+                font-size: 6px;
+            }
+        }
+
+        /* Retro Mobil Kontroller */
+        .mobile-controls-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #2c1810 0%, #1a0f08 50%, #0f0704 100%);
+            border-top: 3px solid #ff6b35;
+            padding: 20px;
+            min-height: 140px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -8px 32px rgba(255, 107, 53, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Sol taraf - Retro D-Pad Container */
+        .retro-dpad-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .retro-dpad {
+            position: relative;
+            width: 140px; /* 120px'den 140px'e büyütüldü */
+            height: 140px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 5px; /* Gap biraz artırıldı */
+            background: radial-gradient(circle, #3a2818 0%, #2c1810 70%);
+            border-radius: 50%;
+            padding: 10px; /* Padding artırıldı */
+            border: 4px solid #ff6b35;
+            box-shadow: 
+                0 0 20px rgba(255, 107, 53, 0.4),
+                inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Yön Butonları */
+        .retro-btn.direction {
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px; /* 18px'den 22px'e büyütüldü */
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            box-shadow: 
+                0 4px 8px rgba(0, 0, 0, 0.4),
+                inset 0 2px 4px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Yön butonlarının pozisyonları ve renkleri */
+        .retro-btn.direction.up {
+            grid-area: 1 / 2 / 2 / 3;
+            background: linear-gradient(145deg, #ff4757, #c44569);
+        }
+
+        .retro-btn.direction.left {
+            grid-area: 2 / 1 / 3 / 2;
+            background: linear-gradient(145deg, #3742fa, #2f3542);
+        }
+
+        .retro-btn.direction.center {
+            grid-area: 2 / 2 / 3 / 3;
+            background: linear-gradient(145deg, #2ed573, #1e824c);
+            cursor: default;
+        }
+
+        .retro-btn.direction.right {
+            grid-area: 2 / 3 / 3 / 4;
+            background: linear-gradient(145deg, #ffa502, #ff6348);
+        }
+
+        .retro-btn.direction.down {
+            grid-area: 3 / 2 / 4 / 3;
+            background: linear-gradient(145deg, #a55eea, #8854d0);
+        }
+
+        /* Merkez nokta */
+        .center-dot {
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Sağ taraf - Aksiyon Butonları Container */
+        .retro-action-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .retro-action-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 12px;
+            padding: 10px;
+            background: radial-gradient(circle, #3a2818 0%, #2c1810 70%);
+            border-radius: 20px;
+            border: 3px solid #ff6b35;
+            box-shadow: 
+                0 0 15px rgba(255, 107, 53, 0.3),
+                inset 0 0 15px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Aksiyon Butonları */
+        .retro-btn.action {
+            width: 60px;
+            height: 60px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+            box-shadow: 
+                0 4px 8px rgba(0, 0, 0, 0.4),
+                inset 0 2px 4px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Aksiyon butonlarının renkleri */
+        .retro-btn.action.play {
+            background: linear-gradient(145deg, #00d2d3, #01a3a4);
+        }
+
+        .retro-btn.action.auto {
+            background: linear-gradient(145deg, #ff9ff3, #f368e0);
+        }
+
+        .retro-btn.action.menu {
+            background: linear-gradient(145deg, #54a0ff, #2e86de);
+        }
+
+        .retro-btn.action.market {
+            background: linear-gradient(145deg, #5f27cd, #341f97);
+        }
+
+        /* Buton ikonları */
+        .btn-icon {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+
+        /* Buton etiketleri */
+        .btn-label {
+            font-size: 8px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            opacity: 0.9;
+        }
+
+        /* Hover ve Active efektleri */
+        .retro-btn:active {
+            transform: scale(0.95);
+            box-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.6),
+                inset 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .retro-btn.direction:active {
+            box-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.6),
+                inset 0 4px 8px rgba(0, 0, 0, 0.4);
         }
     </style>
 </head>
 <body>
-    <button class="theme-toggle" onclick="toggleTheme()" title="Temayı Değiştir">🌓</button>
-    <button class="orientation-toggle" onclick="toggleOrientationLock()" title="Ekran Yönünü Kilitle/Aç">📱</button>
+    <button class="theme-toggle" onclick="toggleTheme()" ontouchstart="toggleTheme(); event.preventDefault()" title="Temayı Değiştir">🌓</button>
+    <button class="orientation-toggle" onclick="toggleOrientationLock()" ontouchstart="toggleOrientationLock(); event.preventDefault()" title="Ekran Yönünü Kilitle/Aç">📱</button>
     
     <div class="game-container">
         <div class="game-left">
@@ -726,11 +2027,11 @@
             <div class="inventory">
                 <h3>Envanter</h3>
                 <div class="inventory-items">
-                    <button class="inventory-btn shield-btn" onclick="useItem('shield')" title="Kalkan Kullan (S)">🛡️</button>
-                    <button class="inventory-btn speed-btn" onclick="useItem('speedBoost')" title="Hız Artışı Kullan (H)">⚡</button>
-                    <button class="inventory-btn double-btn" onclick="useItem('doublePoints')" title="Çift Puan Kullan (D)">💫</button>
-                    <button class="inventory-btn ghost-btn" onclick="useItem('ghostMode')" title="Hayalet Modu Kullan (G)">👻</button>
-                    <button class="inventory-btn skin-btn" onclick="changeSkin()" title="Görünüm Değiştir (C)">🎨</button>
+                    <button class="inventory-btn shield-btn" onclick="useItem('shield')" ontouchstart="handleInventoryTouch(event, 'shield')" title="Kalkan Kullan (S)">🛡️</button>
+                    <button class="inventory-btn speed-btn" onclick="useItem('speedBoost')" ontouchstart="handleInventoryTouch(event, 'speedBoost')" title="Hız Artışı Kullan (H)">⚡</button>
+                    <button class="inventory-btn double-btn" onclick="useItem('doublePoints')" ontouchstart="handleInventoryTouch(event, 'doublePoints')" title="Çift Puan Kullan (D)">💫</button>
+                    <button class="inventory-btn ghost-btn" onclick="useItem('ghostMode')" ontouchstart="handleInventoryTouch(event, 'ghostMode')" title="Hayalet Modu Kullan (G)">👻</button>
+                    <button class="inventory-btn skin-btn" onclick="changeSkin()" ontouchstart="handleSkinTouch(event)" title="Görünüm Değiştir (C)">🎨</button>
                 </div>
             </div>
 
@@ -744,23 +2045,23 @@
             <div class="auto-play-container">
                 <span>🤖 Oto-Oyna:</span>
                 <label class="autoplay-switch">
-                    <input type="checkbox" id="autoplayToggle" onchange="toggleAutoplay()">
-                    <span class="slider"></span>
+                    <input type="checkbox" id="autoplayToggle" onchange="toggleAutoplay()" ontouchstart="event.stopPropagation()">
+                    <span class="slider" ontouchstart="document.getElementById('autoplayToggle').click(); event.preventDefault()"></span>
                 </label>
             </div>
         </div>
         
         <div class="game-right">
             <div class="game-menu">
-                <button class="menu-btn pause-btn" onclick="togglePause()">⏸️ Duraklat</button>
-                <button class="menu-btn" onclick="openShop()">🛒 Market</button>
-                <button class="menu-btn" onclick="confirmResetGame()">🔄 Yeniden Başla</button>
-                <button class="menu-btn sound-btn" onclick="toggleSound()">🔊 <span id="soundStatus">Açık</span></button>
+                <button class="menu-btn pause-btn" onclick="togglePause()" ontouchstart="togglePause(); event.preventDefault()">⏸️ Duraklat</button>
+                <button class="menu-btn" onclick="openShop()" ontouchstart="openShop(); event.preventDefault()">🛒 Market</button>
+                <button class="menu-btn" onclick="confirmResetGame()" ontouchstart="confirmResetGame(); event.preventDefault()">🔄 Yeniden Başla</button>
+                <button class="menu-btn sound-btn" onclick="toggleSound()" ontouchstart="toggleSound(); event.preventDefault()">🔊 <span id="soundStatus">Açık</span></button>
                 
                 <div class="zoom-controls">
-                    <button class="zoom-btn" onclick="zoomCanvas('out')">-</button>
+                    <button class="zoom-btn" onclick="zoomCanvas('out')" ontouchstart="zoomCanvas('out'); event.preventDefault()">-</button>
                     <span>Ekran</span>
-                    <button class="zoom-btn" onclick="zoomCanvas('in')">+</button>
+                    <button class="zoom-btn" onclick="zoomCanvas('in')" ontouchstart="zoomCanvas('in'); event.preventDefault()">+</button>
                 </div>
             </div>
 
@@ -775,22 +2076,51 @@
     </div>
     
     <div class="mobile-controls-container">
-        <div class="mobile-dpad">
-            <button class="mobile-btn autoplay-btn" ontouchstart="toggleAutoplayMobile(); event.preventDefault()">🤖</button>
-            <button class="mobile-btn up" ontouchstart="changeDirection('up'); event.preventDefault()">↑</button>
-            <button class="mobile-btn left" ontouchstart="changeDirection('left'); event.preventDefault()">←</button>
-            <div class="mobile-btn dpad-center"></div>
-            <button class="mobile-btn right" ontouchstart="changeDirection('right'); event.preventDefault()">→</button>
-            <button class="mobile-btn down" ontouchstart="changeDirection('down'); event.preventDefault()">↓</button>
+        <!-- Sol taraf - Retro Yön Tuşları -->
+        <div class="retro-dpad-container">
+            <div class="retro-dpad">
+                <button class="retro-btn direction up" ontouchstart="changeDirection('up'); event.preventDefault()" aria-label="Yukarı">
+                    <span class="btn-icon">▲</span>
+                </button>
+                <button class="retro-btn direction left" ontouchstart="changeDirection('left'); event.preventDefault()" aria-label="Sol">
+                    <span class="btn-icon">◄</span>
+                </button>
+                <button class="retro-btn direction center">
+                    <span class="center-dot"></span>
+                </button>
+                <button class="retro-btn direction right" ontouchstart="changeDirection('right'); event.preventDefault()" aria-label="Sağ">
+                    <span class="btn-icon">►</span>
+                </button>
+                <button class="retro-btn direction down" ontouchstart="changeDirection('down'); event.preventDefault()" aria-label="Aşağı">
+                    <span class="btn-icon">▼</span>
+                </button>
+            </div>
         </div>
-        <div class="mobile-action-buttons">
-            <button class="mobile-btn pause" ontouchstart="togglePause(); event.preventDefault()">⏸️</button>
-            <button class="mobile-btn inventory" ontouchstart="openInventoryModal(); event.preventDefault()">🎒</button>
-            <button class="mobile-btn menu-toggle" ontouchstart="toggleMobileMenu(); event.preventDefault()">☰</button>
+
+        <!-- Sağ taraf - Retro Aksiyon Butonları -->
+        <div class="retro-action-container">
+            <div class="retro-action-grid">
+                <button class="retro-btn action play" ontouchstart="toggleGameMobile(); event.preventDefault()" aria-label="Oynat/Durdur">
+                    <span class="btn-icon">⏯️</span>
+                    <span class="btn-label">PLAY</span>
+                </button>
+                <button class="retro-btn action auto" ontouchstart="toggleAutoplayMobile(); event.preventDefault()" aria-label="Otomatik">
+                    <span class="btn-icon">🤖</span>
+                    <span class="btn-label">AUTO</span>
+                </button>
+                <button class="retro-btn action menu" ontouchstart="showMenuMobile(); event.preventDefault()" aria-label="Menü">
+                    <span class="btn-icon">☰</span>
+                    <span class="btn-label">MENU</span>
+                </button>
+                <button class="retro-btn action market" ontouchstart="showInventoryMobile(); event.preventDefault()" aria-label="Market">
+                    <span class="btn-icon">🛒</span>
+                    <span class="btn-label">SHOP</span>
+                </button>
+            </div>
         </div>
     </div>
 
-    <button class="mobile-menu-btn" ontouchstart="toggleMobileMenu(); event.preventDefault()">☰</button>
+    <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
 
     <div class="modal" id="shopModal">
         <div class="modal-content">
@@ -933,10 +2263,10 @@
         ];
         
         let inventory = {
-            shield: 5,
-            speedBoost: 5,
-            doublePoints: 5,
-            ghostMode: 5 
+            shield: 10,
+            speedBoost: 10,
+            doublePoints: 10,
+            ghostMode: 10 
         };
 
         // --- SES ---
@@ -1650,7 +2980,7 @@
 
         // --- GÜÇLENDİRMELER VE ENVANTER ---
         function useItem(itemType) {
-            if (isPaused || livesCount <= 0) return;
+            if (livesCount <= 0) return; // Sadece can kontrolü yap, isPaused kontrolünü kaldır
             let itemUsed = false;
             switch (itemType) {
                 case 'shield':
@@ -1724,7 +3054,7 @@
         }
         
         function changeSkin() {
-            if (isPaused) return;
+            // isPaused kontrolünü kaldır
             const availableSkins = ['default', ...purchasedSkins.filter(s => s !== 'default' && s !== 'rainbow' && shopItemsData.find(item => item.id === s)), ...(purchasedSkins.includes('skin_rainbow') ? ['skin_rainbow'] : [])];
             let currentSkinIndex = availableSkins.indexOf(currentSkin); 
             currentSkinIndex = (currentSkinIndex + 1) % availableSkins.length;
@@ -2256,6 +3586,27 @@
 
         function toggleAutoplayMobile() {
             autoplayEnabled = !autoplayEnabled;
+            
+            // Checkbox'ı da güncelle
+            const autoplayToggle = document.getElementById('autoplayToggle');
+            if (autoplayToggle) {
+                autoplayToggle.checked = autoplayEnabled;
+            }
+            
+            // Retro butonun görünümünü güncelle
+            const retroAutoBtn = document.querySelector('.retro-btn.action.auto');
+            if (retroAutoBtn) {
+                const icon = retroAutoBtn.querySelector('.btn-icon');
+                if (autoplayEnabled) {
+                    icon.textContent = '🤖✓';
+                    retroAutoBtn.style.boxShadow = '0 0 15px rgba(255, 159, 243, 0.8), 0 4px 8px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2)';
+                } else {
+                    icon.textContent = '🤖';
+                    retroAutoBtn.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2)';
+                }
+            }
+            
+            // Eski mobil buton için de kontrol (varsa)
             const autoplayBtn = document.querySelector('.autoplay-btn');
             if (autoplayBtn) {
                 if (autoplayEnabled) {
@@ -2266,6 +3617,7 @@
                     autoplayBtn.innerHTML = '🤖';
                 }
             }
+            
             showPowerUpMessage(`Oto-Oyna ${autoplayEnabled ? 'Aktif' : 'Devre Dışı'}`);
             playSoundSequence('click');
         }
@@ -2273,6 +3625,265 @@
         // Ekran yönlendirmesi için değişkenler
         let isLandscapeLock = false;
         let isPortraitLock = false;
+
+        // Touch event handler'ları - oyunun duraklatılmasını engeller
+        function handleInventoryTouch(event, itemType) {
+            event.preventDefault();
+            event.stopPropagation();
+            useItem(itemType);
+        }
+
+        function handleSkinTouch(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            changeSkin();
+        }
+
+        // Draggable Mobile Controls
+        function makeDraggable(element) {
+            let isDragging = false;
+            let startX, startY, initialX, initialY;
+
+            // Mouse events
+            element.addEventListener('mousedown', dragStart);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', dragEnd);
+
+            // Touch events
+            element.addEventListener('touchstart', dragStart, { passive: false });
+            document.addEventListener('touchmove', drag, { passive: false });
+            document.addEventListener('touchend', dragEnd);
+
+            function dragStart(e) {
+                if (e.target.classList.contains('mobile-btn')) return; // Don't drag when clicking buttons
+                
+                isDragging = true;
+                element.style.transition = 'none';
+                
+                if (e.type === 'touchstart') {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                } else {
+                    startX = e.clientX;
+                    startY = e.clientY;
+                }
+                
+                const rect = element.getBoundingClientRect();
+                initialX = rect.left;
+                initialY = rect.top;
+                
+                element.style.opacity = '0.8';
+                e.preventDefault();
+            }
+
+            function drag(e) {
+                if (!isDragging) return;
+                
+                e.preventDefault();
+                
+                let currentX, currentY;
+                if (e.type === 'touchmove') {
+                    currentX = e.touches[0].clientX;
+                    currentY = e.touches[0].clientY;
+                } else {
+                    currentX = e.clientX;
+                    currentY = e.clientY;
+                }
+                
+                const deltaX = currentX - startX;
+                const deltaY = currentY - startY;
+                
+                const newX = initialX + deltaX;
+                const newY = initialY + deltaY;
+                
+                // Boundary checks
+                const maxX = window.innerWidth - element.offsetWidth;
+                const maxY = window.innerHeight - element.offsetHeight;
+                
+                const boundedX = Math.max(0, Math.min(newX, maxX));
+                const boundedY = Math.max(0, Math.min(newY, maxY));
+                
+                element.style.left = boundedX + 'px';
+                element.style.top = boundedY + 'px';
+                element.style.bottom = 'auto';
+                element.style.right = 'auto';
+            }
+
+            function dragEnd() {
+                if (!isDragging) return;
+                
+                isDragging = false;
+                element.style.transition = 'all 0.3s ease';
+                element.style.opacity = '1';
+                
+                // Save position to localStorage
+                const rect = element.getBoundingClientRect();
+                const position = {
+                    left: rect.left,
+                    top: rect.top
+                };
+                localStorage.setItem(element.className.includes('dpad') ? 'dpadPosition' : 'actionPosition', JSON.stringify(position));
+            }
+        }
+
+        // Initialize draggable controls
+        function initDraggableControls() {
+            const dpad = document.querySelector('.mobile-dpad');
+            const actionButtons = document.querySelector('.mobile-action-buttons');
+            
+            // if (dpad) { // Sürükleme kaldırıldı
+            //     makeDraggable(dpad);
+            //     
+            //     // Load saved position
+            //     const savedPosition = localStorage.getItem('dpadPosition');
+            //     if (savedPosition) {
+            //         const pos = JSON.parse(savedPosition);
+            //         dpad.style.left = pos.left + 'px';
+            //         dpad.style.top = pos.top + 'px';
+            //         dpad.style.bottom = 'auto';
+            //         dpad.style.right = 'auto';
+            //     }
+            // }
+            
+            // if (actionButtons) { // Sürükleme kaldırıldı
+            //     makeDraggable(actionButtons);
+            //     
+            //     // Load saved position
+            //     const savedPosition = localStorage.getItem('actionPosition');
+            //     if (savedPosition) {
+            //         const pos = JSON.parse(savedPosition);
+            //         actionButtons.style.left = pos.left + 'px';
+            //         actionButtons.style.top = pos.top + 'px';
+            //         actionButtons.style.bottom = 'auto';
+            //         actionButtons.style.right = 'auto';
+            //     }
+            // }
+        }
+
+        // Draggable Mobile Controls - Sürükleme fonksiyonu artık çağrılmıyor
+        function makeDraggable(element) {
+            let isDragging = false;
+            let startX, startY, initialX, initialY;
+
+            // Mouse events
+            element.addEventListener('mousedown', dragStart);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', dragEnd);
+
+            // Touch events
+            element.addEventListener('touchstart', dragStart, { passive: false });
+            document.addEventListener('touchmove', drag, { passive: false });
+            document.addEventListener('touchend', dragEnd);
+
+            function dragStart(e) {
+                if (e.target.classList.contains('mobile-btn')) return;
+                isDragging = true;
+                element.style.transition = 'none';
+                if (e.type === 'touchstart') {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                } else {
+                    startX = e.clientX;
+                    startY = e.clientY;
+                }
+                const rect = element.getBoundingClientRect();
+                initialX = rect.left;
+                initialY = rect.top;
+                element.style.opacity = '0.8';
+                e.preventDefault();
+            }
+
+            function drag(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                let currentX, currentY;
+                if (e.type === 'touchmove') {
+                    currentX = e.touches[0].clientX;
+                    currentY = e.touches[0].clientY;
+                } else {
+                    currentX = e.clientX;
+                    currentY = e.clientY;
+                }
+                const deltaX = currentX - startX;
+                const deltaY = currentY - startY;
+                const newX = initialX + deltaX;
+                const newY = initialY + deltaY;
+                const maxX = window.innerWidth - element.offsetWidth;
+                const maxY = window.innerHeight - element.offsetHeight;
+                const boundedX = Math.max(0, Math.min(newX, maxX));
+                const boundedY = Math.max(0, Math.min(newY, maxY));
+                element.style.left = boundedX + 'px';
+                element.style.top = boundedY + 'px';
+                element.style.bottom = 'auto';
+                element.style.right = 'auto';
+            }
+
+            function dragEnd() {
+                if (!isDragging) return;
+                isDragging = false;
+                element.style.transition = 'all 0.3s ease';
+                element.style.opacity = '1';
+                // Pozisyon kaydetme kaldırıldı
+                // const rect = element.getBoundingClientRect();
+                // const position = {
+                //     left: rect.left,
+                //     top: rect.top
+                // };
+                // localStorage.setItem(element.className.includes('dpad') ? 'dpadPosition' : 'actionPosition', JSON.stringify(position));
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initDraggableControls, 100);
+            
+            // Add mobile menu event listeners
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    toggleMobileMenu();
+                });
+                mobileMenuBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    toggleMobileMenu();
+                });
+            }
+            
+            if (mobileMenuToggle) {
+                mobileMenuToggle.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    toggleMobileMenu();
+                });
+                mobileMenuToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    toggleMobileMenu();
+                });
+            }
+        });
+
+        // Mobil cihazlar için wrapper fonksiyonları
+        function toggleGameMobile() {
+            togglePause();
+        }
+        
+        function showInventoryMobile() {
+            openInventoryModal();
+        }
+        
+        function showMenuMobile() {
+            toggleMobileMenu();
+        }
+        
+        function toggleAutoplayMobile() {
+            toggleAutoplay();
+        }
+
+        function toggleAutoplayMobile_OLD() {
+            toggleAutoplay();
+        }
     </script>
 </body>
 </html>
