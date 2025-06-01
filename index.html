@@ -413,7 +413,7 @@
                 flex: 0 0 auto;
                 width: 100%;
                 margin-bottom: 0;
-                max-height: 20vh; /* 25vh'den 20vh'e düşürüldü */
+                max-height: 18vh; /* 20vh'den küçültüldü */
                 overflow-y: auto;
                 padding-bottom: 5px;
             }
@@ -423,10 +423,10 @@
                 width: 100%;
                 min-width: 0;
                 min-height: 0;
-                margin-bottom: 140px; /* 250px'den 140px'e düşürüldü */
+                margin-bottom: 240px; /* 140px'den 240px'e artırıldı (büyük kontroller için) */
                 display: flex;
                 flex-direction: column;
-                max-height: 60vh; /* 55vh'den 60vh'e artırıldı */
+                max-height: 50vh; /* 60vh'den küçültüldü */
                 overflow: hidden;
             }
 
@@ -439,14 +439,14 @@
             }
 
             .btn {
-                padding: 6px 10px; /* 8px 12px'den küçültüldü */
-                font-size: 11px; /* 12px'den küçültüldü */
+                padding: 6px 10px;
+                font-size: 11px;
                 white-space: nowrap;
                 flex-shrink: 0;
             }
 
             .level-progress {
-                margin: 3px 0; /* 5px'den 3px'e küçültüldü */
+                margin: 3px 0;
                 height: 6px;
             }
 
@@ -456,177 +456,261 @@
 
             .mobile-controls {
                 display: flex;
-                min-height: 140px !important; /* 180px'den 140px'e düşürüldü */
+                min-height: 240px !important; /* 140px'den 240px'e artırıldı */
             }
 
             canvas {
                 flex: 1;
                 width: 100% !important;
                 height: auto !important;
-                max-height: calc(100vh - 280px) !important; /* 460px'den 280px'e düşürüldü */
-                min-height: 120px; /* 150px'den küçültüldü */
+                max-height: calc(100vh - 340px) !important; /* 280px'den 340px'e artırıldı */
+                min-height: 120px;
                 border-width: 2px;
             }
 
             .score-board {
                 grid-template-columns: repeat(4, 1fr);
-                gap: 2px; /* 3px'den küçültüldü */
+                gap: 2px;
             }
 
             .score-item {
-                padding: 4px 3px; /* 6px 4px'den küçültüldü */
-                font-size: 0.7em; /* 0.75em'den küçültüldü */
+                padding: 4px 3px;
+                font-size: 0.7em;
             }
 
             .score-item span {
-                font-size: 0.9em; /* 1em'den küçültüldü */
-                margin-top: 1px; /* 2px'den küçültüldü */
+                font-size: 0.9em;
+                margin-top: 1px;
             }
 
             .inventory-items {
-                gap: 3px; /* 5px'den küçültüldü */
+                gap: 3px;
                 justify-content: space-around;
             }
 
             .inventory-btn {
-                width: 30px; /* 35px'den küçültüldü */
-                height: 30px; /* 35px'den küçültüldü */
-                font-size: 12px; /* 14px'den küçültüldü */
+                width: 30px;
+                height: 30px;
+                font-size: 12px;
                 flex-shrink: 0;
             }
 
             .card {
-                padding: 6px; /* 8px'den küçültüldü */
-                margin-bottom: 2px; /* 3px'den küçültüldü */
+                padding: 6px;
+                margin-bottom: 2px;
             }
 
             .lives {
-                gap: 3px; /* 4px'den küçültüldü */
+                gap: 3px;
             }
 
             .heart {
-                font-size: 1em; /* 1.2em'den küçültüldü */
+                font-size: 1em;
             }
 
             .autoplay-container {
-                padding: 3px; /* 5px'den küçültüldü */
-                gap: 6px; /* 8px'den küçültüldü */
+                padding: 3px;
+                gap: 6px;
             }
 
             .theme-toggle {
                 top: 8px;
                 right: 8px;
-                width: 40px; /* 35px'den büyütüldü */
-                height: 40px; /* 35px'den büyütüldü */
-                font-size: 18px; /* 16px'den büyütüldü */
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
             }
         }
 
         @media screen and (max-width: 480px) {
             .game-container {
-                padding: 2px; /* 3px'den küçültüldü */
+                padding: 3px;
+                gap: 3px;
+                height: 100vh !important;
             }
 
             .game-left {
-                max-height: 18vh; /* 20vh'den küçültüldü */
+                max-height: 16vh; /* 17vh'den küçültüldü */
+                padding-bottom: 3px;
             }
 
             .game-right {
-                margin-bottom: 130px; /* 200px'den 130px'e düşürüldü */
+                max-height: 45vh; /* 50vh'den küçültüldü */
+                margin-bottom: 260px; /* 160px'den 260px'e artırıldı */
             }
 
-            .score-item {
-                padding: 3px 2px; /* 4px 2px'den küçültüldü */
-                font-size: 0.65em; /* 0.7em'den küçültüldü */
-            }
-
-            .inventory-btn {
-                width: 28px; /* 32px'den küçültüldü */
-                height: 28px; /* 32px'den küçültüldü */
-                font-size: 11px; /* 13px'den küçültüldü */
-            }
-
-            .dpad {
-                width: 120px; /* 140px'den küçültüldü */
-                height: 120px; /* 140px'den küçültüldü */
-                padding: 6px; /* 6px'den değişiklik yok */
-                gap: 3px; /* 4px'den küçültüldü */
-            }
-
-            .action-btn {
-                width: 45px; /* 42px'den büyütüldü */
-                height: 45px; /* 42px'den büyütüldü */
-            }
-
-            .btn-icon {
-                font-size: 14px;
-            }
-
-            .btn-label {
-                font-size: 7px;
-            }
-
-            canvas {
-                max-height: calc(100vh - 240px) !important; /* 320px'den 240px'e düşürüldü */
-                min-height: 120px; /* 200px'den küçültüldü */
+            .btn {
+                padding: 5px 8px;
+                font-size: 10px;
+                margin: 1px;
             }
 
             .mobile-controls {
-                min-height: 130px; /* Daha tutarlı hale getirildi */
-                padding: 8px 12px; /* Padding optimize edildi */
+                min-height: 260px !important; /* 160px'den 260px'e artırıldı */
+                padding: 12px 8px; /* 8px'den 12px'e artırıldı */
+            }
+
+            canvas {
+                max-height: calc(100vh - 380px) !important; /* 300px'den 380px'e artırıldı */
+                min-height: 100px;
+                border-width: 1px;
+            }
+
+            .score-item {
+                padding: 3px 2px;
+                font-size: 0.65em;
+            }
+
+            .inventory-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 11px;
+            }
+
+            .card {
+                padding: 5px;
+                margin-bottom: 1px;
+            }
+
+            .autoplay-container {
+                padding: 2px;
+                gap: 4px;
+            }
+
+            .theme-toggle {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+            }
+
+            .dpad {
+                width: 140px !important; /* 120px'den büyütüldü */
+                height: 140px !important; /* 120px'den büyütüldü */
+                gap: 6px; /* 5px'den artırıldı */
+            }
+
+            .dpad-btn {
+                font-size: 20px !important; /* 18px'den büyütüldü */
+                border-width: 2px !important;
+            }
+
+            .action-buttons {
+                width: 140px !important; /* 120px'den büyütüldü */
+                height: 140px !important; /* 120px'den büyütüldü */
+                gap: 6px !important; /* 5px'den artırıldü */
+                grid-template-columns: 1fr 1fr !important;
+                grid-template-rows: 1fr 1fr !important;
+            }
+
+            .action-btn {
+                font-size: 16px !important; /* 14px'den büyütüldü */
+                border-width: 2px !important;
+                min-height: 65px !important; /* 55px'den büyütüldü */
             }
         }
 
         @media screen and (max-width: 360px) {
+            .game-container {
+                padding: 2px;
+                gap: 2px;
+                height: 100vh !important;
+            }
+
             .game-left {
-                max-height: 16vh; /* 18vh'den küçültüldü */
+                max-height: 14vh; /* 15vh'den küçültüldü */
+                padding-bottom: 2px;
             }
 
             .game-right {
-                margin-bottom: 120px; /* 180px'den 120px'e düşürüldü */
+                max-height: 40vh; /* 45vh'den küçültüldü */
+                margin-bottom: 280px; /* 180px'den 280px'e artırıldı */
             }
 
-            .score-item {
-                padding: 2px 1px; /* 3px 2px'den küçültüldü */
-                font-size: 0.6em; /* 0.65em'den küçültüldü */
-            }
-
-            .inventory-btn {
-                width: 26px; /* 28px'den küçültüldü */
-                height: 26px; /* 28px'den küçültüldü */
-                font-size: 10px; /* 12px'den küçültüldü */
-            }
-
-            .dpad {
-                width: 110px; /* 120px'den küçültüldü */
-                height: 110px; /* 120px'den küçültüldü */
-            }
-
-            .dpad-btn {
-                font-size: 18px; /* 20px'den küçültüldü */
-            }
-
-            .action-btn {
-                width: 42px; /* 45px'den küçültüldü */
-                height: 42px; /* 45px'den küçültüldü */
-            }
-
-            .btn-icon {
-                font-size: 13px; /* 14px'den küçültüldü */
-            }
-
-            .btn-label {
-                font-size: 6px; /* 7px'den küçültüldü */
+            .btn {
+                padding: 4px 6px;
+                font-size: 9px;
+                margin: 1px;
             }
 
             .mobile-controls {
-                min-height: 120px; /* 130px'den küçültüldü */
-                padding: 6px 10px; /* 10px 15px'den küçültüldü */
+                min-height: 280px !important; /* 180px'den 280px'e artırıldı */
+                padding: 10px 6px; /* 6px'den 10px'e artırıldı */
             }
 
             canvas {
-                max-height: calc(100vh - 220px) !important; /* 260px'den 220px'e düşürüldü */
-                min-height: 100px; /* 180px'den küçültüldü */
+                max-height: calc(100vh - 420px) !important; /* 320px'den 420px'e artırıldı */
+                min-height: 80px;
+                border-width: 1px;
+            }
+
+            .score-board {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 1px;
+            }
+
+            .score-item {
+                padding: 2px 1px;
+                font-size: 0.6em;
+            }
+
+            .score-item span {
+                font-size: 0.8em;
+                margin-top: 0px;
+            }
+
+            .inventory-btn {
+                width: 26px;
+                height: 26px;
+                font-size: 10px;
+            }
+
+            .card {
+                padding: 4px;
+                margin-bottom: 1px;
+            }
+
+            .lives {
+                gap: 2px;
+            }
+
+            .heart {
+                font-size: 0.9em;
+            }
+
+            .autoplay-container {
+                padding: 2px;
+                gap: 3px;
+            }
+
+            .theme-toggle {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+
+            .dpad {
+                width: 130px !important; /* 110px'den büyütüldü */
+                height: 130px !important; /* 110px'den büyütüldü */
+                gap: 5px; /* 4px'den artırıldı */
+            }
+
+            .dpad-btn {
+                font-size: 18px !important; /* 16px'den büyütüldü */
+                border-width: 2px !important;
+            }
+
+            .action-buttons {
+                width: 130px !important; /* 110px'den büyütüldü */
+                height: 130px !important; /* 110px'den büyütüldü */
+                gap: 5px !important; /* 4px'den artırıldü */
+                grid-template-columns: 1fr 1fr !important;
+                grid-template-rows: 1fr 1fr !important;
+            }
+
+            .action-btn {
+                font-size: 14px !important; /* 12px'den büyütüldü */
+                border-width: 2px !important;
+                min-height: 60px !important; /* 50px'den büyütüldü */
             }
         }
 
@@ -867,14 +951,14 @@
             }
             
             .dpad {
-                width: 160px; /* 130px'den 160px'e artırıldı */
-                height: 160px; /* 130px'den 160px'e artırıldı */
+                width: 200px !important; /* 160px'den 200px'e artırıldı */
+                height: 200px !important; /* 160px'den 200px'e artırıldı */
                 padding: 8px;
                 gap: 5px;
             }
             
             .dpad-btn {
-                font-size: 26px; /* 22px'den 26px'e artırıldı */
+                font-size: 30px !important; /* 26px'den 30px'e artırıldı */
             }
             
             .action-btn {
@@ -893,34 +977,41 @@
         }
 
         @media screen and (max-width: 480px) {
-            .mobile-controls {
-                min-height: 120px; /* 90px yerine 120px */
-                padding: 10px 15px;
-            }
-            
             .dpad {
-                width: 120px; /* 85px yerine 120px */
-                height: 120px; /* 85px yerine 120px */
-                padding: 5px;
-                gap: 4px;
+                width: 160px !important; /* 140px'den 160px'e artırıldı */
+                height: 160px !important; /* 140px'den 160px'e artırıldı */
+                gap: 6px; /* 5px'den artırıldı */
             }
-            
+
             .dpad-btn {
-                font-size: 20px; /* 14px yerine 20px */
+                font-size: 24px !important; /* 20px'den 24px'e artırıldı */
+                border-width: 2px !important;
             }
-            
-            .action-btn {
-                width: 42px;
-                height: 42px;
+        }
+
+        @media screen and (max-width: 360px) {
+            .dpad {
+                width: 150px !important; /* 130px'den 150px'e artırıldı */
+                height: 150px !important; /* 130px'den 150px'e artırıldı */
+                gap: 5px; /* 4px'den artırıldı */
             }
-            
-            .btn-icon {
-                font-size: 14px;
-                margin-bottom: 1px;
+
+            .dpad-btn {
+                font-size: 22px !important; /* 18px'den 22px'e artırıldı */
+                border-width: 2px !important;
             }
-            
-            .btn-label {
-                font-size: 7px;
+        }
+
+        @media screen and (max-width: 320px) {
+            .dpad {
+                width: 140px !important; /* 120px'den 140px'e artırıldı */
+                height: 140px !important; /* 120px'den 140px'e artırıldı */
+                gap: 4px; /* 3px'den artırıldı */
+            }
+
+            .dpad-btn {
+                font-size: 20px !important; /* 16px'den 20px'e artırıldı */
+                border-width: 1px !important;
             }
         }
 
@@ -1027,8 +1118,8 @@
             right: 0;
             background: linear-gradient(135deg, #222222 0%, #111111 100%);
             border-top: 3px solid #ff6b35;
-            padding: 8px; /* 10px'den küçültüldü */
-            min-height: 140px; /* 180px'den 140px'e düşürüldü */
+            padding: 15px; /* 8px'den artırıldı */
+            min-height: 220px; /* 140px'den 220px'e artırıldı */
             z-index: 1000;
             justify-content: space-between;
             align-items: center;
@@ -1037,31 +1128,31 @@
 
         .dpad {
             position: relative;
-            width: 140px; /* 180px'den 140px'e düşürüldü */
-            height: 140px; /* 180px'den 140px'e düşürüldü */
+            width: 180px; /* 140px'den 180px'e artırıldı */
+            height: 180px; /* 140px'den 180px'e artırıldı */
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
-            gap: 4px; /* 5px'den küçültüldü */
+            gap: 6px; /* 4px'den artırıldı */
             background: #333333;
-            border-radius: 8px; /* 10px'den küçültüldü */
-            padding: 8px; /* 10px'den küçültüldü */
-            border: 2px solid #888888; /* 3px'den küçültüldü */
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8), 0 0 5px rgba(255, 255, 255, 0.2);
+            border-radius: 12px; /* 8px'den artırıldı */
+            padding: 12px; /* 8px'den artırıldı */
+            border: 3px solid #888888; /* 2px'den artırıldı */
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8), 0 0 8px rgba(255, 255, 255, 0.2);
         }
 
         .dpad-btn {
             background: linear-gradient(to bottom, #777777, #444444);
-            border: 2px solid #999999;
-            border-radius: 4px; /* 5px'den küçültüldü */
+            border: 3px solid #999999; /* 2px'den artırıldı */
+            border-radius: 6px; /* 4px'den artırıldı */
             color: #ffffff;
-            font-size: 22px; /* 28px'den küçültüldü */
+            font-size: 28px; /* 22px'den artırıldı */
             font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 2px 4px rgba(0, 0, 0, 0.5);
+            box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3), 0 3px 6px rgba(0, 0, 0, 0.5);
             text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
             transition: all 0.1s;
         }
@@ -1097,15 +1188,19 @@
         }
 
         .action-buttons {
-            display: flex;
-            gap: 10px;
+            display: grid; /* flex'den grid'e değiştirildi */
+            grid-template-columns: repeat(2, 1fr); /* 2x2 ızgara */
+            grid-template-rows: repeat(2, 1fr);
+            gap: 12px; /* 10px'den artırıldı */
+            width: 140px; /* Sabit genişlik */
+            height: 140px; /* Sabit yükseklik */
         }
 
         .action-btn {
-            width: 50px; /* 60px'den küçültüldü */
-            height: 50px; /* 60px'den küçültüldü */
+            width: 60px; /* 50px'den artırıldı */
+            height: 60px; /* 50px'den artırıldı */
             border-radius: 50%;
-            border: 2px solid #888888; /* 3px'den küçültüldü */
+            border: 3px solid #888888; /* 2px'den artırıldı */
             background: linear-gradient(to bottom, #777777, #444444);
             color: #ffffff;
             display: flex;
@@ -1114,17 +1209,17 @@
             justify-content: center;
             cursor: pointer;
             font-weight: bold;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 3px 5px rgba(0, 0, 0, 0.5);
+            box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3), 0 4px 6px rgba(0, 0, 0, 0.5);
             transition: all 0.1s;
         }
 
         .btn-icon {
-            font-size: 16px; /* 20px'den küçültüldü */
-            margin-bottom: 2px; /* 3px'den küçültüldü */
+            font-size: 18px; /* 16px'den artırıldı */
+            margin-bottom: 3px; /* 2px'den artırıldı */
         }
 
         .btn-label {
-            font-size: 8px; /* 9px'den küçültüldü */
+            font-size: 9px; /* 8px'den artırıldı */
             font-weight: bold;
             letter-spacing: 0.5px;
             opacity: 0.9;
@@ -1339,6 +1434,111 @@
                 width: 30px;
                 height: 30px;
                 font-size: 12px;
+            }
+        }
+
+        @media screen and (max-width: 320px) {
+            .game-container {
+                padding: 1px;
+                gap: 1px;
+                height: 100vh !important;
+            }
+
+            .game-left {
+                max-height: 12vh; /* 13vh'den küçültüldü */
+                padding-bottom: 1px;
+            }
+
+            .game-right {
+                max-height: 35vh; /* 40vh'den küçültüldü */
+                margin-bottom: 300px; /* 200px'den 300px'e artırıldı */
+            }
+
+            .btn {
+                padding: 3px 5px;
+                font-size: 8px;
+                margin: 0.5px;
+            }
+
+            .mobile-controls {
+                min-height: 300px !important; /* 200px'den 300px'e artırıldı */
+                padding: 8px 4px; /* 4px'den 8px'e artırıldı */
+            }
+
+            canvas {
+                max-height: calc(100vh - 460px) !important; /* 340px'den 460px'e artırıldı */
+                min-height: 60px;
+                border-width: 1px;
+            }
+
+            .score-board {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 1px;
+            }
+
+            .score-item {
+                padding: 2px 1px;
+                font-size: 0.55em;
+            }
+
+            .score-item span {
+                font-size: 0.75em;
+                margin-top: 0px;
+            }
+
+            .inventory-btn {
+                width: 24px;
+                height: 24px;
+                font-size: 9px;
+            }
+
+            .card {
+                padding: 3px;
+                margin-bottom: 1px;
+            }
+
+            .lives {
+                gap: 1px;
+            }
+
+            .heart {
+                font-size: 0.8em;
+            }
+
+            .autoplay-container {
+                padding: 1px;
+                gap: 2px;
+            }
+
+            .theme-toggle {
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
+            }
+
+            .dpad {
+                width: 120px !important; /* 100px'den büyütüldü */
+                height: 120px !important; /* 100px'den büyütüldü */
+                gap: 4px; /* 3px'den artırıldı */
+            }
+
+            .dpad-btn {
+                font-size: 16px !important; /* 14px'den büyütüldü */
+                border-width: 1px !important;
+            }
+
+            .action-buttons {
+                width: 120px !important; /* 100px'den büyütüldü */
+                height: 120px !important; /* 100px'den büyütüldü */
+                gap: 4px !important; /* 3px'den artırıldü */
+                grid-template-columns: 1fr 1fr !important;
+                grid-template-rows: 1fr 1fr !important;
+            }
+
+            .action-btn {
+                font-size: 12px !important; /* 10px'den büyütüldü */
+                border-width: 1px !important;
+                min-height: 55px !important; /* 45px'den büyütüldü */
             }
         }
     </style>
