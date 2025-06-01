@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -13,6 +13,16 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+            -webkit-overflow-scrolling: touch;
         }
 
         :root {
@@ -45,6 +55,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            height: 100vh;
             color: var(--text-color);
             transition: all 0.3s ease;
         }
@@ -56,6 +67,7 @@
             box-shadow: 0 15px 35px var(--shadow);
             max-width: 95vw;
             max-height: 95vh;
+            height: 100vh;
             backdrop-filter: blur(10px);
             border: 1px solid var(--card-border);
             display: flex;
@@ -365,413 +377,15 @@
 
         /* Mobil modal optimizasyonları */
         @media screen and (max-width: 768px) {
-            .modal-content {
-                width: 95%;
-                max-width: none;
-                margin: 10px;
-                padding: 15px;
-                max-height: 85vh;
-                border-radius: 10px;
+            html, body {
+                overflow: hidden !important;
+                position: fixed !important;
+                width: 100% !important;
+                height: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
             }
 
-            .modal-content h2 {
-                font-size: 1.5em;
-                margin-bottom: 15px;
-            }
-
-            .shop-grid {
-                grid-template-columns: 1fr;
-                gap: 10px;
-                margin: 15px 0;
-            }
-
-            .shop-item {
-                padding: 15px;
-                margin-bottom: 5px;
-            }
-
-            .shop-item h3 {
-                font-size: 1.1em;
-                margin-bottom: 8px;
-            }
-
-            .shop-item p {
-                font-size: 0.9em;
-                margin: 5px 0;
-            }
-
-            .buy-btn, .btn {
-                padding: 12px 20px;
-                font-size: 16px;
-                margin: 8px 5px;
-                min-height: 44px; /* Touch target minimum */
-                border-radius: 8px;
-            }
-
-            /* Envanter modal için özel düzenlemeler */
-            .inventory-items {
-                justify-content: center;
-                gap: 15px;
-                flex-wrap: wrap;
-                margin: 20px 0;
-            }
-
-            #modalInventory .inventory-btn {
-                width: 60px;
-                height: 60px;
-                font-size: 24px;
-                margin: 5px;
-            }
-        }
-
-        @media screen and (max-width: 480px) {
-            .modal-content {
-                width: 98%;
-                margin: 5px;
-                padding: 12px;
-                border-radius: 8px;
-            }
-
-            .shop-item {
-                padding: 12px;
-            }
-
-            .buy-btn, .btn {
-                padding: 10px 15px;
-                font-size: 14px;
-                margin: 5px 3px;
-            }
-
-            #modalInventory .inventory-btn {
-                width: 50px;
-                height: 50px;
-                font-size: 20px;
-            }
-        }
-
-        .shop-item {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid var(--card-border);
-            text-align: center;
-            transition: transform 0.2s ease;
-        }
-
-        .shop-item:hover {
-            transform: translateY(-5px);
-        }
-
-        .shop-item h3 {
-            color: var(--canvas-border);
-            margin-bottom: 10px;
-        }
-
-        .buy-btn {
-            background: var(--btn-gradient);
-            color: var(--btn-text);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 10px;
-            font-weight: 600;
-        }
-
-        .buy-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .buy-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .theme-toggle {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            font-size: 18px;
-            cursor: pointer;
-            z-index: 100;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .theme-toggle:hover {
-            background: rgba(0, 0, 0, 0.5);
-            transform: scale(1.1);
-        }
-
-        .theme-toggle:active {
-            transform: scale(0.95);
-        }
-
-        /* Mobil için özel optimizasyonlar */
-        @media screen and (max-width: 768px) {
-            .theme-toggle {
-                top: 8px;
-                right: 8px;
-                width: 44px; /* Touch target minimum */
-                height: 44px;
-                font-size: 20px;
-                background: rgba(0, 0, 0, 0.4);
-            }
-
-            /* Mobil scroll engellemesi */
-            body.mobile-game {
-                position: fixed;
-                width: 100%;
-                height: 100%;
-                overflow: hidden;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            /* Mobil zoom engellemesi */
-            .game-container * {
-                -webkit-touch-callout: none;
-                -webkit-user-select: none;
-                -khtml-user-select: none;
-                -moz-user-select: none;
-                -ms-user-select: none;
-                user-select: none;
-                -webkit-tap-highlight-color: transparent;
-            }
-
-            /* Mobil inputlar için özel durum */
-            input, button {
-                -webkit-user-select: auto;
-                -moz-user-select: auto;
-                -ms-user-select: auto;
-                user-select: auto;
-            }
-
-            /* Canvas touch optimizasyonu */
-            canvas {
-                touch-action: manipulation;
-                -webkit-touch-callout: none;
-                -webkit-user-select: none;
-                user-select: none;
-            }
-        }
-
-        /* Çok küçük ekranlar için ekstra optimizasyon */
-        @media screen and (max-width: 320px) {
-            .dpad {
-                width: 110px;
-                height: 110px;
-                padding: 8px;
-                gap: 6px;
-            }
-
-            .dpad-btn {
-                font-size: 18px;
-            }
-
-            .action-btn {
-                width: 55px;
-                height: 55px;
-            }
-
-            .btn-icon {
-                font-size: 16px;
-            }
-
-            .btn-label {
-                font-size: 7px;
-            }
-
-            .mobile-controls {
-                padding: 10px;
-                min-height: 120px;
-            }
-
-            .game-right {
-                margin-bottom: 130px;
-            }
-
-            .score-item {
-                padding: 2px 1px;
-                font-size: 0.6em;
-            }
-
-            .inventory-btn {
-                width: 26px;
-                height: 26px;
-                font-size: 11px;
-            }
-        }
-
-        .power-up-indicator {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 12px 25px;
-            border-radius: 10px;
-            font-weight: bold;
-            display: none;
-            z-index: 1001;
-            animation: powerUpFade 2s ease-out forwards;
-        }
-
-        @keyframes powerUpFade {
-            0% { opacity: 0; transform: translate(-50%, -20px); }
-            20% { opacity: 1; transform: translate(-50%, 0); }
-            80% { opacity: 1; transform: translate(-50%, 0); }
-            100% { opacity: 0; transform: translate(-50%, -20px); }
-        }
-
-        /* Mobil Kontroller */
-        .mobile-controls {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(135deg, #222222 0%, #111111 100%);
-            border-top: 3px solid #ff6b35;
-            padding: 10px;
-            min-height: 180px; /* 150px'den 180px'e artırıldı */
-            z-index: 1000;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
-        }
-
-        .dpad {
-            position: relative;
-            width: 180px; /* 150px'den 180px'e artırıldı */
-            height: 180px; /* 150px'den 180px'e artırıldı */
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            gap: 5px;
-            background: #333333;
-            border-radius: 10px;
-            padding: 10px;
-            border: 3px solid #888888;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8), 0 0 5px rgba(255, 255, 255, 0.2);
-        }
-
-        .dpad-btn {
-            background: linear-gradient(to bottom, #777777, #444444);
-            border: 2px solid #999999;
-            border-radius: 5px;
-            color: #ffffff;
-            font-size: 28px; /* 24px'den 28px'e artırıldı */
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 2px 4px rgba(0, 0, 0, 0.5);
-            text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
-            transition: all 0.1s;
-        }
-
-        .dpad-btn:active {
-            transform: translateY(2px);
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
-            background: linear-gradient(to bottom, #555555, #333333);
-        }
-
-        .dpad-btn.up {
-            grid-area: 1 / 2 / 2 / 3;
-            background: linear-gradient(to bottom, #ff4757, #c43636);
-            border-color: #ff6b6b;
-        }
-
-        .dpad-btn.left {
-            grid-area: 2 / 1 / 3 / 2;
-            background: linear-gradient(to bottom, #3742fa, #2d3ad1);
-            border-color: #5c69ff;
-        }
-
-        .dpad-btn.right {
-            grid-area: 2 / 3 / 3 / 4;
-            background: linear-gradient(to bottom, #ffa502, #e67e22);
-            border-color: #ffbe76;
-        }
-
-        .dpad-btn.down {
-            grid-area: 3 / 2 / 4 / 3;
-            background: linear-gradient(to bottom, #a55eea, #8854d0);
-            border-color: #cd84f1;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .action-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: 3px solid #888888;
-            background: linear-gradient(to bottom, #777777, #444444);
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-weight: bold;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 3px 5px rgba(0, 0, 0, 0.5);
-            transition: all 0.1s;
-        }
-
-        .btn-icon {
-            font-size: 20px;
-            margin-bottom: 3px;
-        }
-
-        .btn-label {
-            font-size: 9px;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-            opacity: 0.9;
-        }
-
-        .dpad-btn:active, .action-btn:active {
-            transform: scale(0.9);
-            box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Mobil kontroller için özel touch olayları */
-        .dpad-btn:hover, .action-btn:hover {
-            transform: none; /* Mobilde hover kaldır */
-        }
-
-        /* Aktif durum animasyonu */
-        .dpad-btn:active {
-            background-size: 120%;
-            box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.4);
-        }
-
-        .action-btn:active {
-            background-size: 120%;
-        }
-
-        /* Responsive Design */
-        @media screen and (max-width: 768px) {
             body {
                 overflow: hidden;
                 position: fixed;
@@ -785,19 +399,21 @@
                 flex-direction: column;
                 max-width: 100vw;
                 max-height: 100vh;
+                height: 100vh !important;
+                width: 100vw;
                 padding: 5px;
                 border-radius: 0;
-                height: 100vh;
-                margin-bottom: 0;
+                margin: 0;
                 gap: 5px;
                 border: none;
+                overflow: hidden;
             }
 
             .game-left {
                 flex: 0 0 auto;
                 width: 100%;
                 margin-bottom: 0;
-                max-height: 25vh;
+                max-height: 20vh; /* 25vh'den 20vh'e düşürüldü */
                 overflow-y: auto;
                 padding-bottom: 5px;
             }
@@ -807,10 +423,11 @@
                 width: 100%;
                 min-width: 0;
                 min-height: 0;
-                margin-bottom: 250px; /* 220px'den 250px'e artırıldı */
+                margin-bottom: 140px; /* 250px'den 140px'e düşürüldü */
                 display: flex;
                 flex-direction: column;
-                max-height: 55vh; 
+                max-height: 60vh; /* 55vh'den 60vh'e artırıldı */
+                overflow: hidden;
             }
 
             .game-menu {
@@ -822,14 +439,14 @@
             }
 
             .btn {
-                padding: 8px 12px;
-                font-size: 12px;
+                padding: 6px 10px; /* 8px 12px'den küçültüldü */
+                font-size: 11px; /* 12px'den küçültüldü */
                 white-space: nowrap;
                 flex-shrink: 0;
             }
 
             .level-progress {
-                margin: 5px 0;
+                margin: 3px 0; /* 5px'den 3px'e küçültüldü */
                 height: 6px;
             }
 
@@ -839,175 +456,106 @@
 
             .mobile-controls {
                 display: flex;
+                min-height: 140px !important; /* 180px'den 140px'e düşürüldü */
             }
 
             canvas {
                 flex: 1;
                 width: 100% !important;
                 height: auto !important;
-                max-height: calc(100vh - 460px) !important; /* 430px'den 460px'e artırıldı */
-                min-height: 150px;
+                max-height: calc(100vh - 280px) !important; /* 460px'den 280px'e düşürüldü */
+                min-height: 120px; /* 150px'den küçültüldü */
                 border-width: 2px;
             }
 
             .score-board {
                 grid-template-columns: repeat(4, 1fr);
-                gap: 3px;
+                gap: 2px; /* 3px'den küçültüldü */
             }
 
             .score-item {
-                padding: 6px 4px;
-                font-size: 0.75em;
+                padding: 4px 3px; /* 6px 4px'den küçültüldü */
+                font-size: 0.7em; /* 0.75em'den küçültüldü */
             }
 
             .score-item span {
-                font-size: 1em;
-                margin-top: 2px;
+                font-size: 0.9em; /* 1em'den küçültüldü */
+                margin-top: 1px; /* 2px'den küçültüldü */
             }
 
             .inventory-items {
-                gap: 5px;
+                gap: 3px; /* 5px'den küçültüldü */
                 justify-content: space-around;
             }
 
             .inventory-btn {
-                width: 35px;
-                height: 35px;
-                font-size: 14px;
+                width: 30px; /* 35px'den küçültüldü */
+                height: 30px; /* 35px'den küçültüldü */
+                font-size: 12px; /* 14px'den küçültüldü */
                 flex-shrink: 0;
             }
 
             .card {
-                padding: 8px;
-                margin-bottom: 3px;
+                padding: 6px; /* 8px'den küçültüldü */
+                margin-bottom: 2px; /* 3px'den küçültüldü */
             }
 
             .lives {
-                gap: 4px;
+                gap: 3px; /* 4px'den küçültüldü */
             }
 
             .heart {
-                font-size: 1.2em;
+                font-size: 1em; /* 1.2em'den küçültüldü */
             }
 
             .autoplay-container {
-                padding: 5px;
-                gap: 8px;
+                padding: 3px; /* 5px'den küçültüldü */
+                gap: 6px; /* 8px'den küçültüldü */
             }
 
             .theme-toggle {
-                top: 10px;
-                right: 10px;
-                width: 35px;
-                height: 35px;
-                font-size: 16px;
-            }
-        }
-
-        @media screen and (max-width: 768px) and (orientation: landscape) {
-            .game-container {
-                flex-direction: row;
-                margin-bottom: 0;
-                gap: 5px;
-            }
-
-            .game-left {
-                flex: 0 0 200px;
-                width: 200px;
-                max-height: 100vh;
-                margin-bottom: 0;
-                margin-right: 5px;
-            }
-
-            .game-right {
-                flex: 1;
-                width: auto;
-                margin-bottom: 150px; /* Landscape kontroller için daha fazla boş alan */
-                max-height: 60vh; /* Landscape için de yüksekliği sınırlıyorum */
-            }
-
-            canvas {
-                max-height: calc(100vh - 200px) !important; /* Landscape için daha fazla boş alan */
-                width: 100% !important;
-            }
-
-            .mobile-controls {
-                min-height: 100px;
-                padding: 10px;
-            }
-
-            .dpad {
-                width: 90px;
-                height: 90px;
-            }
-
-            .dpad-btn {
-                font-size: 14px;
-            }
-
-            .action-btn {
-                width: 45px;
-                height: 45px;
-            }
-
-            .btn-icon {
-                font-size: 14px;
-            }
-
-            .btn-label {
-                font-size: 7px;
-            }
-
-            .score-board {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 3px;
-            }
-
-            .inventory-items {
-                gap: 3px;
-            }
-
-            .inventory-btn {
-                width: 30px;
-                height: 30px;
-                font-size: 12px;
+                top: 8px;
+                right: 8px;
+                width: 40px; /* 35px'den büyütüldü */
+                height: 40px; /* 35px'den büyütüldü */
+                font-size: 18px; /* 16px'den büyütüldü */
             }
         }
 
         @media screen and (max-width: 480px) {
             .game-container {
-                padding: 3px;
+                padding: 2px; /* 3px'den küçültüldü */
             }
 
             .game-left {
-                max-height: 20vh;
+                max-height: 18vh; /* 20vh'den küçültüldü */
             }
 
             .game-right {
-                margin-bottom: 200px; /* 180px'den 200px'e artırıldı */
+                margin-bottom: 130px; /* 200px'den 130px'e düşürüldü */
             }
 
             .score-item {
-                padding: 4px 2px;
-                font-size: 0.7em;
+                padding: 3px 2px; /* 4px 2px'den küçültüldü */
+                font-size: 0.65em; /* 0.7em'den küçültüldü */
             }
 
             .inventory-btn {
-                width: 32px;
-                height: 32px;
-                font-size: 13px;
+                width: 28px; /* 32px'den küçültüldü */
+                height: 28px; /* 32px'den küçültüldü */
+                font-size: 11px; /* 13px'den küçültüldü */
             }
 
             .dpad {
-                width: 140px; /* 120px'den 140px'e artırıldı */
-                height: 140px; /* 120px'den 140px'e artırıldı */
-                padding: 6px;
-                gap: 4px;
+                width: 120px; /* 140px'den küçültüldü */
+                height: 120px; /* 140px'den küçültüldü */
+                padding: 6px; /* 6px'den değişiklik yok */
+                gap: 3px; /* 4px'den küçültüldü */
             }
 
             .action-btn {
-                width: 42px;
-                height: 42px;
+                width: 45px; /* 42px'den büyütüldü */
+                height: 45px; /* 42px'den büyütüldü */
             }
 
             .btn-icon {
@@ -1019,61 +567,66 @@
             }
 
             canvas {
-                max-height: calc(100vh - 320px) !important; /* 300px'den 320px'e artırıldı */
-                min-height: 200px;
+                max-height: calc(100vh - 240px) !important; /* 320px'den 240px'e düşürüldü */
+                min-height: 120px; /* 200px'den küçültüldü */
+            }
+
+            .mobile-controls {
+                min-height: 130px; /* Daha tutarlı hale getirildi */
+                padding: 8px 12px; /* Padding optimize edildi */
             }
         }
 
         @media screen and (max-width: 360px) {
             .game-left {
-                max-height: 18vh;
+                max-height: 16vh; /* 18vh'den küçültüldü */
             }
 
             .game-right {
-                margin-bottom: 180px; /* 160px'den 180px'e artırıldı */
+                margin-bottom: 120px; /* 180px'den 120px'e düşürüldü */
             }
 
             .score-item {
-                padding: 3px 2px;
-                font-size: 0.65em;
+                padding: 2px 1px; /* 3px 2px'den küçültüldü */
+                font-size: 0.6em; /* 0.65em'den küçültüldü */
             }
 
             .inventory-btn {
-                width: 28px;
-                height: 28px;
-                font-size: 12px;
+                width: 26px; /* 28px'den küçültüldü */
+                height: 26px; /* 28px'den küçültüldü */
+                font-size: 10px; /* 12px'den küçültüldü */
             }
 
             .dpad {
-                width: 120px; /* 110px'den 120px'e artırıldı */
-                height: 120px; /* 110px'den 120px'e artırıldı */
+                width: 110px; /* 120px'den küçültüldü */
+                height: 110px; /* 120px'den küçültüldü */
             }
 
             .dpad-btn {
-                font-size: 20px; /* 18px'den 20px'e artırıldı */
+                font-size: 18px; /* 20px'den küçültüldü */
             }
 
             .action-btn {
-                width: 45px;
-                height: 45px;
+                width: 42px; /* 45px'den küçültüldü */
+                height: 42px; /* 45px'den küçültüldü */
             }
 
             .btn-icon {
-                font-size: 14px;
+                font-size: 13px; /* 14px'den küçültüldü */
             }
 
             .btn-label {
-                font-size: 7px;
+                font-size: 6px; /* 7px'den küçültüldü */
             }
 
             .mobile-controls {
-                min-height: 130px; /* 120px'den 130px'e artırıldı */
-                padding: 10px 15px;
+                min-height: 120px; /* 130px'den küçültüldü */
+                padding: 6px 10px; /* 10px 15px'den küçültüldü */
             }
 
             canvas {
-                max-height: calc(100vh - 260px) !important; /* 240px'den 260px'e artırıldı */
-                min-height: 180px;
+                max-height: calc(100vh - 220px) !important; /* 260px'den 220px'e düşürüldü */
+                min-height: 100px; /* 180px'den küçültüldü */
             }
         }
 
@@ -1085,6 +638,85 @@
             right: 10px;
             z-index: 1001;
         }
+
+        /* UI Gizleme Özelliği */
+        .ui-toggle {
+            display: none;
+            position: fixed;
+            top: 50px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .ui-toggle:active {
+            transform: scale(0.9);
+        }
+
+        /* Gizli UI durumu */
+        .ui-hidden .game-left .card:not(.lives-card):not(.inventory) {
+            display: none !important;
+        }
+
+        .ui-hidden .game-left {
+            max-height: 12vh !important;
+            gap: 2px !important;
+        }
+
+        .ui-hidden .game-right {
+            margin-bottom: 140px !important;
+            max-height: 75vh !important;
+        }
+
+        .ui-hidden canvas {
+            max-height: calc(100vh - 200px) !important;
+        }
+
+        /* Lives card özel stili */
+        .lives-card {
+            padding: 4px !important;
+            margin-bottom: 2px !important;
+        }
+
+        .ui-hidden .lives-card {
+            padding: 3px !important;
+            margin-bottom: 1px !important;
+        }
+
+        .ui-hidden .inventory {
+            padding: 4px !important;
+            margin-bottom: 1px !important;
+        }
+
+        .ui-hidden .inventory h3 {
+            font-size: 0.8em !important;
+            margin-bottom: 3px !important;
+        }
+
+        .ui-hidden .inventory-btn {
+            width: 28px !important;
+            height: 28px !important;
+            font-size: 12px !important;
+        }
+
+        .ui-hidden .lives {
+            gap: 2px !important;
+        }
+
+        .ui-hidden .heart {
+            font-size: 0.9em !important;
+        }
+
         @media screen and (max-width: 768px) {
             /* Menü, mobil kontroller ve yön tuşlarını gizle */
             .game-menu { display: none !important; }
@@ -1092,6 +724,68 @@
             .menu-toggle { display: none !important; }
             .controls { display: none !important; }
             .mobile-controls { display: flex !important; }
+            .ui-toggle { display: flex !important; align-items: center; justify-content: center; }
+
+            /* Mobil için UI gizleme optimizasyonları */
+            .ui-hidden .game-left {
+                max-height: 10vh !important;
+            }
+
+            .ui-hidden .game-right {
+                margin-bottom: 130px !important;
+                max-height: 80vh !important;
+            }
+
+            .ui-hidden canvas {
+                max-height: calc(100vh - 180px) !important;
+                min-height: 150px !important;
+            }
+
+            /* 480px ve altı için özel ayarlar */
+            @media screen and (max-width: 480px) {
+                .ui-hidden .game-left {
+                    max-height: 9vh !important;
+                }
+
+                .ui-hidden .game-right {
+                    margin-bottom: 120px !important;
+                }
+
+                .ui-hidden canvas {
+                    max-height: calc(100vh - 160px) !important;
+                }
+
+                .ui-hidden .inventory-btn {
+                    width: 26px !important;
+                    height: 26px !important;
+                    font-size: 11px !important;
+                }
+            }
+
+            /* 360px ve altı için özel ayarlar */
+            @media screen and (max-width: 360px) {
+                .ui-hidden .game-left {
+                    max-height: 8vh !important;
+                }
+
+                .ui-hidden .game-right {
+                    margin-bottom: 110px !important;
+                }
+
+                .ui-hidden canvas {
+                    max-height: calc(100vh - 150px) !important;
+                }
+
+                .ui-hidden .inventory-btn {
+                    width: 24px !important;
+                    height: 24px !important;
+                    font-size: 10px !important;
+                }
+
+                .ui-hidden .heart {
+                    font-size: 0.8em !important;
+                }
+            }
         }
 
         @media screen and (max-width: 768px) {
@@ -1229,6 +923,424 @@
                 font-size: 7px;
             }
         }
+
+        .shop-item {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+
+        .shop-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .shop-item h3 {
+            color: var(--canvas-border);
+            margin-bottom: 10px;
+        }
+
+        .buy-btn {
+            background: var(--btn-gradient);
+            color: var(--btn-text);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .buy-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .buy-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.5);
+            transform: scale(1.1);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
+        .power-up-indicator {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+            z-index: 1001;
+            animation: powerUpFade 2s ease-out forwards;
+        }
+
+        @keyframes powerUpFade {
+            0% { opacity: 0; transform: translate(-50%, -20px); }
+            20% { opacity: 1; transform: translate(-50%, 0); }
+            80% { opacity: 1; transform: translate(-50%, 0); }
+            100% { opacity: 0; transform: translate(-50%, -20px); }
+        }
+
+        /* Mobil Kontroller */
+        .mobile-controls {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #222222 0%, #111111 100%);
+            border-top: 3px solid #ff6b35;
+            padding: 8px; /* 10px'den küçültüldü */
+            min-height: 140px; /* 180px'den 140px'e düşürüldü */
+            z-index: 1000;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .dpad {
+            position: relative;
+            width: 140px; /* 180px'den 140px'e düşürüldü */
+            height: 140px; /* 180px'den 140px'e düşürüldü */
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 4px; /* 5px'den küçültüldü */
+            background: #333333;
+            border-radius: 8px; /* 10px'den küçültüldü */
+            padding: 8px; /* 10px'den küçültüldü */
+            border: 2px solid #888888; /* 3px'den küçültüldü */
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8), 0 0 5px rgba(255, 255, 255, 0.2);
+        }
+
+        .dpad-btn {
+            background: linear-gradient(to bottom, #777777, #444444);
+            border: 2px solid #999999;
+            border-radius: 4px; /* 5px'den küçültüldü */
+            color: #ffffff;
+            font-size: 22px; /* 28px'den küçültüldü */
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 2px 4px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
+            transition: all 0.1s;
+        }
+
+        .dpad-btn:active {
+            transform: translateY(2px);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(to bottom, #555555, #333333);
+        }
+
+        .dpad-btn.up {
+            grid-area: 1 / 2 / 2 / 3;
+            background: linear-gradient(to bottom, #ff4757, #c43636);
+            border-color: #ff6b6b;
+        }
+
+        .dpad-btn.left {
+            grid-area: 2 / 1 / 3 / 2;
+            background: linear-gradient(to bottom, #3742fa, #2d3ad1);
+            border-color: #5c69ff;
+        }
+
+        .dpad-btn.right {
+            grid-area: 2 / 3 / 3 / 4;
+            background: linear-gradient(to bottom, #ffa502, #e67e22);
+            border-color: #ffbe76;
+        }
+
+        .dpad-btn.down {
+            grid-area: 3 / 2 / 4 / 3;
+            background: linear-gradient(to bottom, #a55eea, #8854d0);
+            border-color: #cd84f1;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            width: 50px; /* 60px'den küçültüldü */
+            height: 50px; /* 60px'den küçültüldü */
+            border-radius: 50%;
+            border: 2px solid #888888; /* 3px'den küçültüldü */
+            background: linear-gradient(to bottom, #777777, #444444);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 3px 5px rgba(0, 0, 0, 0.5);
+            transition: all 0.1s;
+        }
+
+        .btn-icon {
+            font-size: 16px; /* 20px'den küçültüldü */
+            margin-bottom: 2px; /* 3px'den küçültüldü */
+        }
+
+        .btn-label {
+            font-size: 8px; /* 9px'den küçültüldü */
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            opacity: 0.9;
+        }
+
+        .dpad-btn:active, .action-btn:active {
+            transform: scale(0.9);
+            box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Mobil kontroller için özel touch olayları */
+        .dpad-btn:hover, .action-btn:hover {
+            transform: none; /* Mobilde hover kaldır */
+        }
+
+        /* Aktif durum animasyonu */
+        .dpad-btn:active {
+            background-size: 120%;
+            box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .action-btn:active {
+            background-size: 120%;
+        }
+
+        /* Mobil modal optimizasyonları */
+        @media screen and (max-width: 768px) {
+            .modal-content {
+                width: 95%;
+                max-width: none;
+                margin: 10px;
+                padding: 15px;
+                max-height: 85vh;
+                border-radius: 10px;
+            }
+
+            .modal-content h2 {
+                font-size: 1.5em;
+                margin-bottom: 15px;
+            }
+
+            .shop-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                margin: 15px 0;
+            }
+
+            .shop-item {
+                padding: 15px;
+                margin-bottom: 5px;
+            }
+
+            .shop-item h3 {
+                font-size: 1.1em;
+                margin-bottom: 8px;
+            }
+
+            .shop-item p {
+                font-size: 0.9em;
+                margin: 5px 0;
+            }
+
+            .buy-btn, .btn {
+                padding: 12px 20px;
+                font-size: 16px;
+                margin: 8px 5px;
+                min-height: 44px; /* Touch target minimum */
+                border-radius: 8px;
+            }
+
+            /* Envanter modal için özel düzenlemeler */
+            .inventory-items {
+                justify-content: center;
+                gap: 15px;
+                flex-wrap: wrap;
+                margin: 20px 0;
+            }
+
+            #modalInventory .inventory-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+                margin: 5px;
+            }
+
+            /* Mobil scroll engellemesi */
+            body.mobile-game {
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            /* Mobil zoom engellemesi */
+            .game-container * {
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            /* Mobil inputlar için özel durum */
+            input, button {
+                -webkit-user-select: auto;
+                -moz-user-select: auto;
+                -ms-user-select: auto;
+                user-select: auto;
+            }
+
+            /* Canvas touch optimizasyonu */
+            canvas {
+                touch-action: manipulation;
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                user-select: none;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .modal-content {
+                width: 98%;
+                margin: 5px;
+                padding: 12px;
+                border-radius: 8px;
+            }
+
+            .shop-item {
+                padding: 12px;
+            }
+
+            .buy-btn, .btn {
+                padding: 10px 15px;
+                font-size: 14px;
+                margin: 5px 3px;
+            }
+
+            #modalInventory .inventory-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+        }
+
+        @media screen and (max-width: 768px) and (orientation: landscape) {
+            .game-container {
+                flex-direction: row;
+                margin-bottom: 0;
+                gap: 5px;
+            }
+
+            .game-left {
+                flex: 0 0 200px;
+                width: 200px;
+                max-height: 100vh;
+                margin-bottom: 0;
+                margin-right: 5px;
+            }
+
+            .game-right {
+                flex: 1;
+                width: auto;
+                margin-bottom: 100px; /* Landscape kontroller için optimize edildi */
+                max-height: 70vh; /* Landscape için optimize edildi */
+            }
+
+            canvas {
+                max-height: calc(100vh - 150px) !important; /* Landscape için optimize edildi */
+                width: 100% !important;
+            }
+
+            .mobile-controls {
+                min-height: 90px; /* Landscape için daha kompakt */
+                padding: 8px;
+            }
+
+            .dpad {
+                width: 80px; /* Landscape için daha küçük */
+                height: 80px;
+            }
+
+            .dpad-btn {
+                font-size: 16px;
+            }
+
+            .action-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            .btn-icon {
+                font-size: 12px;
+            }
+
+            .btn-label {
+                font-size: 6px;
+            }
+
+            .score-board {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 3px;
+            }
+
+            .inventory-items {
+                gap: 3px;
+            }
+
+            .inventory-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1236,6 +1348,11 @@
             onclick="toggleTheme()" 
             ontouchstart="handleMobileTouch(event, toggleTheme)"
             title="Temayı Değiştir">🌓</button>
+    
+    <button class="ui-toggle" 
+            onclick="toggleUI()" 
+            ontouchstart="handleMobileTouch(event, toggleUI)"
+            title="UI Gizle/Göster">👁️</button>
     
     <div class="game-container">
         <div class="game-left">
@@ -1248,7 +1365,7 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card lives-card">
                 <div class="lives" id="lives"></div>
             </div>
 
@@ -1685,6 +1802,15 @@
             
             // Görsel feedback
             const button = event.target;
+            const currentTime = Date.now();
+            
+            // Double-tap engellemesi (500ms içinde tekrar tıklamaya izin verme)
+            if (button.lastTouchTime && (currentTime - button.lastTouchTime) < 500) {
+                console.log('Double-tap engellendi');
+                return;
+            }
+            button.lastTouchTime = currentTime;
+            
             button.style.transform = 'scale(0.9)';
             
             // Fonksiyonu çalıştır
@@ -2150,19 +2276,98 @@
 
         function toggleAutoplay() {
             autoplayEnabled = document.getElementById('autoplayToggle').checked;
-            showPowerUpMessage(`Oto-Oyna ${autoplayEnabled ? 'Aktif' : 'Devre Dışı'}`);
+            
+            // Mobil OTO butonunun görsel durumunu güncelle
+            const autoBtn = document.querySelector('.action-btn.auto');
+            if (autoBtn) {
+                if (autoplayEnabled) {
+                    autoBtn.style.background = 'linear-gradient(to bottom, #2ecc71, #27ae60)';
+                    autoBtn.style.borderColor = '#2ecc71';
+                    autoBtn.style.boxShadow = 'inset 0 0 10px rgba(46, 204, 113, 0.5), 0 3px 5px rgba(0, 0, 0, 0.5)';
+                } else {
+                    autoBtn.style.background = 'linear-gradient(to bottom, #ff9ff3, #f368e0)';
+                    autoBtn.style.borderColor = '#ffccff';
+                    autoBtn.style.boxShadow = 'inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 3px 5px rgba(0, 0, 0, 0.5)';
+                }
+            }
+            
+            showPowerUpMessage(`Oto-Oyna ${autoplayEnabled ? 'Aktif!' : 'Devre Dışı!'}`);
+            
+            // Gamedata'ya kaydet
+            gameData.autoplayEnabled = autoplayEnabled;
         }
 
+        let autoplayToggleTimeout = null;
+
         function toggleAutoplayMobile() {
+            // Double-tap engellemesi
+            if (autoplayToggleTimeout) {
+                clearTimeout(autoplayToggleTimeout);
+            }
+            
+            console.log('toggleAutoplayMobile çağrıldı, mevcut durum:', autoplayEnabled);
             autoplayEnabled = !autoplayEnabled;
+            console.log('Yeni durum:', autoplayEnabled);
             document.getElementById('autoplayToggle').checked = autoplayEnabled;
-            showPowerUpMessage(`Oto-Oyna ${autoplayEnabled ? 'Aktif' : 'Devre Dışı'}`);
+            
+            // Buton stilini hemen uygula
+            const autoBtn = document.querySelector('.action-btn.auto');
+            console.log('Buton bulundu:', !!autoBtn);
+            if (autoBtn) {
+                if (autoplayEnabled) {
+                    autoBtn.style.background = 'linear-gradient(to bottom, #2ecc71, #27ae60)';
+                    autoBtn.style.borderColor = '#2ecc71';
+                    autoBtn.style.boxShadow = 'inset 0 0 10px rgba(46, 204, 113, 0.5), 0 3px 5px rgba(0, 0, 0, 0.5)';
+                    console.log('Yeşil renk uygulandı');
+                } else {
+                    autoBtn.style.background = 'linear-gradient(to bottom, #ff9ff3, #f368e0)';
+                    autoBtn.style.borderColor = '#ffccff';
+                    autoBtn.style.boxShadow = 'inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 3px 5px rgba(0, 0, 0, 0.5)';
+                    console.log('Pembe renk uygulandı');
+                }
+                // Transform'u sıfırla
+                autoBtn.style.transform = '';
+            }
+            
+            showPowerUpMessage(`Oto-Oyna ${autoplayEnabled ? 'Aktif!' : 'Devre Dışı!'}`);
+            
+            // Gamedata'ya kaydet
+            gameData.autoplayEnabled = autoplayEnabled;
+            
+            // 500ms debounce
+            autoplayToggleTimeout = setTimeout(() => {
+                autoplayToggleTimeout = null;
+            }, 500);
         }
 
         function toggleTheme() {
             document.body.classList.toggle('dark-theme');
             gameData.darkTheme = document.body.classList.contains('dark-theme');
             if (!isPaused) drawGame();
+        }
+
+        // UI Gizleme/Gösterme
+        function toggleUI() {
+            const gameContainer = document.querySelector('.game-container');
+            const isHidden = gameContainer.classList.contains('ui-hidden');
+            
+            if (isHidden) {
+                gameContainer.classList.remove('ui-hidden');
+                document.querySelector('.ui-toggle').innerHTML = '👁️';
+                document.querySelector('.ui-toggle').title = 'UI Gizle/Göster';
+                showPowerUpMessage('UI Gösterildi');
+            } else {
+                gameContainer.classList.add('ui-hidden');
+                document.querySelector('.ui-toggle').innerHTML = '👁️‍🗨️';
+                document.querySelector('.ui-toggle').title = 'UI Gizle/Göster';
+                showPowerUpMessage('UI Gizlendi - Daha Fazla Oyun Alanı!');
+            }
+            
+            // Canvas boyutunu yeniden hesapla
+            setTimeout(() => {
+                setupCanvas();
+                if (!isPaused && lives > 0) drawGame();
+            }, 100);
         }
 
         // Envanter ve Güç Artışları
@@ -2495,6 +2700,7 @@
             coins: 100, // Başlangıç coin'i
             soundEnabled: true,
             darkTheme: false,
+            autoplayEnabled: false,
             currentSkin: 'default',
             inventory: {
                 shield: 5,
@@ -2512,6 +2718,7 @@
             gameData.currentSkin = currentSkin;
             gameData.inventory = { ...inventory };
             gameData.soundEnabled = soundEnabled;
+            gameData.autoplayEnabled = autoplayEnabled;
             gameData.darkTheme = document.body.classList.contains('dark-theme');
         }
 
@@ -2520,8 +2727,29 @@
             highScore = gameData.highScore;
             coins = gameData.coins;
             soundEnabled = gameData.soundEnabled;
+            autoplayEnabled = gameData.autoplayEnabled;
             currentSkin = gameData.currentSkin;
             inventory = { ...gameData.inventory };
+            
+            // Autoplay checkbox durumunu güncelle
+            const autoplayToggle = document.getElementById('autoplayToggle');
+            if (autoplayToggle) {
+                autoplayToggle.checked = autoplayEnabled;
+            }
+            
+            // Mobil OTO butonunun görsel durumunu güncelle
+            const autoBtn = document.querySelector('.action-btn.auto');
+            if (autoBtn) {
+                if (autoplayEnabled) {
+                    autoBtn.style.background = 'linear-gradient(to bottom, #2ecc71, #27ae60)';
+                    autoBtn.style.borderColor = '#2ecc71';
+                    autoBtn.style.boxShadow = 'inset 0 0 10px rgba(46, 204, 113, 0.5), 0 3px 5px rgba(0, 0, 0, 0.5)';
+                } else {
+                    autoBtn.style.background = 'linear-gradient(to bottom, #ff9ff3, #f368e0)';
+                    autoBtn.style.borderColor = '#ffccff';
+                    autoBtn.style.boxShadow = 'inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 3px 5px rgba(0, 0, 0, 0.5)';
+                }
+            }
             
             // Tema ayarları
             if (gameData.darkTheme) {
