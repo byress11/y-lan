@@ -586,12 +586,7 @@
             }
             
             .mobile-left {
-                flex: 1.2;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                padding-left: 10px;
-                padding-top: 10px; /* Added to move dpad up */
+                flex: 0 0 auto;
             }
             
             .mobile-right {
@@ -1071,6 +1066,51 @@
                 transform: translateY(-50px);
             }
         }
+
+        /* D-Pad Boyut Kontrolleri */
+        .dpad-size-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            background: rgba(139, 69, 19, 0.8);
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 165, 0, 0.4);
+        }
+        
+        .size-btn {
+            background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            color: #ffcc99;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 165, 0, 0.4);
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .size-btn:active {
+            transform: scale(0.9);
+            background: linear-gradient(135deg, #cd853f 0%, #daa520 100%);
+        }
+        
+        .size-indicator {
+            color: #ffcc99;
+            font-size: 12px;
+            font-weight: bold;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        /* D-Pad Redesign */
     </style>
 </head>
 <body>
@@ -1159,7 +1199,14 @@
     <!-- Mobil Kontroller -->
     <div class="mobile-controls">
         <div class="mobile-left">
-            <div class="dpad">
+            <!-- Dpad Boyut Kontrolleri -->
+            <div class="dpad-size-controls">
+                <button class="size-btn" ontouchstart="adjustDpadSize(-10)">➖</button>
+                <span class="size-indicator" id="dpadSizeIndicator">180px</span>
+                <button class="size-btn" ontouchstart="adjustDpadSize(10)">➕</button>
+            </div>
+            
+            <div class="dpad" id="dpad">
                 <button class="dpad-btn up" ontouchstart="changeDirection('up')">▲</button>
                 <button class="dpad-btn left" ontouchstart="changeDirection('left')">◄</button>
                 <button class="dpad-btn right" ontouchstart="changeDirection('right')">►</button>
@@ -3717,6 +3764,55 @@
                 }
             }
         }
+        
+        // Dpad Boyut Ayarlama
+        let currentDpadSize = 180; // Başlangıç boyutu
+        
+        function adjustDpadSize(change) {
+            currentDpadSize += change;
+            
+            // Minimum boyut kontrolü (50px)
+            if (currentDpadSize < 50) {
+                currentDpadSize = 50;
+            }
+            
+            // Dpad ve butonları güncelle
+            const dpad = document.getElementById('dpad');
+            const sizeIndicator = document.getElementById('dpadSizeIndicator');
+            
+            if (dpad && sizeIndicator) {
+                dpad.style.width = currentDpadSize + 'px';
+                dpad.style.height = currentDpadSize + 'px';
+                sizeIndicator.textContent = currentDpadSize + 'px';
+                
+                // Font boyutunu da orantılı ayarla
+                const fontRatio = currentDpadSize / 180; // 180px = başlangıç boyutu
+                const newFontSize = Math.max(12, Math.floor(28 * fontRatio)); // Min 12px, max orantılı
+                
+                const dpadBtns = dpad.querySelectorAll('.dpad-btn');
+                dpadBtns.forEach(btn => {
+                    btn.style.fontSize = newFontSize + 'px';
+                });
+                
+                // LocalStorage'a kaydet
+                localStorage.setItem('dpadSize', currentDpadSize);
+            }
+        }
+        
+        // Sayfa yüklendiğinde kaydedilmiş boyutu yükle
+        function loadDpadSize() {
+            const savedSize = localStorage.getItem('dpadSize');
+            if (savedSize) {
+                currentDpadSize = parseInt(savedSize);
+                // Boyutu uygula
+                adjustDpadSize(0); // 0 değişiklik ile mevcut boyutu uygula
+            }
+        }
+        
+        // Sayfa yüklendiğinde boyutu yükle
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDpadSize();
+        });
     </script>
 </body>
 </html>
