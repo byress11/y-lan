@@ -143,10 +143,10 @@
             background: var(--canvas-bg);
             box-shadow: 0 10px 30px var(--shadow);
             display: block;
-            margin: 0 auto;
+            margin: 20px auto 0 auto;
             width: 100%;
             max-width: 100%;
-            max-height: 60vh; /* Yeni eklenen: Canvas yüksekliğini sınırlıyorum */
+            max-height: 85vh;
         }
 
         .level-progress {
@@ -235,17 +235,19 @@
 
         .inventory {
             text-align: center;
+            padding-top: 8px;
+            padding-bottom: 8px;
         }
 
         .inventory h3 {
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             font-size: 1rem;
         }
 
         .inventory-items {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 5px;
             flex-wrap: wrap;
         }
 
@@ -463,9 +465,9 @@
                 flex: 1;
                 width: 100% !important;
                 height: auto !important;
-                max-height: calc(100vh - 340px) !important; /* 280px'den 340px'e artırıldı */
-                min-height: 120px;
-                border-width: 2px;
+                max-height: calc(100vh - 240px) !important;
+                min-height: 60px;
+                border-width: 1px;
             }
 
             .score-board {
@@ -1466,8 +1468,8 @@
             }
 
             canvas {
-                max-height: calc(100vh - 460px) !important; /* 340px'den 460px'e artırıldı */
-                min-height: 60px;
+                max-height: calc(100vh - 260px) !important;
+                min-height: 80px;
                 border-width: 1px;
             }
 
@@ -1515,13 +1517,13 @@
                 height: 28px;
                 font-size: 12px;
             }
-
+            
             .dpad {
                 width: 120px !important; /* 100px'den büyütüldü */
                 height: 120px !important; /* 100px'den büyütüldü */
                 gap: 4px; /* 3px'den artırıldı */
             }
-
+            
             .dpad-btn {
                 font-size: 16px !important; /* 14px'den büyütüldü */
                 border-width: 1px !important;
@@ -1534,7 +1536,7 @@
                 grid-template-columns: 1fr 1fr !important;
                 grid-template-rows: 1fr 1fr !important;
             }
-
+            
             .action-btn {
                 font-size: 12px !important; /* 10px'den büyütüldü */
                 border-width: 1px !important;
@@ -1569,51 +1571,12 @@
                 <div class="lives" id="lives"></div>
             </div>
 
-            <div class="card inventory">
-                <h3>Envanter</h3>
-                <div class="inventory-items">
-                    <button class="inventory-btn" 
-                            onclick="useItem('shield')" 
-                            ontouchstart="handleMobileTouch(event, () => useItem('shield'))"
-                            title="Kalkan - Bir darbeye karşı koruma">🛡️</button>
-                    <button class="inventory-btn" 
-                            onclick="useItem('speedBoost')" 
-                            ontouchstart="handleMobileTouch(event, () => useItem('speedBoost'))"
-                            title="Hız Artışı - 1 dakika hızlanma">⚡</button>
-                    <button class="inventory-btn" 
-                            onclick="useItem('doublePoints')" 
-                            ontouchstart="handleMobileTouch(event, () => useItem('doublePoints'))"
-                            title="Çift Puan - 1 dakika çift puan">💫</button>
-                    <button class="inventory-btn" 
-                            onclick="useItem('ghostMode')" 
-                            ontouchstart="handleMobileTouch(event, () => useItem('ghostMode'))"
-                            title="Hayalet Modu - 1 dakika geçirgenlik">👻</button>
-                    <button class="inventory-btn" 
-                            onclick="changeSkin()" 
-                            ontouchstart="handleMobileTouch(event, changeSkin)"
-                            title="Skin Değiştir">🎨</button>
-                </div>
-            </div>
-
             <div class="card controls">
                 <button class="control-btn up" onclick="changeDirection('up')">⬆️</button>
                 <button class="control-btn left" onclick="changeDirection('left')">⬅️</button>
                 <div class="control-center"></div>
                 <button class="control-btn right" onclick="changeDirection('right')">➡️</button>
                 <button class="control-btn down" onclick="changeDirection('down')">⬇️</button>
-            </div>
-
-            <div class="card autoplay-container">
-                <span>🤖 Oto-Oyna:</span>
-                <label class="switch">
-                    <input type="checkbox" 
-                           id="autoplayToggle" 
-                           onchange="toggleAutoplay()"
-                           ontouchstart="handleMobileTouch(event, null)">
-                    <span class="slider" 
-                          onclick="document.getElementById('autoplayToggle').click()"
-                          ontouchstart="handleMobileTouch(event, () => document.getElementById('autoplayToggle').click())"></span>
-                </label>
             </div>
         </div>
         
