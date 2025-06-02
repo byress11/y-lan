@@ -502,6 +502,37 @@
             border-top: 1px solid var(--glass-border);
             padding: var(--space-lg);
             z-index: 100;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .mobile-controls.hidden {
+            transform: translateY(100%);
+        }
+
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-full);
+            width: 50px;
+            height: 30px;
+            color: var(--text-primary);
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            z-index: 101;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-50%) scale(1.1);
         }
 
         @media (max-width: 768px) {
@@ -511,6 +542,10 @@
                 align-items: center;
                 gap: var(--space-lg);
             }
+
+            .mobile-toggle {
+                display: flex;
+            }
         }
 
         .dpad {
@@ -518,8 +553,8 @@
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
             gap: var(--space-xs);
-            width: 120px;
-            height: 120px;
+            width: 180px;
+            height: 180px;
         }
 
         .dpad-btn {
@@ -527,7 +562,7 @@
             border: 1px solid var(--glass-border);
             border-radius: var(--radius-md);
             color: var(--text-primary);
-            font-size: 18px;
+            font-size: 22px;
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -549,6 +584,38 @@
         .dpad-btn.left { grid-area: 2/1; }
         .dpad-btn.right { grid-area: 2/3; }
         .dpad-btn.down { grid-area: 3/2; }
+
+        .zoom-controls {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+            margin-left: var(--space-sm);
+        }
+
+        .zoom-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: bold;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-fast);
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .zoom-btn:active {
+            background: var(--success);
+            color: white;
+            transform: scale(0.9);
+        }
 
         .action-buttons {
             display: grid;
@@ -898,6 +965,9 @@
                 <button class="btn btn-secondary ripple" onclick="toggleAutoplay()">
                     🤖 <span id="autoplayStatus">Oto: Kapalı</span>
                 </button>
+                <button class="btn btn-secondary ripple" onclick="changeGameSpeed()">
+                    🏃 <span id="speedStatus">Hız: Normal</span>
+                </button>
             </div>
             
             <!-- Progress Bar -->
@@ -910,13 +980,23 @@
         </main>
     </div>
     
+    <!-- Mobile Controls Toggle -->
+    <button class="mobile-toggle" onclick="toggleMobileControls()" id="mobileToggle">
+        ▲
+    </button>
+    
     <!-- Mobile Controls -->
-    <div class="mobile-controls">
+    <div class="mobile-controls" id="mobileControls">
         <div class="dpad">
             <button class="dpad-btn up" onclick="changeDirection('up')">▲</button>
             <button class="dpad-btn left" onclick="changeDirection('left')">◄</button>
             <button class="dpad-btn right" onclick="changeDirection('right')">►</button>
             <button class="dpad-btn down" onclick="changeDirection('down')">▼</button>
+        </div>
+        
+        <div class="zoom-controls">
+            <button class="zoom-btn" onclick="zoomIn()">+</button>
+            <button class="zoom-btn" onclick="zoomOut()">-</button>
         </div>
         
         <div class="action-buttons">
@@ -985,9 +1065,11 @@
                 this.isGameOver = false;
                 this.soundEnabled = true;
                 this.autoplayEnabled = false;
-                this.gameSpeed = 120;
+                this.gameSpeed = 180;
                 this.frameCount = 0;
                 this.theme = null;
+                this.zoomLevel = 1;
+                this.speedMode = 'normal'; // slow, normal, fast
             }
 
             reset() {
@@ -1003,7 +1085,7 @@
                 this.lives = 3;
                 this.isPaused = false;
                 this.isGameOver = false;
-                this.gameSpeed = 120;
+                this.gameSpeed = 180;
                 this.frameCount = 0;
                 this.enemies = [];
                 this.boss = null;
@@ -1050,35 +1132,35 @@
                 theme: { bg: '#0a0a0a', food: '#ff6b35', snake: '#00ff88' },
                 enemyCount: 0,
                 obstaclePattern: 'simple',
-                speed: 120
+                speed: 180
             },
             {
                 name: "İlk Adım",
                 theme: { bg: '#0f0f0f', food: '#ffd700', snake: '#00ced1' },
                 enemyCount: 1,
                 obstaclePattern: 'walls',
-                speed: 110
+                speed: 160
             },
             {
                 name: "Hızlanma",
                 theme: { bg: '#1a0f1a', food: '#ff69b4', snake: '#9370db' },
                 enemyCount: 1,
                 obstaclePattern: 'corners',
-                speed: 100
+                speed: 140
             },
             {
                 name: "Zorluk Artıyor",
                 theme: { bg: '#0f1a1a', food: '#ffa500', snake: '#ff1493' },
                 enemyCount: 2,
                 obstaclePattern: 'center',
-                speed: 90
+                speed: 120
             },
             {
                 name: "Boss Savaşı",
                 theme: { bg: '#1a0f0f', food: '#ff0000', snake: '#ffffff' },
                 enemyCount: 0,
                 obstaclePattern: 'boss',
-                speed: 80,
+                speed: 100,
                 boss: true
             }
         ];
@@ -1146,10 +1228,12 @@
             
             const scaleX = maxWidth / canvas.width;
             const scaleY = maxHeight / canvas.height;
-            const scale = Math.min(scaleX, scaleY, 1);
+            const baseScale = Math.min(scaleX, scaleY, 1);
             
-            canvas.style.width = `${canvas.width * scale}px`;
-            canvas.style.height = `${canvas.height * scale}px`;
+            const finalScale = baseScale * gameState.zoomLevel;
+            
+            canvas.style.width = `${canvas.width * finalScale}px`;
+            canvas.style.height = `${canvas.height * finalScale}px`;
         }
 
         // Game Loop
@@ -1310,7 +1394,14 @@
             showNotification(`Level ${gameState.level}: ${levelData.name}`);
             
             gameState.theme = levelData.theme;
-            gameState.gameSpeed = levelData.speed;
+            
+            // Apply speed mode to new level
+            const speeds = {
+                'slow': { multiplier: 1.5, name: 'Yavaş' },
+                'normal': { multiplier: 1, name: 'Normal' },
+                'fast': { multiplier: 0.7, name: 'Hızlı' }
+            };
+            gameState.gameSpeed = Math.floor(levelData.speed * speeds[gameState.speedMode].multiplier);
             
             generateObstacles(levelData.obstaclePattern);
             generateEnemies(levelData.enemyCount);
@@ -1988,7 +2079,7 @@
             const duration = 30000; // 30 seconds
             
             if (type === 'speed') {
-                gameState.gameSpeed = Math.max(50, gameState.gameSpeed - 30);
+                gameState.gameSpeed = Math.max(80, gameState.gameSpeed - 40);
             }
             
             showNotification(`${getPowerUpName(type)} Aktif!`);
@@ -2271,6 +2362,80 @@
             }
             lastTouchEnd = now;
         }, false);
+
+        // Zoom functionality
+        function zoomIn() {
+            if (gameState.zoomLevel < 2) {
+                gameState.zoomLevel += 0.2;
+                updateCanvasZoom();
+                showNotification('Büyütüldü 🔍');
+            }
+        }
+
+        function zoomOut() {
+            if (gameState.zoomLevel > 0.6) {
+                gameState.zoomLevel -= 0.2;
+                updateCanvasZoom();
+                showNotification('Küçültüldü 🔍');
+            }
+        }
+
+        function updateCanvasZoom() {
+            const container = canvas.parentElement;
+            const containerRect = container.getBoundingClientRect();
+            
+            const maxWidth = containerRect.width - 40;
+            const maxHeight = containerRect.height - 100;
+            
+            const scaleX = maxWidth / canvas.width;
+            const scaleY = maxHeight / canvas.height;
+            const baseScale = Math.min(scaleX, scaleY, 1);
+            
+            const finalScale = baseScale * gameState.zoomLevel;
+            
+            canvas.style.width = `${canvas.width * finalScale}px`;
+            canvas.style.height = `${canvas.height * finalScale}px`;
+        }
+
+        function changeGameSpeed() {
+            const speeds = {
+                'slow': { multiplier: 1.5, name: 'Yavaş' },
+                'normal': { multiplier: 1, name: 'Normal' },
+                'fast': { multiplier: 0.7, name: 'Hızlı' }
+            };
+            
+            const modeOrder = ['slow', 'normal', 'fast'];
+            const currentIndex = modeOrder.indexOf(gameState.speedMode);
+            const nextIndex = (currentIndex + 1) % modeOrder.length;
+            
+            gameState.speedMode = modeOrder[nextIndex];
+            
+            // Update current level speed
+            const currentLevel = levels[Math.min(gameState.level - 1, levels.length - 1)];
+            const baseSpeed = currentLevel.speed;
+            gameState.gameSpeed = Math.floor(baseSpeed * speeds[gameState.speedMode].multiplier);
+            
+            // Update UI
+            document.getElementById('speedStatus').textContent = 
+                `Hız: ${speeds[gameState.speedMode].name}`;
+            
+            showNotification(`Hız: ${speeds[gameState.speedMode].name} 🏃`);
+        }
+
+        function toggleMobileControls() {
+            const controls = document.getElementById('mobileControls');
+            const toggle = document.getElementById('mobileToggle');
+            
+            controls.classList.toggle('hidden');
+            
+            if (controls.classList.contains('hidden')) {
+                toggle.textContent = '▲';
+                showNotification('Kontroller gizlendi');
+            } else {
+                toggle.textContent = '▼';
+                showNotification('Kontroller açıldı');
+            }
+        }
     </script>
 </body>
 </html>
