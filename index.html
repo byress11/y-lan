@@ -1167,47 +1167,80 @@
 
         // Audio Context for sound effects
         let audioContext;
-        try {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        } catch (e) {
-            console.warn('Web Audio API not supported');
+        let audioInitialized = false;
+
+        function initAudio() {
+            if (audioInitialized) return;
+            
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                audioInitialized = true;
+                console.log('Audio context initialized');
+            } catch (e) {
+                console.warn('Web Audio API not supported:', e);
+            }
         }
 
         // Sound Effects
         function playSound(type) {
-            if (!gameState.soundEnabled || !audioContext) return;
+            if (!gameState.soundEnabled) return;
             
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            switch(type) {
-                case 'eat':
-                    oscillator.frequency.value = 440;
-                    oscillator.type = 'sine';
-                    gainNode.gain.value = 0.1;
-                    break;
-                case 'powerup':
-                    oscillator.frequency.value = 880;
-                    oscillator.type = 'square';
-                    gainNode.gain.value = 0.1;
-                    break;
-                case 'hit':
-                    oscillator.frequency.value = 110;
-                    oscillator.type = 'sawtooth';
-                    gainNode.gain.value = 0.15;
-                    break;
-                case 'levelup':
-                    oscillator.frequency.value = 660;
-                    oscillator.type = 'triangle';
-                    gainNode.gain.value = 0.12;
-                    break;
+            // Initialize audio on first sound attempt
+            if (!audioInitialized) {
+                initAudio();
             }
             
-            oscillator.start();
-            oscillator.stop(audioContext.currentTime + 0.15);
+            if (!audioContext) return;
+            
+            // Resume audio context if suspended
+            if (audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    playTone(type);
+                }).catch(e => {
+                    console.warn('Could not resume audio context:', e);
+                });
+                return;
+            }
+            
+            playTone(type);
+        }
+
+        function playTone(type) {
+            try {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                switch(type) {
+                    case 'eat':
+                        oscillator.frequency.value = 440;
+                        oscillator.type = 'sine';
+                        gainNode.gain.value = 0.1;
+                        break;
+                    case 'powerup':
+                        oscillator.frequency.value = 880;
+                        oscillator.type = 'square';
+                        gainNode.gain.value = 0.1;
+                        break;
+                    case 'hit':
+                        oscillator.frequency.value = 110;
+                        oscillator.type = 'sawtooth';
+                        gainNode.gain.value = 0.15;
+                        break;
+                    case 'levelup':
+                        oscillator.frequency.value = 660;
+                        oscillator.type = 'triangle';
+                        gainNode.gain.value = 0.12;
+                        break;
+                }
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.15);
+            } catch (e) {
+                console.warn('Sound playback failed:', e);
+            }
         }
 
         // Game Initialization
@@ -1370,7 +1403,7 @@
             generateFood();
             
             // Chance for special item
-            if (Math.random() < 0.3) {
+            if (Math.random() < 0.5) {
                 generateSpecialItem();
             }
             
@@ -1521,7 +1554,7 @@
         }
 
         function generateSpecialItem() {
-            const types = ['coin', 'powerup', 'health'];
+            const types = ['coin', 'powerup', 'health', 'health']; // Health appears twice for higher chance
             const type = types[Math.floor(Math.random() * types.length)];
             
             let x, y;
@@ -1530,7 +1563,7 @@
                 y = Math.floor(Math.random() * GRID_HEIGHT);
             } while (isOccupied(x, y));
             
-            const item = { x, y, type, lifeTime: 200 };
+            const item = { x, y, type, lifeTime: 300 }; // Increased lifetime
             
             if (type === 'powerup') {
                 const powerTypes = Object.keys(powerUps);
@@ -1663,7 +1696,12 @@
                 case 'health':
                     if (gameState.lives < 5) {
                         gameState.lives++;
-                        showNotification('+1 ❤️');
+                        showNotification('❤️ +1 Can! ❤️');
+                        createParticles(item.x, item.y, '#ff69b4'); // Pink particles for hearts
+                        playSound('levelup'); // Different sound for health
+                    } else {
+                        showNotification('❤️ Max Can! +10 Puan');
+                        gameState.score += 10; // Bonus if max health
                     }
                     break;
             }
@@ -1845,6 +1883,16 @@
                         ctx.fillText(icons[item.powerType], 0, 0);
                         break;
                     case 'health':
+                        ctx.restore();
+                        ctx.save();
+                        ctx.globalAlpha = alpha;
+                        ctx.translate(x, y);
+                        // Larger pulsing heart
+                        const heartPulse = 1 + Math.sin(gameState.frameCount * 0.2) * 0.3;
+                        ctx.scale(heartPulse, heartPulse);
+                        ctx.font = `${CELL_SIZE * 1.2}px Arial`;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
                         ctx.fillText('❤️', 0, 0);
                         break;
                 }
@@ -1991,11 +2039,18 @@
         function toggleSound() {
             gameState.soundEnabled = !gameState.soundEnabled;
             
+            // Initialize audio on first toggle if enabled
+            if (gameState.soundEnabled && !audioInitialized) {
+                initAudio();
+            }
+            
             document.getElementById('soundStatus').textContent = 
                 `Ses: ${gameState.soundEnabled ? 'Açık' : 'Kapalı'}`;
                 
             if (gameState.soundEnabled && audioContext && audioContext.state === 'suspended') {
-                audioContext.resume();
+                audioContext.resume().catch(e => {
+                    console.warn('Could not resume audio context:', e);
+                });
             }
         }
 
@@ -2346,6 +2401,26 @@
         // Initialize game when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
             initGame();
+            
+            // Initialize audio on first user interaction
+            const startAudio = () => {
+                if (!audioInitialized) {
+                    initAudio();
+                    if (audioContext && audioContext.state === 'suspended') {
+                        audioContext.resume().catch(e => {
+                            console.warn('Could not resume audio context:', e);
+                        });
+                    }
+                }
+                // Remove listeners after first interaction
+                document.removeEventListener('click', startAudio);
+                document.removeEventListener('keydown', startAudio);
+                document.removeEventListener('touchstart', startAudio);
+            };
+            
+            document.addEventListener('click', startAudio);
+            document.addEventListener('keydown', startAudio);
+            document.addEventListener('touchstart', startAudio);
         });
 
         // Prevent context menu on long press
