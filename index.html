@@ -36,6 +36,14 @@
             --shadow: rgba(0, 0, 0, 0.2);
             --card-bg: rgba(255, 255, 255, 0.1);
             --card-border: rgba(255, 255, 255, 0.2);
+            /* Mobil uyumlu retro renkler */
+            --mobile-bg: linear-gradient(135deg, #4a2c1a 0%, #3d2817 100%);
+            --mobile-text: #ffcc99;
+            --mobile-accent: #ff9966;
+            --mobile-border: rgba(255, 165, 0, 0.3);
+            --mobile-btn: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
+            --mobile-btn-active: linear-gradient(135deg, #ff8c00 0%, #ffa500 100%);
+            --mobile-dark: #2a1b10;
         }
 
         .dark-theme {
@@ -46,6 +54,14 @@
             --shadow: rgba(0, 0, 0, 0.5);
             --card-bg: rgba(40, 40, 60, 0.3);
             --card-border: rgba(70, 70, 90, 0.4);
+            /* Dark theme mobil renkler */
+            --mobile-bg: linear-gradient(135deg, #2d1810 0%, #241409 100%);
+            --mobile-text: #e6b88a;
+            --mobile-accent: #ff8c5a;
+            --mobile-border: rgba(255, 140, 0, 0.4);
+            --mobile-btn: linear-gradient(135deg, #5a2d0f 0%, #6b3518 100%);
+            --mobile-btn-active: linear-gradient(135deg, #ff7700 0%, #ff9900 100%);
+            --mobile-dark: #1a0f08;
         }
 
         body {
@@ -484,20 +500,46 @@
         /* Mobil Responsive - iPhone 12 Pro Optimize */
         @media screen and (max-width: 768px) {
             body {
-                padding: 0;
-                margin: 0;
-                background: linear-gradient(135deg, #2c1810 0%, #1a0f0a 100%); /* Retro brown gradient instead of default */
+                background: var(--mobile-bg);
+            }
+            
+            .game-container {
+                background: transparent;
+                backdrop-filter: none;
+                border: none;
+                box-shadow: none;
+            }
+            
+            .mobile-controls {
+                display: flex !important;
+                height: 170px; /* Kontrol alanı yüksekliği */
+            }
+            
+            .mobile-stats {
+                display: flex !important;
             }
             
             .game-container {
                 flex-direction: column;
-                padding: 0;
-                gap: 0;
-                border-radius: 0;
-                height: 100vh;
-                max-height: 100vh;
-                width: 100vw;
-                background: linear-gradient(135deg, #3d2817 0%, #2a1b10 100%); /* Retro brown container background */
+                padding: 10px;
+                gap: 10px;
+            }
+            
+            .game-left {
+                display: none;
+            }
+            
+            .game-right {
+                height: calc(100vh - 250px); /* Kontroller için yer bırak */
+                min-width: auto;
+            }
+            
+            canvas {
+                max-height: calc(100vh - 250px);
+                max-width: 100vw;
+                height: auto;
+                width: auto;
+                margin: 10px auto;
             }
             
             /* Mobile Layout - New Design */
@@ -527,6 +569,12 @@
                 width: 100%;
                 z-index: 100;
                 border-radius: 0;
+                background: rgba(0, 0, 0, 0.5);
+            }
+            
+            .progress-bar {
+                background: var(--mobile-btn-active);
+                height: 100%;
             }
             
             canvas {
@@ -538,13 +586,15 @@
                 margin: 50px 0 0 0; /* Top margin to position below mobile stats */
                 display: block;
                 object-fit: contain; /* Maintain aspect ratio while filling space */
+                border: 2px solid var(--mobile-border);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
             }
             
             /* Mobile Status Bar */
             .mobile-stats {
                 display: flex;
                 justify-content: space-between;
-                background: linear-gradient(135deg, #4a2c1a 0%, #3d2817 100%); /* Retro brown gradient */
+                background: var(--mobile-bg);
                 padding: 8px 12px;
                 position: fixed;
                 top: 4px; /* Below progress bar */
@@ -552,13 +602,14 @@
                 right: 0;
                 z-index: 101; /* Increased to stay above canvas */
                 backdrop-filter: blur(5px);
-                border-bottom: 1px solid rgba(255, 165, 0, 0.3); /* Orange accent border */
+                border-bottom: 1px solid var(--mobile-border);
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
             }
             
             .stat-item {
                 display: flex;
                 align-items: center;
-                color: #ffcc99; /* Retro cream color for text */
+                color: var(--mobile-text);
                 font-size: 12px;
                 text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
                 gap: 4px;
@@ -567,26 +618,30 @@
             .stat-item span {
                 font-size: 16px;
                 font-weight: bold;
-                color: #ff9966; /* Retro orange for numbers */
+                color: var(--mobile-accent);
             }
             
             /* Mobile Controls */
             .mobile-controls {
-                display: flex !important;
-                height: 170px; /* Increased from 140px */
-                padding: 0;
-                background: linear-gradient(135deg, #4a2c1a 0%, #3d2817 100%); /* Retro brown gradient */
-                backdrop-filter: blur(10px);
-                border-top: 1px solid rgba(255, 165, 0, 0.3); /* Orange accent border */
+                display: none;
+                background: var(--mobile-bg);
+                padding: 15px;
+                border-top: 1px solid var(--mobile-border);
                 position: fixed;
-                bottom: 0;
+                bottom: 80px; /* Yukarı taşındı - 0'dan 80px'e */
                 left: 0;
                 right: 0;
                 z-index: 100;
+                box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.4);
+                backdrop-filter: blur(10px);
             }
             
             .mobile-left {
                 flex: 0 0 auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px; /* Kontroller arası boşluk */
             }
             
             .mobile-right {
@@ -609,24 +664,26 @@
             }
             
             .dpad-btn {
-                background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%); /* Retro brown gradient for buttons */
+                background: var(--mobile-btn);
                 border: none;
                 border-radius: 10px; /* Increased from 8px */
-                color: #ffcc99; /* Retro cream text color */
+                color: var(--mobile-text);
                 font-size: 20px; /* Increased from 16px */
                 font-weight: bold;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Increased shadow */
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 -webkit-tap-highlight-color: transparent;
-                border: 2px solid rgba(255, 165, 0, 0.4); /* Thicker border */
+                border: 2px solid var(--mobile-border);
+                transition: all 0.2s ease;
             }
             
             .dpad-btn:active {
                 transform: scale(0.9);
-                background: linear-gradient(135deg, #cd853f 0%, #daa520 100%); /* Lighter retro brown when pressed */
+                background: var(--mobile-btn-active);
                 box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
+                color: var(--mobile-dark);
             }
             
             .dpad-btn.up {
@@ -658,7 +715,7 @@
             }
             
             .action-btn {
-                background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%); /* Retro brown gradient */
+                background: var(--mobile-btn);
                 border: none;
                 border-radius: 12px;
                 padding: 8px 0;
@@ -666,18 +723,18 @@
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                color: #ffcc99; /* Retro cream text */
+                color: var(--mobile-text);
                 gap: 2px;
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
                 font-size: 12px;
                 transition: all 0.2s ease;
-                border: 1px solid rgba(255, 165, 0, 0.4); /* Orange accent border */
+                border: 1px solid var(--mobile-border);
             }
             
             .action-btn.active {
-                background: linear-gradient(135deg, #ff8c00 0%, #ffa500 100%); /* Orange gradient for active state */
+                background: var(--mobile-btn-active);
                 box-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
-                color: #2a1b10; /* Dark text on bright background */
+                color: var(--mobile-dark);
             }
             
             .action-btn span {
@@ -693,30 +750,32 @@
             .inventory-bar {
                 display: flex;
                 justify-content: space-around;
-                background: linear-gradient(135deg, #5d2f17 0%, #4a2c1a 100%); /* Retro brown gradient */
+                background: var(--mobile-bg);
                 padding: 5px;
                 border-radius: 10px;
                 margin-bottom: 5px;
-                border: 1px solid rgba(255, 165, 0, 0.4); /* Orange accent border */
+                border: 1px solid var(--mobile-border);
+                backdrop-filter: blur(5px);
             }
             
             .inv-item {
                 width: 35px;
                 height: 35px;
-                background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%); /* Retro brown gradient */
-                border: 1px solid rgba(255, 165, 0, 0.4); /* Orange accent border */
+                background: var(--mobile-btn);
+                border: 1px solid var(--mobile-border);
                 border-radius: 8px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 position: relative;
                 font-size: 18px;
+                transition: all 0.2s ease;
             }
             
             .inv-item.active {
-                background: linear-gradient(135deg, #ff8c00 0%, #ffa500 100%); /* Orange gradient for active state */
+                background: var(--mobile-btn-active);
                 box-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
-                border-color: #ffa500;
+                border-color: var(--mobile-accent);
             }
             
             .inv-count {
@@ -857,6 +916,7 @@
                 align-items: center;
                 padding: 5px 10px;
                 gap: 10px;
+                bottom: 60px; /* Landscape modunda da yukarı taşındı */
             }
             
             .mobile-left {
@@ -1074,40 +1134,44 @@
             justify-content: center;
             gap: 10px;
             margin-bottom: 10px;
-            background: rgba(139, 69, 19, 0.8);
+            background: rgba(139, 69, 19, 0.9); /* Daha opak */
             padding: 8px 12px;
             border-radius: 20px;
-            border: 1px solid rgba(255, 165, 0, 0.4);
+            border: 2px solid rgba(255, 165, 0, 0.6); /* Daha belirgin border */
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4); /* Gölge eklendi */
         }
         
         .size-btn {
             background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
             border: none;
             border-radius: 50%;
-            width: 35px;
-            height: 35px;
+            width: 40px; /* Biraz büyütüldü */
+            height: 40px; /* Biraz büyütüldü */
             color: #ffcc99;
-            font-size: 18px;
+            font-size: 20px; /* Font büyütüldü */
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 165, 0, 0.4);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Gölge artırıldı */
+            border: 2px solid rgba(255, 165, 0, 0.5); /* Border eklendi */
             -webkit-tap-highlight-color: transparent;
+            transition: all 0.2s ease; /* Animasyon eklendi */
         }
         
         .size-btn:active {
             transform: scale(0.9);
             background: linear-gradient(135deg, #cd853f 0%, #daa520 100%);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
         
         .size-indicator {
             color: #ffcc99;
-            font-size: 12px;
+            font-size: 14px; /* Font büyütüldü */
             font-weight: bold;
-            min-width: 50px;
+            min-width: 55px; /* Genişlik artırıldı */
             text-align: center;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); /* Text shadow eklendi */
         }
 
         /* D-Pad Redesign */
