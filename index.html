@@ -2131,7 +2131,7 @@
             inventory[type]--;
             powerUps[type] = true;
             
-            const duration = 30000; // 30 seconds
+            const duration = 50000; // 50 seconds
             
             if (type === 'speed') {
                 gameState.gameSpeed = Math.max(80, gameState.gameSpeed - 40);
@@ -2368,7 +2368,7 @@
             const diffX = touch.clientX - touchStartX;
             const diffY = touch.clientY - touchStartY;
             
-            const minSwipeDistance = 30;
+            const minSwipeDistance = 10; // Reduced from 30 to 10 for better sensitivity
             
             if (Math.abs(diffX) > Math.abs(diffY)) {
                 if (Math.abs(diffX) > minSwipeDistance) {
@@ -2393,13 +2393,82 @@
             e.preventDefault();
         });
 
-        // Window resize handler
-        window.addEventListener('resize', () => {
-            setupCanvas();
-        });
+        // Enhanced touch sensitivity for mobile control buttons
+        function addEnhancedTouchToButton(button, callback) {
+            let touchStartTime = 0;
+            let touchMoved = false;
+            
+            button.addEventListener('touchstart', (e) => {
+                touchStartTime = Date.now();
+                touchMoved = false;
+                e.preventDefault();
+                e.stopPropagation();
+            });
+            
+            button.addEventListener('touchmove', (e) => {
+                touchMoved = true;
+                e.preventDefault();
+                e.stopPropagation();
+            });
+            
+            button.addEventListener('touchend', (e) => {
+                const touchDuration = Date.now() - touchStartTime;
+                
+                // Execute callback if touch was quick and didn't move much
+                if (!touchMoved && touchDuration < 500) {
+                    callback();
+                }
+                
+                e.preventDefault();
+                e.stopPropagation();
+            });
+            
+            // Also handle click for non-touch devices
+            button.addEventListener('click', (e) => {
+                callback();
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        }
 
-        // Initialize game when DOM is loaded
+        // Apply enhanced touch to direction buttons after DOM loads
         document.addEventListener('DOMContentLoaded', () => {
+            // Enhanced touch for d-pad buttons
+            const dpadButtons = document.querySelectorAll('.dpad-btn');
+            dpadButtons.forEach(button => {
+                const direction = button.classList.contains('up') ? 'up' :
+                                button.classList.contains('down') ? 'down' :
+                                button.classList.contains('left') ? 'left' : 'right';
+                
+                // Remove existing onclick and add enhanced touch
+                button.removeAttribute('onclick');
+                addEnhancedTouchToButton(button, () => changeDirection(direction));
+            });
+            
+            // Enhanced touch for action buttons
+            const actionButtons = document.querySelectorAll('.action-btn');
+            actionButtons.forEach(button => {
+                const originalOnclick = button.getAttribute('onclick');
+                if (originalOnclick) {
+                    button.removeAttribute('onclick');
+                    addEnhancedTouchToButton(button, () => {
+                        eval(originalOnclick);
+                    });
+                }
+            });
+            
+            // Enhanced touch for zoom buttons
+            const zoomButtons = document.querySelectorAll('.zoom-btn');
+            zoomButtons.forEach(button => {
+                const originalOnclick = button.getAttribute('onclick');
+                if (originalOnclick) {
+                    button.removeAttribute('onclick');
+                    addEnhancedTouchToButton(button, () => {
+                        eval(originalOnclick);
+                    });
+                }
+            });
+            
             initGame();
             
             // Initialize audio on first user interaction
@@ -2421,6 +2490,11 @@
             document.addEventListener('click', startAudio);
             document.addEventListener('keydown', startAudio);
             document.addEventListener('touchstart', startAudio);
+        });
+
+        // Window resize handler
+        window.addEventListener('resize', () => {
+            setupCanvas();
         });
 
         // Prevent context menu on long press
