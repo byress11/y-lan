@@ -619,9 +619,10 @@
 
         .action-buttons {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
             gap: var(--space-sm);
-            width: 120px;
+            width: 180px;
         }
 
         .action-btn {
@@ -965,6 +966,9 @@
                 <button class="btn btn-secondary ripple" onclick="toggleAutoplay()">
                     🤖 <span id="autoplayStatus">Oto: Kapalı</span>
                 </button>
+                <button class="btn btn-secondary ripple" onclick="toggleAutoInventory()">
+                    🎒 <span id="autoInventoryStatus">Envanter: Manuel</span>
+                </button>
                 <button class="btn btn-secondary ripple" onclick="changeGameSpeed()">
                     🏃 <span id="speedStatus">Hız: Normal</span>
                 </button>
@@ -1012,6 +1016,10 @@
                 <span class="icon">🤖</span>
                 <span>Oto</span>
             </button>
+            <button class="action-btn" onclick="toggleAutoInventory()">
+                <span class="icon">🎒</span>
+                <span id="mobileAutoInventoryText">Manuel</span>
+            </button>
             <button class="action-btn" onclick="resetGame()">
                 <span class="icon">🔄</span>
                 <span>Yenile</span>
@@ -1054,6 +1062,8 @@
                 this.specialItems = [];
                 this.obstacles = [];
                 this.enemies = [];
+                this.rivalSnakes = [];
+                this.bigEnemies = [];
                 this.boss = null;
                 this.particles = [];
                 this.score = 0;
@@ -1065,6 +1075,7 @@
                 this.isGameOver = false;
                 this.soundEnabled = true;
                 this.autoplayEnabled = false;
+                this.autoInventoryEnabled = false;
                 this.gameSpeed = 180;
                 this.frameCount = 0;
                 this.theme = null;
@@ -1088,6 +1099,8 @@
                 this.gameSpeed = 180;
                 this.frameCount = 0;
                 this.enemies = [];
+                this.rivalSnakes = [];
+                this.bigEnemies = [];
                 this.boss = null;
                 this.particles = [];
                 this.specialItems = [];
@@ -1142,26 +1155,106 @@
                 speed: 160
             },
             {
-                name: "Hızlanma",
+                name: "Labirent Başlangıcı",
                 theme: { bg: '#1a0f1a', food: '#ff69b4', snake: '#9370db' },
                 enemyCount: 1,
                 obstaclePattern: 'corners',
                 speed: 140
             },
             {
-                name: "Zorluk Artıyor",
+                name: "Dar Geçitler",
                 theme: { bg: '#0f1a1a', food: '#ffa500', snake: '#ff1493' },
                 enemyCount: 2,
-                obstaclePattern: 'center',
-                speed: 120
+                obstaclePattern: 'narrow',
+                speed: 130
             },
             {
-                name: "Boss Savaşı",
+                name: "Boss Savaşı 1",
                 theme: { bg: '#1a0f0f', food: '#ff0000', snake: '#ffffff' },
                 enemyCount: 0,
-                obstaclePattern: 'boss',
-                speed: 100,
-                boss: true
+                obstaclePattern: 'boss1',
+                speed: 120,
+                boss: true,
+                rivalSnakes: 1
+            },
+            {
+                name: "Çapraz Yollar",
+                theme: { bg: '#0a0f1a', food: '#00ffff', snake: '#ffff00' },
+                enemyCount: 2,
+                obstaclePattern: 'cross',
+                speed: 115
+            },
+            {
+                name: "Spiral Labirent",
+                theme: { bg: '#1a1a0f', food: '#ff8c00', snake: '#32cd32' },
+                enemyCount: 3,
+                obstaclePattern: 'spiral',
+                speed: 110
+            },
+            {
+                name: "Büyük Avcılar",
+                theme: { bg: '#0f0a1a', food: '#ff1493', snake: '#00ffff' },
+                enemyCount: 2,
+                obstaclePattern: 'hunters',
+                speed: 105,
+                bigEnemies: 1
+            },
+            {
+                name: "Kaos Odaları",
+                theme: { bg: '#1a0a0f', food: '#ffd700', snake: '#ff6347' },
+                enemyCount: 4,
+                obstaclePattern: 'chaos',
+                speed: 100
+            },
+            {
+                name: "Boss Savaşı 2",
+                theme: { bg: '#0a1a0f', food: '#ff0000', snake: '#ffffff' },
+                enemyCount: 1,
+                obstaclePattern: 'boss2',
+                speed: 95,
+                boss: true,
+                rivalSnakes: 2,
+                bigEnemies: 1
+            },
+            {
+                name: "Zigzag Yolu",
+                theme: { bg: '#1a0f0a', food: '#00ff00', snake: '#ff69b4' },
+                enemyCount: 3,
+                obstaclePattern: 'zigzag',
+                speed: 90
+            },
+            {
+                name: "Çember Labirenti",
+                theme: { bg: '#0f1a0a', food: '#ffa500', snake: '#8a2be2' },
+                enemyCount: 4,
+                obstaclePattern: 'circles',
+                speed: 85,
+                bigEnemies: 1
+            },
+            {
+                name: "Hızlı Avcılar",
+                theme: { bg: '#1a1a1a', food: '#ff4500', snake: '#00ced1' },
+                enemyCount: 5,
+                obstaclePattern: 'fast',
+                speed: 80,
+                bigEnemies: 2
+            },
+            {
+                name: "Karmaşık Ağ",
+                theme: { bg: '#0a0a1a', food: '#ffff00', snake: '#ff1493' },
+                enemyCount: 4,
+                obstaclePattern: 'network',
+                speed: 75
+            },
+            {
+                name: "Final Boss",
+                theme: { bg: '#000000', food: '#ff0000', snake: '#ffffff' },
+                enemyCount: 2,
+                obstaclePattern: 'final',
+                speed: 70,
+                boss: true,
+                rivalSnakes: 3,
+                bigEnemies: 2
             }
         ];
 
@@ -1170,35 +1263,42 @@
         let audioInitialized = false;
 
         function initAudio() {
-            if (audioInitialized) return;
+            if (audioInitialized) return Promise.resolve();
             
             try {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 audioInitialized = true;
                 console.log('Audio context initialized');
+                
+                // Resume if suspended
+                if (audioContext.state === 'suspended') {
+                    return audioContext.resume().then(() => {
+                        console.log('Audio context resumed');
+                        return true;
+                    }).catch(e => {
+                        console.warn('Could not resume audio context:', e);
+                        return false;
+                    });
+                }
+                
+                return Promise.resolve(true);
             } catch (e) {
                 console.warn('Web Audio API not supported:', e);
+                return Promise.resolve(false);
             }
         }
 
         // Sound Effects
         function playSound(type) {
-            if (!gameState.soundEnabled) return;
+            if (!gameState.soundEnabled || !audioInitialized || !audioContext) return;
             
-            // Initialize audio on first sound attempt
-            if (!audioInitialized) {
-                initAudio();
+            // Check if context is ready
+            if (audioContext.state === 'suspended') {
+                // Don't try to resume here, just skip the sound
+                return;
             }
             
-            if (!audioContext) return;
-            
-            // Resume audio context if suspended
-            if (audioContext.state === 'suspended') {
-                audioContext.resume().then(() => {
-                    playTone(type);
-                }).catch(e => {
-                    console.warn('Could not resume audio context:', e);
-                });
+            if (audioContext.state !== 'running') {
                 return;
             }
             
@@ -1206,6 +1306,8 @@
         }
 
         function playTone(type) {
+            if (!audioContext || audioContext.state !== 'running') return;
+            
             try {
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
@@ -1292,6 +1394,8 @@
             
             moveSnake();
             moveEnemies();
+            moveRivalSnakes();
+            moveBigEnemies();
             
             if (gameState.boss) {
                 moveBoss();
@@ -1304,6 +1408,9 @@
         // Snake movement
         function moveSnake() {
             gameState.direction = gameState.nextDirection;
+            
+            // Otomatik envanter kontrolü - hareket etmeden önce
+            checkDangerAndUseInventory();
             
             const head = { ...gameState.snake[0] };
             
@@ -1361,6 +1468,27 @@
             if (!powerUps.shield) {
                 for (const enemy of gameState.enemies) {
                     if (enemy.x === head.x && enemy.y === head.y) {
+                        return true;
+                    }
+                }
+                
+                // Rival snake collision
+                for (const rivalSnake of gameState.rivalSnakes) {
+                    for (const segment of rivalSnake.body) {
+                        if (segment.x === head.x && segment.y === head.y) {
+                            return true;
+                        }
+                    }
+                }
+                
+                // Big enemy collision
+                for (const bigEnemy of gameState.bigEnemies) {
+                    const ex = Math.floor(bigEnemy.x);
+                    const ey = Math.floor(bigEnemy.y);
+                    
+                    // 2x2 boyutunda çarpışma kontrolü
+                    if ((head.x >= ex && head.x <= ex + 1) && 
+                        (head.y >= ey && head.y <= ey + 1)) {
                         return true;
                     }
                 }
@@ -1438,6 +1566,16 @@
             
             generateObstacles(levelData.obstaclePattern);
             generateEnemies(levelData.enemyCount);
+            
+            // Generate rival snakes for boss levels
+            if (levelData.rivalSnakes) {
+                generateRivalSnakes(levelData.rivalSnakes);
+            }
+            
+            // Generate big enemies
+            if (levelData.bigEnemies) {
+                generateBigEnemies(levelData.bigEnemies);
+            }
             
             if (levelData.boss) {
                 generateBoss();
@@ -1604,22 +1742,188 @@
                         }
                     });
                     break;
-                case 'center':
+                case 'narrow':
+                    // Dar geçitler
+                    for (let x = 10; x <= 19; x++) {
+                        if (x !== 14 && x !== 15) {
+                            gameState.obstacles.push({ x, y: 10 });
+                            gameState.obstacles.push({ x, y: 19 });
+                        }
+                    }
+                    break;
+                case 'cross':
+                    // Çapraz yollar
                     const centerX = Math.floor(GRID_WIDTH / 2);
                     const centerY = Math.floor(GRID_HEIGHT / 2);
-                    for (let x = centerX - 1; x <= centerX + 1; x++) {
-                        for (let y = centerY - 1; y <= centerY + 1; y++) {
-                            if (!isOccupied(x, y)) {
+                    for (let i = 5; i <= 24; i++) {
+                        if (i !== centerX && i !== centerX - 1 && i !== centerX + 1) {
+                            gameState.obstacles.push({ x: i, y: centerY });
+                        }
+                        if (i !== centerY && i !== centerY - 1 && i !== centerY + 1) {
+                            gameState.obstacles.push({ x: centerX, y: i });
+                        }
+                    }
+                    break;
+                case 'spiral':
+                    // Spiral labirent
+                    let spiralX = 5, spiralY = 5;
+                    let direction = 0; // 0: right, 1: down, 2: left, 3: up
+                    let steps = 1;
+                    let stepCount = 0;
+                    let changeCount = 0;
+                    
+                    while (spiralX >= 3 && spiralX <= 26 && spiralY >= 3 && spiralY <= 26) {
+                        if (!isOccupied(spiralX, spiralY) && !isNearSnake(spiralX, spiralY)) {
+                            gameState.obstacles.push({ x: spiralX, y: spiralY });
+                        }
+                        
+                        stepCount++;
+                        
+                        switch(direction) {
+                            case 0: spiralX++; break;
+                            case 1: spiralY++; break;
+                            case 2: spiralX--; break;
+                            case 3: spiralY--; break;
+                        }
+                        
+                        if (stepCount === steps) {
+                            direction = (direction + 1) % 4;
+                            stepCount = 0;
+                            changeCount++;
+                            
+                            if (changeCount === 2) {
+                                steps++;
+                                changeCount = 0;
+                            }
+                        }
+                        
+                        if (steps > 10) break;
+                    }
+                    break;
+                case 'zigzag':
+                    // Zigzag yolu
+                    for (let y = 5; y < 25; y += 3) {
+                        for (let x = 5; x < 25; x++) {
+                            if ((y % 6 === 2 && x < 20) || (y % 6 === 5 && x > 9)) {
+                                if (!isOccupied(x, y) && !isNearSnake(x, y)) {
+                                    gameState.obstacles.push({ x, y });
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case 'circles':
+                    // Çember labirenti
+                    const circles = [
+                        { centerX: 10, centerY: 10, radius: 4 },
+                        { centerX: 20, centerY: 20, radius: 4 }
+                    ];
+                    circles.forEach(circle => {
+                        for (let angle = 0; angle < 360; angle += 30) {
+                            const x = Math.round(circle.centerX + circle.radius * Math.cos(angle * Math.PI / 180));
+                            const y = Math.round(circle.centerY + circle.radius * Math.sin(angle * Math.PI / 180));
+                            if (x >= 0 && x < GRID_WIDTH && y >= 0 && y < GRID_HEIGHT) {
+                                if (!isOccupied(x, y) && !isNearSnake(x, y)) {
+                                    gameState.obstacles.push({ x, y });
+                                }
+                            }
+                        }
+                    });
+                    break;
+                case 'network':
+                    // Karmaşık ağ
+                    for (let x = 8; x < 22; x += 7) {
+                        for (let y = 5; y < 25; y++) {
+                            if (y !== 10 && y !== 15 && y !== 20) {
+                                gameState.obstacles.push({ x, y });
+                            }
+                        }
+                    }
+                    for (let y = 8; y < 22; y += 7) {
+                        for (let x = 5; x < 25; x++) {
+                            if (x !== 10 && x !== 15 && x !== 20) {
                                 gameState.obstacles.push({ x, y });
                             }
                         }
                     }
                     break;
-                case 'boss':
-                    // Boss arena obstacles
-                    for (let i = 0; i < GRID_WIDTH; i += 5) {
-                        gameState.obstacles.push({ x: i, y: 2 });
-                        gameState.obstacles.push({ x: i, y: GRID_HEIGHT - 3 });
+                case 'hunters':
+                    // Avcı alanları - büyük düşmanlar için açık alanlar
+                    for (let i = 0; i < 8; i++) {
+                        let x, y;
+                        do {
+                            x = Math.floor(Math.random() * GRID_WIDTH);
+                            y = Math.floor(Math.random() * GRID_HEIGHT);
+                        } while (isOccupied(x, y) || isNearSnake(x, y));
+                        gameState.obstacles.push({ x, y });
+                    }
+                    break;
+                case 'chaos':
+                    // Kaos odaları
+                    const rooms = [
+                        { x: 5, y: 5, width: 8, height: 8 },
+                        { x: 17, y: 17, width: 8, height: 8 }
+                    ];
+                    rooms.forEach(room => {
+                        // Oda duvarları
+                        for (let x = room.x; x < room.x + room.width; x++) {
+                            gameState.obstacles.push({ x, y: room.y });
+                            gameState.obstacles.push({ x, y: room.y + room.height - 1 });
+                        }
+                        for (let y = room.y; y < room.y + room.height; y++) {
+                            gameState.obstacles.push({ x: room.x, y });
+                            gameState.obstacles.push({ x: room.x + room.width - 1, y });
+                        }
+                        // Kapı
+                        const doorX = room.x + Math.floor(room.width / 2);
+                        const doorY = room.y + Math.floor(room.height / 2);
+                        gameState.obstacles = gameState.obstacles.filter(obs => 
+                            !(obs.x === doorX && obs.y === room.y) &&
+                            !(obs.x === room.x && obs.y === doorY)
+                        );
+                    });
+                    break;
+                case 'fast':
+                    // Hızlı avcılar için basit engeller
+                    for (let i = 0; i < 12; i++) {
+                        let x, y;
+                        do {
+                            x = Math.floor(Math.random() * GRID_WIDTH);
+                            y = Math.floor(Math.random() * GRID_HEIGHT);
+                        } while (isOccupied(x, y) || isNearSnake(x, y));
+                        gameState.obstacles.push({ x, y });
+                    }
+                    break;
+                case 'boss1':
+                    // Boss arena 1
+                    for (let i = 0; i < GRID_WIDTH; i += 8) {
+                        if (i > 0 && i < GRID_WIDTH - 1) {
+                            gameState.obstacles.push({ x: i, y: 5 });
+                            gameState.obstacles.push({ x: i, y: GRID_HEIGHT - 6 });
+                        }
+                    }
+                    break;
+                case 'boss2':
+                    // Boss arena 2
+                    const centerX2 = Math.floor(GRID_WIDTH / 2);
+                    const centerY2 = Math.floor(GRID_HEIGHT / 2);
+                    for (let angle = 0; angle < 360; angle += 45) {
+                        const x = Math.round(centerX2 + 8 * Math.cos(angle * Math.PI / 180));
+                        const y = Math.round(centerY2 + 8 * Math.sin(angle * Math.PI / 180));
+                        if (x >= 0 && x < GRID_WIDTH && y >= 0 && y < GRID_HEIGHT) {
+                            gameState.obstacles.push({ x, y });
+                        }
+                    }
+                    break;
+                case 'final':
+                    // Final boss arena
+                    for (let x = 3; x < GRID_WIDTH - 3; x += 5) {
+                        for (let y = 3; y < GRID_HEIGHT - 3; y += 5) {
+                            if (Math.abs(x - Math.floor(GRID_WIDTH/2)) > 3 || 
+                                Math.abs(y - Math.floor(GRID_HEIGHT/2)) > 3) {
+                                gameState.obstacles.push({ x, y });
+                            }
+                        }
                     }
                     break;
             }
@@ -1636,6 +1940,58 @@
                 } while (isOccupied(x, y) || isNearSnake(x, y));
                 
                 gameState.enemies.push({ x, y });
+            }
+        }
+
+        function generateRivalSnakes(count) {
+            gameState.rivalSnakes = [];
+            
+            for (let i = 0; i < count; i++) {
+                let startX, startY;
+                do {
+                    startX = Math.floor(Math.random() * GRID_WIDTH);
+                    startY = Math.floor(Math.random() * GRID_HEIGHT);
+                } while (isOccupied(startX, startY) || isNearSnake(startX, startY, 5));
+                
+                const rivalSnake = {
+                    body: [
+                        { x: startX, y: startY },
+                        { x: startX - 1, y: startY },
+                        { x: startX - 2, y: startY }
+                    ],
+                    direction: ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)],
+                    color: `hsl(${Math.random() * 360}, 70%, 50%)`,
+                    lastMove: 0,
+                    id: i
+                };
+                
+                gameState.rivalSnakes.push(rivalSnake);
+            }
+        }
+
+        function generateBigEnemies(count) {
+            gameState.bigEnemies = [];
+            
+            for (let i = 0; i < count; i++) {
+                let x, y;
+                do {
+                    x = Math.floor(Math.random() * GRID_WIDTH);
+                    y = Math.floor(Math.random() * GRID_HEIGHT);
+                } while (isOccupied(x, y) || isNearSnake(x, y, 3));
+                
+                const bigEnemy = {
+                    x, y,
+                    size: 2, // 2x2 boyutunda
+                    health: 3,
+                    speed: Math.random() * 0.3 + 0.1,
+                    targetX: x,
+                    targetY: y,
+                    huntMode: false,
+                    lastHunt: 0,
+                    color: '#8B0000'
+                };
+                
+                gameState.bigEnemies.push(bigEnemy);
             }
         }
 
@@ -1666,9 +2022,9 @@
             return false;
         }
 
-        function isNearSnake(x, y) {
+        function isNearSnake(x, y, radius = 2) {
             const head = gameState.snake[0];
-            return Math.abs(head.x - x) <= 2 && Math.abs(head.y - y) <= 2;
+            return Math.abs(head.x - x) <= radius && Math.abs(head.y - y) <= radius;
         }
 
         function checkSpecialItems(head) {
@@ -1723,6 +2079,8 @@
             drawFood();
             drawSpecialItems();
             drawEnemies();
+            drawRivalSnakes();
+            drawBigEnemies();
             drawSnake();
             drawParticles();
         }
@@ -1937,6 +2295,76 @@
             });
         }
 
+        function drawRivalSnakes() {
+            gameState.rivalSnakes.forEach(rivalSnake => {
+                ctx.save();
+                
+                if (powerUps.freeze) {
+                    ctx.globalAlpha = 0.5;
+                }
+                
+                ctx.fillStyle = rivalSnake.color;
+                ctx.fillRect(
+                    rivalSnake.body[0].x * CELL_SIZE + 2,
+                    rivalSnake.body[0].y * CELL_SIZE + 2,
+                    CELL_SIZE - 4,
+                    CELL_SIZE - 4
+                );
+                
+                // Eyes
+                ctx.fillStyle = 'white';
+                ctx.beginPath();
+                ctx.arc(
+                    rivalSnake.body[0].x * CELL_SIZE + CELL_SIZE/3,
+                    rivalSnake.body[0].y * CELL_SIZE + CELL_SIZE/3,
+                    2, 0, Math.PI * 2
+                );
+                ctx.arc(
+                    rivalSnake.body[0].x * CELL_SIZE + 2*CELL_SIZE/3,
+                    rivalSnake.body[0].y * CELL_SIZE + CELL_SIZE/3,
+                    2, 0, Math.PI * 2
+                );
+                ctx.fill();
+                
+                ctx.restore();
+            });
+        }
+
+        function drawBigEnemies() {
+            gameState.bigEnemies.forEach(bigEnemy => {
+                ctx.save();
+                
+                if (powerUps.freeze) {
+                    ctx.globalAlpha = 0.5;
+                }
+                
+                ctx.fillStyle = bigEnemy.color;
+                ctx.fillRect(
+                    bigEnemy.x * CELL_SIZE + 2,
+                    bigEnemy.y * CELL_SIZE + 2,
+                    CELL_SIZE - 4,
+                    CELL_SIZE - 4
+                );
+                
+                // Eyes
+                ctx.fillStyle = 'white';
+                ctx.beginPath();
+                ctx.arc(
+                    bigEnemy.x * CELL_SIZE + CELL_SIZE/3,
+                    bigEnemy.y * CELL_SIZE + CELL_SIZE/3,
+                    2, 0, Math.PI * 2
+                );
+                ctx.arc(
+                    bigEnemy.x * CELL_SIZE + 2*CELL_SIZE/3,
+                    bigEnemy.y * CELL_SIZE + CELL_SIZE/3,
+                    2, 0, Math.PI * 2
+                );
+                ctx.fill();
+                
+                ctx.restore();
+            });
+        }
+
         function drawParticles() {
             gameState.particles = gameState.particles.filter(particle => {
                 particle.life--;
@@ -2041,17 +2469,27 @@
             
             // Initialize audio on first toggle if enabled
             if (gameState.soundEnabled && !audioInitialized) {
-                initAudio();
+                initAudio().then(success => {
+                    if (success) {
+                        showNotification('🔊 Ses Açık');
+                    } else {
+                        showNotification('⚠️ Ses desteklenmiyor');
+                        gameState.soundEnabled = false;
+                    }
+                    updateSoundStatus();
+                }).catch(e => {
+                    console.warn('Audio initialization failed:', e);
+                    gameState.soundEnabled = false;
+                    updateSoundStatus();
+                });
+            } else {
+                updateSoundStatus();
             }
-            
+        }
+
+        function updateSoundStatus() {
             document.getElementById('soundStatus').textContent = 
                 `Ses: ${gameState.soundEnabled ? 'Açık' : 'Kapalı'}`;
-                
-            if (gameState.soundEnabled && audioContext && audioContext.state === 'suspended') {
-                audioContext.resume().catch(e => {
-                    console.warn('Could not resume audio context:', e);
-                });
-            }
         }
 
         function toggleTheme() {
@@ -2472,15 +2910,19 @@
             initGame();
             
             // Initialize audio on first user interaction
+            let audioInitAttempted = false;
             const startAudio = () => {
-                if (!audioInitialized) {
-                    initAudio();
-                    if (audioContext && audioContext.state === 'suspended') {
-                        audioContext.resume().catch(e => {
-                            console.warn('Could not resume audio context:', e);
-                        });
-                    }
+                if (!audioInitAttempted) {
+                    audioInitAttempted = true;
+                    initAudio().then(success => {
+                        if (success) {
+                            console.log('Audio initialized successfully on user interaction');
+                        }
+                    }).catch(e => {
+                        console.warn('Audio initialization failed on user interaction:', e);
+                    });
                 }
+                
                 // Remove listeners after first interaction
                 document.removeEventListener('click', startAudio);
                 document.removeEventListener('keydown', startAudio);
@@ -2584,6 +3026,284 @@
                 toggle.textContent = '▼';
                 showNotification('Kontroller açıldı');
             }
+        }
+
+        function moveRivalSnakes() {
+            if (powerUps.freeze || gameState.frameCount % 8 !== 0) return;
+            
+            gameState.rivalSnakes.forEach(rivalSnake => {
+                const head = rivalSnake.body[0];
+                let newHead = { ...head };
+                
+                // Basit AI - yemeği takip et
+                if (gameState.food) {
+                    const food = gameState.food;
+                    const dx = food.x - head.x;
+                    const dy = food.y - head.y;
+                    
+                    if (Math.abs(dx) > Math.abs(dy)) {
+                        rivalSnake.direction = dx > 0 ? 'right' : 'left';
+                    } else {
+                        rivalSnake.direction = dy > 0 ? 'down' : 'up';
+                    }
+                }
+                
+                // Bazen rastgele yön değiştir
+                if (Math.random() < 0.1) {
+                    const directions = ['up', 'down', 'left', 'right'];
+                    rivalSnake.direction = directions[Math.floor(Math.random() * directions.length)];
+                }
+                
+                switch (rivalSnake.direction) {
+                    case 'up': newHead.y--; break;
+                    case 'down': newHead.y++; break;
+                    case 'left': newHead.x--; break;
+                    case 'right': newHead.x++; break;
+                }
+                
+                // Wrap around edges
+                if (newHead.x < 0) newHead.x = GRID_WIDTH - 1;
+                if (newHead.x >= GRID_WIDTH) newHead.x = 0;
+                if (newHead.y < 0) newHead.y = GRID_HEIGHT - 1;
+                if (newHead.y >= GRID_HEIGHT) newHead.y = 0;
+                
+                // Çarpışma kontrolü
+                let collision = false;
+                
+                // Kendisi ile çarpışma
+                for (let i = 1; i < rivalSnake.body.length; i++) {
+                    if (rivalSnake.body[i].x === newHead.x && rivalSnake.body[i].y === newHead.y) {
+                        collision = true;
+                        break;
+                    }
+                }
+                
+                // Engel çarpışması
+                for (const obstacle of gameState.obstacles) {
+                    if (obstacle.x === newHead.x && obstacle.y === newHead.y) {
+                        collision = true;
+                        break;
+                    }
+                }
+                
+                if (!collision) {
+                    rivalSnake.body.unshift(newHead);
+                    
+                    // Yemek yeme kontrolü
+                    if (gameState.food && newHead.x === gameState.food.x && newHead.y === gameState.food.y) {
+                        generateFood();
+                        createParticles(newHead.x, newHead.y, rivalSnake.color);
+                    } else {
+                        rivalSnake.body.pop();
+                    }
+                } else {
+                    // Çarpışma durumunda yön değiştir
+                    const directions = ['up', 'down', 'left', 'right'];
+                    rivalSnake.direction = directions[Math.floor(Math.random() * directions.length)];
+                }
+            });
+        }
+
+        function moveBigEnemies() {
+            if (powerUps.freeze) return;
+            
+            gameState.bigEnemies.forEach((bigEnemy, index) => {
+                const head = gameState.snake[0];
+                const distance = Math.abs(bigEnemy.x - head.x) + Math.abs(bigEnemy.y - head.y);
+                
+                // Oyuncuya yakınsa avcılık moduna geç
+                if (distance < 8) {
+                    bigEnemy.huntMode = true;
+                    bigEnemy.lastHunt = gameState.frameCount;
+                } else if (gameState.frameCount - bigEnemy.lastHunt > 200) {
+                    bigEnemy.huntMode = false;
+                }
+                
+                if (bigEnemy.huntMode) {
+                    // Oyuncuyu takip et
+                    const dx = head.x - bigEnemy.x;
+                    const dy = head.y - bigEnemy.y;
+                    
+                    if (Math.abs(dx) > Math.abs(dy)) {
+                        bigEnemy.targetX = bigEnemy.x + (dx > 0 ? bigEnemy.speed : -bigEnemy.speed);
+                    } else {
+                        bigEnemy.targetY = bigEnemy.y + (dy > 0 ? bigEnemy.speed : -bigEnemy.speed);
+                    }
+                } else {
+                    // Rastgele hareket
+                    if (Math.random() < 0.03) {
+                        bigEnemy.targetX = Math.max(0, Math.min(GRID_WIDTH - 2, 
+                            bigEnemy.x + (Math.random() - 0.5) * 4));
+                        bigEnemy.targetY = Math.max(0, Math.min(GRID_HEIGHT - 2, 
+                            bigEnemy.y + (Math.random() - 0.5) * 4));
+                    }
+                }
+                
+                // Hedef pozisyona hareket et
+                bigEnemy.x += (bigEnemy.targetX - bigEnemy.x) * 0.05;
+                bigEnemy.y += (bigEnemy.targetY - bigEnemy.y) * 0.05;
+                
+                // Sınırları kontrol et
+                bigEnemy.x = Math.max(0, Math.min(GRID_WIDTH - 2, bigEnemy.x));
+                bigEnemy.y = Math.max(0, Math.min(GRID_HEIGHT - 2, bigEnemy.y));
+            });
+        }
+
+        function toggleAutoInventory() {
+            gameState.autoInventoryEnabled = !gameState.autoInventoryEnabled;
+            
+            document.getElementById('autoInventoryStatus').textContent = 
+                `Envanter: ${gameState.autoInventoryEnabled ? 'Otomatik' : 'Manuel'}`;
+            document.getElementById('mobileAutoInventoryText').textContent = 
+                gameState.autoInventoryEnabled ? 'Oto' : 'Manuel';
+                
+            showNotification(`Otomatik Envanter ${gameState.autoInventoryEnabled ? 'Açık' : 'Kapalı'}`);
+        }
+
+        function checkDangerAndUseInventory() {
+            if (!gameState.autoInventoryEnabled) return false;
+            
+            const head = gameState.snake[0];
+            let nextHead = { ...head };
+            
+            // Sonraki pozisyonu hesapla
+            switch (gameState.direction) {
+                case 'up': nextHead.y--; break;
+                case 'down': nextHead.y++; break;
+                case 'left': nextHead.x--; break;
+                case 'right': nextHead.x++; break;
+            }
+            
+            // Wrap around edges
+            if (nextHead.x < 0) nextHead.x = GRID_WIDTH - 1;
+            if (nextHead.x >= GRID_WIDTH) nextHead.x = 0;
+            if (nextHead.y < 0) nextHead.y = GRID_HEIGHT - 1;
+            if (nextHead.y >= GRID_HEIGHT) nextHead.y = 0;
+            
+            // Tehlike kontrolü
+            let danger = false;
+            let dangerType = '';
+            
+            // Kendisi ile çarpışma kontrolü
+            if (!powerUps.ghost) {
+                for (let i = 1; i < gameState.snake.length; i++) {
+                    if (gameState.snake[i].x === nextHead.x && gameState.snake[i].y === nextHead.y) {
+                        danger = true;
+                        dangerType = 'self';
+                        break;
+                    }
+                }
+            }
+            
+            // Engel çarpışması
+            if (!danger && !powerUps.ghost) {
+                for (const obstacle of gameState.obstacles) {
+                    if (obstacle.x === nextHead.x && obstacle.y === nextHead.y) {
+                        danger = true;
+                        dangerType = 'obstacle';
+                        break;
+                    }
+                }
+            }
+            
+            // Düşman çarpışması
+            if (!danger && !powerUps.shield) {
+                // Normal düşmanlar
+                for (const enemy of gameState.enemies) {
+                    if (enemy.x === nextHead.x && enemy.y === nextHead.y) {
+                        danger = true;
+                        dangerType = 'enemy';
+                        break;
+                    }
+                }
+                
+                // Rakip yılanlar
+                if (!danger) {
+                    for (const rivalSnake of gameState.rivalSnakes) {
+                        for (const segment of rivalSnake.body) {
+                            if (segment.x === nextHead.x && segment.y === nextHead.y) {
+                                danger = true;
+                                dangerType = 'rival';
+                                break;
+                            }
+                        }
+                        if (danger) break;
+                    }
+                }
+                
+                // Büyük düşmanlar
+                if (!danger) {
+                    for (const bigEnemy of gameState.bigEnemies) {
+                        const ex = Math.floor(bigEnemy.x);
+                        const ey = Math.floor(bigEnemy.y);
+                        
+                        if ((nextHead.x >= ex && nextHead.x <= ex + 1) && 
+                            (nextHead.y >= ey && nextHead.y <= ey + 1)) {
+                            danger = true;
+                            dangerType = 'bigEnemy';
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            // Tehlike varsa uygun envanteri kullan
+            if (danger) {
+                // Öncelik sırası: Ghost > Shield > diğerleri
+                if (dangerType === 'self' || dangerType === 'obstacle') {
+                    // Kendisi veya engel için ghost kullan
+                    if (inventory.ghost > 0 && !powerUps.ghost) {
+                        useAutoItem('ghost');
+                        return true;
+                    }
+                } else if (dangerType === 'enemy' || dangerType === 'rival' || dangerType === 'bigEnemy') {
+                    // Düşmanlar için önce shield, sonra ghost
+                    if (inventory.shield > 0 && !powerUps.shield) {
+                        useAutoItem('shield');
+                        return true;
+                    } else if (inventory.ghost > 0 && !powerUps.ghost) {
+                        useAutoItem('ghost');
+                        return true;
+                    }
+                }
+                
+                // Son çare olarak freeze kullan (düşmanları dondur)
+                if (dangerType !== 'self' && dangerType !== 'obstacle') {
+                    if (inventory.freeze > 0 && !powerUps.freeze) {
+                        useAutoItem('freeze');
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
+        }
+
+        function useAutoItem(type) {
+            if (inventory[type] <= 0) return false;
+            
+            inventory[type]--;
+            powerUps[type] = true;
+            
+            const duration = 50000; // 50 seconds
+            
+            if (type === 'speed') {
+                gameState.gameSpeed = Math.max(80, gameState.gameSpeed - 40);
+            }
+            
+            showNotification(`🤖 ${getPowerUpName(type)} Otomatik Kullanıldı!`);
+            
+            setTimeout(() => {
+                powerUps[type] = false;
+                if (type === 'speed') {
+                    const currentLevel = levels[Math.min(gameState.level - 1, levels.length - 1)];
+                    gameState.gameSpeed = currentLevel.speed;
+                }
+                updateUI();
+            }, duration);
+            
+            updateUI();
+            return true;
         }
     </script>
 </body>
